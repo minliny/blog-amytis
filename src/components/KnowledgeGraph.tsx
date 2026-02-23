@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useRouter } from 'next/navigation';
 import * as d3 from 'd3';
 
 // Reactive mobile detection via useSyncExternalStore (avoids setState-in-effect lint rule)
@@ -45,6 +46,9 @@ function nodeRadius(connections: number): number {
 
 export default function KnowledgeGraph() {
   const svgRef = useRef<SVGSVGElement>(null);
+  const router = useRouter();
+  const routerRef = useRef(router);
+  useEffect(() => { routerRef.current = router; });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTypes, setActiveTypes] = useState<Set<string>>(new Set(TYPE_FILTERS));
@@ -166,12 +170,13 @@ export default function KnowledgeGraph() {
           })
       )
       .on('click', (_, d) => {
-        window.location.href = d.url;
+        routerRef.current.push(d.url);
       })
       .on('mouseenter', (event: MouseEvent, d) => {
-        tooltip
-          .style('opacity', '1')
-          .html(`<strong>${d.title}</strong><br/><span style="opacity:0.6">${d.type} &middot; ${d.connections} links</span>`);
+        tooltip.style('opacity', '1').text('');
+        tooltip.append('span').style('font-weight', 'bold').text(d.title);
+        tooltip.append('br');
+        tooltip.append('span').style('opacity', '0.6').text(`${d.type} · ${d.connections} links`);
       })
       .on('mousemove', (event: MouseEvent) => {
         tooltip
@@ -289,6 +294,7 @@ export default function KnowledgeGraph() {
           <button
             key={type}
             onClick={() => toggleType(type)}
+            aria-pressed={activeTypes.has(type)}
             className={`flex items-center gap-1.5 px-3 py-1 text-xs rounded-full border transition-colors ${
               activeTypes.has(type)
                 ? 'border-current text-foreground'

@@ -1170,7 +1170,7 @@ function parseNoteFile(fullPath: string, slug: string): NoteData {
   const data = parsed.data;
 
   const contentWithoutH1 = content.replace(/^\s*#\s+[^\n]+/, '').trim();
-  const date = data.date || new Date().toISOString().split('T')[0];
+  const date = data.date || fs.statSync(fullPath).mtime.toISOString().split('T')[0];
   const excerpt = generateExcerpt(contentWithoutH1);
   const headings = getHeadings(content);
   const readingTime = calculateReadingTime(contentWithoutH1);
@@ -1194,7 +1194,7 @@ function parseNoteFile(fullPath: string, slug: string): NoteData {
 let _allNotes: NoteData[] | null = null;
 
 export function getAllNotes(): NoteData[] {
-  if (_allNotes) return _allNotes;
+  if (_allNotes && process.env.NODE_ENV === 'production') return _allNotes;
 
   if (!fs.existsSync(notesDirectory)) {
     _allNotes = [];
@@ -1285,7 +1285,7 @@ export interface SlugRegistryEntry {
 let _slugRegistry: Map<string, SlugRegistryEntry> | null = null;
 
 export function buildSlugRegistry(): Map<string, SlugRegistryEntry> {
-  if (_slugRegistry) return _slugRegistry;
+  if (_slugRegistry && process.env.NODE_ENV === 'production') return _slugRegistry;
 
   const map = new Map<string, SlugRegistryEntry>();
 
@@ -1298,10 +1298,17 @@ export function buildSlugRegistry(): Map<string, SlugRegistryEntry> {
   );
 
   getAllNotes().forEach(n => {
+    if (map.has(n.slug)) {
+      console.warn(`[slugRegistry] Note slug "${n.slug}" conflicts with an existing entry.`);
+    }
     map.set(n.slug, { url: `/notes/${n.slug}`, type: 'note', title: n.title });
-    n.aliases.forEach(a =>
-      map.set(a, { url: `/notes/${n.slug}`, type: 'note', title: n.title })
-    );
+    n.aliases.forEach(a => {
+      if (map.has(a)) {
+        console.warn(`[slugRegistry] Note alias "${a}" (→ ${n.slug}) conflicts with existing slug; skipping.`);
+      } else {
+        map.set(a, { url: `/notes/${n.slug}`, type: 'note', title: n.title });
+      }
+    });
   });
 
   if (fs.existsSync(seriesDirectory)) {
@@ -1384,6 +1391,6 @@ function buildBacklinkIndex(): Map<string, BacklinkSource[]> {
 let _backlinkIndex: Map<string, BacklinkSource[]> | null = null;
 
 export function getBacklinks(slug: string): BacklinkSource[] {
-  if (!_backlinkIndex) _backlinkIndex = buildBacklinkIndex();
+  if (!_backlinkIndex || process.env.NODE_ENV !== 'production') _backlinkIndex = buildBacklinkIndex();
   return _backlinkIndex.get(slug) ?? [];
 }

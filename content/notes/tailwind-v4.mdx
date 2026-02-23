@@ -30,7 +30,9 @@ v4's engine is built in Rust (via Lightning CSS) and is dramatically faster. Col
 ## Breaking Changes
 
 - No more `tailwind.config.js` for most use cases (it still exists for plugins)
-- Some utility names changed (e.g., `shadow` → `drop-shadow`, `ring` uses new syntax)
+- Default ring width changed from 3px to 1px
+- Standalone opacity utilities removed — use slash syntax instead (e.g., `bg-black/50`)
+- The `!important` modifier moves to the end of the class name (e.g., `shadow-md!` not `!shadow-md`)
 - `@apply` works differently for custom utilities
 - Dark mode config moves to CSS: `@variant dark (&:where(.dark, .dark *))`
 

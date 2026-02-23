@@ -60,7 +60,7 @@ export const translations = {
     selected_books: "Selected Books",
     flow: "Flow",
     recent_notes: "Recent Notes",
-    all_flows: "All Notes",
+    all_flows: "All Flows",
     no_flows: "No notes yet.",
     flow_subtitle: "{count} daily notes.",
     flows_in_year: "Notes in {year}",
@@ -125,6 +125,7 @@ export const translations = {
     graph_subtitle: "A visual map of connected knowledge.",
     search_type_note: "Note",
     all_notes: "All Notes",
+    no_notes: "No notes yet.",
   },
   zh: {
     home: "首页",
@@ -252,6 +253,7 @@ export const translations = {
     graph_subtitle: "知识连接的可视化地图。",
     search_type_note: "笔记",
     all_notes: "全部笔记",
+    no_notes: "暂无笔记。",
   },
 };
 

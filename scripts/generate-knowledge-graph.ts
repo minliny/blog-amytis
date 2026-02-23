@@ -64,11 +64,14 @@ async function main() {
     ...flows.map(f => ({ slug: f.slug, title: f.title, type: 'flow' as const, content: f.content, url: `/flows/${f.slug}` })),
   ];
 
-  // Build wikilink edges
+  // Build wikilink edges (deduplicate per source document)
   for (const item of allContent) {
     const targets = extractWikilinks(item.content);
+    const seenTargets = new Set<string>();
     for (const target of targets) {
       if (target === item.slug) continue; // skip self
+      if (seenTargets.has(target)) continue; // skip duplicate within this doc
+      seenTargets.add(target);
       edges.push({ source: item.slug, target, type: 'wikilink' });
 
       // Ensure source exists in nodeMap

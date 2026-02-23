@@ -83,7 +83,7 @@ export default function NoteContent({ notes, tags, pagination }: NoteContentProp
         )}
 
         {filteredNotes.length === 0 ? (
-          <p className="text-muted">{t('no_flows')}</p>
+          <p className="text-muted">{t('no_notes')}</p>
         ) : (
           <div className="space-y-0">
             {filteredNotes.map(note => (
