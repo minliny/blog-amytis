@@ -94,7 +94,7 @@ export const siteConfig = {
   features: {
     posts: {
       enabled: true,
-      name: { en: "Posts", zh: "文章" },
+      name: { en: "Articles", zh: "文章" },
     },
     series: {
       enabled: true,
@@ -118,7 +118,7 @@ export const siteConfig = {
   hero: {
     tagline: { en: "Open Source Digital Garden", zh: "开源数字花园框架" },
     title: { en: "A home for ideas to grow, link, and evolve.", zh: "让想法生长、关联、演化的地方。" },
-    subtitle: { en: "An elegant, open-source framework for cultivating personal knowledge — from raw daily flows to refined posts, curated series, and structured books.", zh: "优雅的开源知识培育框架——从每日随笔到精炼文章，从系列合集到结构化书籍，层层深化。" },
+    subtitle: { en: "An elegant, open-source framework for cultivating personal knowledge — from raw daily flows to refined articles, curated series, and structured books.", zh: "优雅的开源知识培育框架——从每日随笔到精炼文章，从系列合集到结构化书籍，层层深化。" },
   },
   homepage: {
     sections: [
