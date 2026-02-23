@@ -67,6 +67,7 @@ export default function Navbar({ seriesList = [], booksList = [] }: NavbarProps)
   // Scroll-aware transparency
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 8);
+    handleScroll(); // sync with scroll position at mount (e.g. after refresh while scrolled)
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
