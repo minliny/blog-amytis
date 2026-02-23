@@ -40,7 +40,7 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems, scrollTh
   return (
     <section className="mb-24">
       <div className="flex items-center justify-between mb-12">
-        <h2 className="text-3xl font-serif font-bold text-heading">{t('featured_stories')}</h2>
+        <h2 className="text-3xl font-serif font-bold text-heading">{t('featured_articles')}</h2>
         {allFeatured.length > maxItems && (
           <button
             onClick={handleShuffle}
