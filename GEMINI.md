@@ -67,6 +67,12 @@ bun test
 - **Cover Images**: Support for local paths, external URLs, and dynamic desaturated gradients (`text:Label`).
 - **External Links**: Posts can include a list of curated external resources in frontmatter.
 
+### Digital Garden Features
+- **Notes**: Atomic, evergreen notes for personal knowledge management (`content/notes/`).
+- **Wiki-links**: Bidirectional linking using `[[Slug]]` syntax across all content types.
+- **Backlinks**: Automatic display of "Linked References" with context snippets.
+- **Knowledge Graph**: Interactive visualization of content relationships at `/graph`.
+
 ### Refined UX & Design
 - **Homepage**: Elegant layout with "Curated Series" and "Featured Stories" sections using horizontal scroll triggers.
 - **Navigation**: Command+K fuzzy search, sticky TOC with progress tracking, and Series Catalog sidebars.

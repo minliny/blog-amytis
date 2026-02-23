@@ -9,10 +9,15 @@
 ## Features
 
 - **Digital Garden Philosophy:** Non-linear navigation through tags, series, authors, books, flows, and chronological archives.
+- **Interconnected Knowledge:**
+  - **Wiki-links:** Bidirectional linking (`[[Slug]]`) between all content types.
+  - **Backlinks:** Automatic "Linked References" display on notes.
+  - **Knowledge Graph:** Interactive visual map of your content connections.
 - **Full-text Search:** Fast, static client-side search across all content (Cmd/Ctrl+K) powered by Pagefind.
 - **Structured Content:**
   - **Series:** Multi-part content organization with manual or automatic ordering.
   - **Books:** Long-form content with explicit chapters, parts, and a dedicated reading interface.
+  - **Notes:** Atomic, evergreen concepts for personal knowledge management.
   - **Flows:** Stream-style daily notes or micro-blogging for quick thoughts.
 - **Rich MDX Content:**
   - GitHub Flavored Markdown (tables, task lists, strikethrough).
@@ -142,6 +147,10 @@ Create a directory in `content/series/` with an `index.mdx`.
 
 Books are for long-form, structured content. Create a directory in `content/books/`.
 
+### Notes
+
+Create evergreen notes in `content/notes/` (e.g., `concept.mdx`). Use `[[wiki-links]]` to connect them.
+
 ## Project Structure
 
 ```
@@ -150,21 +159,26 @@ amytis/
     posts/              # Blog posts
     series/             # Series collections
     books/              # Long-form books
+    notes/              # Digital garden notes
     flows/              # Daily notes (YYYY/MM/DD)
     about.mdx           # Static pages
   public/               # Static assets
   src/
     app/                # Next.js App Router pages
       books/            # Book routes
+      notes/            # Note routes
+      graph/            # Knowledge graph
       flows/            # Flow routes
     components/         # React components
     lib/
       markdown.ts       # Data access layer
+  site.config.ts        # Site configuration
 ```
 
 ## Documentation
 
 - [Architecture Overview](docs/ARCHITECTURE.md)
+- [Digital Garden Guide](docs/DIGITAL_GARDEN.md)
 - [Contributing Guide](docs/CONTRIBUTING.md)
 
 ## License

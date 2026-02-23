@@ -55,6 +55,17 @@ Books are manually structured in `content/books/`.
 2. Add `index.mdx` with metadata and chapters configuration.
 3. Create the chapter files (`welcome.mdx`, `conclusion.mdx`) in the same folder.
 
+### Creating Notes (Digital Garden)
+
+Notes live in `content/notes/`.
+
+```bash
+# Create a new note
+bun run new "Zettelkasten Method" --note
+```
+
+Or manually create `content/notes/zettelkasten-method.mdx`.
+
 ### Importing Content
 
 ```bash

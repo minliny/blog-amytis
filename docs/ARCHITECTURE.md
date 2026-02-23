@@ -40,6 +40,11 @@ src/app/
     page.tsx                        # All books overview
     [slug]/page.tsx                 # Book landing page
     [slug]/[chapter]/page.tsx       # Individual book chapter
+  notes/
+    page.tsx                        # All notes list
+    [slug]/page.tsx                 # Individual note
+  graph/
+    page.tsx                        # Knowledge graph visualization
   flows/
     page.tsx                        # Flows stream/listing
     [year]/[month]/[day]/page.tsx   # Individual flow entry (optional if modal/stream used)
@@ -96,6 +101,9 @@ src/app/
 | `getAllBooks()` | `BookData[]` | All books metadata |
 | `getBookData(slug)` | `BookData \| null` | Single book metadata & TOC |
 | `getBookChapter(...)` | `BookChapterData` | Single chapter content |
+| `getAllNotes()` | `NoteData[]` | All notes, sorted by date |
+| `getNoteBySlug(slug)` | `NoteData \| null` | Single note content |
+| `getBacklinks(slug)` | `BacklinkSource[]` | Inbound links for a page |
 | `getFlowBySlug(slug)` | `FlowData \| null` | Single flow entry |
 | `getSeriesPosts(slug)` | `PostData[]` | Posts in a series |
 | `calculateReadingTime(content)` | `string` | Estimated reading time (multilingual) |
