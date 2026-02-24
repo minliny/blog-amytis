@@ -44,15 +44,6 @@ function readChapterTitle(bookDir: string, id: string): string {
   return titleFromId(id);
 }
 
-function chapterExistsOnDisk(bookDir: string, id: string): boolean {
-  return (
-    fs.existsSync(path.join(bookDir, `${id}.mdx`)) ||
-    fs.existsSync(path.join(bookDir, `${id}.md`)) ||
-    fs.existsSync(path.join(bookDir, id, 'index.mdx')) ||
-    fs.existsSync(path.join(bookDir, id, 'index.md'))
-  );
-}
-
 /** Scan the book directory and return ids of all discovered chapters, sorted by name. */
 function discoverIds(bookDir: string): string[] {
   const entries = fs.readdirSync(bookDir, { withFileTypes: true });

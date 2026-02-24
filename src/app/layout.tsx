@@ -89,7 +89,7 @@ export default function RootLayout({
     const seriesKeys = Object.keys(allSeries).sort();
     const filteredKeys = featuredSeries && featuredSeries.length > 0
       ? seriesKeys.filter(slug => featuredSeries.includes(slug))
-      : seriesKeys.slice(0, 5);
+      : [];
     seriesList = filteredKeys.map(slug => ({
       name: getSeriesData(slug)?.title || allSeries[slug][0]?.series || slug,
       slug,
@@ -106,7 +106,7 @@ export default function RootLayout({
       ? allBooks
           .filter(book => featuredBookSlugs.includes(book.slug))
           .map(book => ({ name: book.title, slug: book.slug }))
-      : allBooks.slice(0, 5).map(book => ({ name: book.title, slug: book.slug }));
+      : [];
   }
 
   return (
