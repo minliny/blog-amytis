@@ -61,7 +61,7 @@ export default function BookLayout({ book, chapter }: BookLayoutProps) {
           </header>
 
           {/* Content */}
-          <MarkdownRenderer content={chapter.content} latex={chapter.latex} slug={`books/${book.slug}`} />
+          <MarkdownRenderer content={chapter.content} latex={chapter.latex} slug={chapter.isFolder ? `books/${book.slug}/${chapter.slug}` : `books/${book.slug}`} />
 
           {/* Prev/Next navigation */}
           <nav className="mt-16 pt-8 border-t border-muted/10 flex gap-4">

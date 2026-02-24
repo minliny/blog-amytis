@@ -787,6 +787,7 @@ export interface BookChapterData {
   excerpt?: string;
   latex: boolean;
   readingTime: string;
+  isFolder: boolean;
   prevChapter: { title: string; file: string } | null;
   nextChapter: { title: string; file: string } | null;
 }
@@ -863,7 +864,9 @@ export function getBookData(slug: string): BookData | null {
   for (const ch of chapters) {
     const chMdx = path.join(bookDir, `${ch.file}.mdx`);
     const chMd = path.join(bookDir, `${ch.file}.md`);
-    if (!fs.existsSync(chMdx) && !fs.existsSync(chMd)) {
+    const chFolderMdx = path.join(bookDir, ch.file, 'index.mdx');
+    const chFolderMd = path.join(bookDir, ch.file, 'index.md');
+    if (!fs.existsSync(chMdx) && !fs.existsSync(chMd) && !fs.existsSync(chFolderMdx) && !fs.existsSync(chFolderMd)) {
       console.warn(`Book "${slug}": chapter file "${ch.file}" not found`);
     }
   }
@@ -901,9 +904,14 @@ export function getBookChapter(bookSlug: string, chapterSlug: string): BookChapt
   const bookDir = path.join(booksDirectory, bookSlug);
   const chMdx = path.join(bookDir, `${chapterSlug}.mdx`);
   const chMd = path.join(bookDir, `${chapterSlug}.md`);
+  const chFolderMdx = path.join(bookDir, chapterSlug, 'index.mdx');
+  const chFolderMd = path.join(bookDir, chapterSlug, 'index.md');
   let fullPath = '';
+  let isFolder = false;
   if (fs.existsSync(chMdx)) fullPath = chMdx;
   else if (fs.existsSync(chMd)) fullPath = chMd;
+  else if (fs.existsSync(chFolderMdx)) { fullPath = chFolderMdx; isFolder = true; }
+  else if (fs.existsSync(chFolderMd)) { fullPath = chFolderMd; isFolder = true; }
   else return null;
 
   const fileContents = fs.readFileSync(fullPath, 'utf8');
@@ -939,6 +947,7 @@ export function getBookChapter(bookSlug: string, chapterSlug: string): BookChapt
     excerpt,
     latex: data.latex,
     readingTime,
+    isFolder,
     prevChapter: prevChapter ? { title: prevChapter.title, file: prevChapter.file } : null,
     nextChapter: nextChapter ? { title: nextChapter.title, file: nextChapter.file } : null,
   };
