@@ -12,6 +12,7 @@ import Link from 'next/link';
 export function generateStaticParams() {
   if (siteConfig.features?.flow?.enabled === false) return [{ year: '_', month: '_', day: '_' }];
   const allFlows = getAllFlows();
+  if (allFlows.length === 0) return [{ year: '_', month: '_', day: '_' }];
   return allFlows.map(flow => {
     const [year, month, day] = flow.slug.split('/');
     return { year, month, day };

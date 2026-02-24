@@ -10,6 +10,7 @@ import FlowContent from '@/components/FlowContent';
 export function generateStaticParams() {
   if (siteConfig.features?.flow?.enabled === false) return [{ year: '_', month: '_' }];
   const allFlows = getAllFlows();
+  if (allFlows.length === 0) return [{ year: '_', month: '_' }];
   const monthSet = new Set(allFlows.map(f => {
     const [year, month] = f.slug.split('/');
     return `${year}/${month}`;

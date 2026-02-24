@@ -10,6 +10,7 @@ import FlowContent from '@/components/FlowContent';
 export function generateStaticParams() {
   if (siteConfig.features?.flow?.enabled === false) return [{ year: '_' }];
   const allFlows = getAllFlows();
+  if (allFlows.length === 0) return [{ year: '_' }];
   const years = new Set(allFlows.map(f => f.slug.split('/')[0]));
   return Array.from(years).map(year => ({ year }));
 }
