@@ -104,13 +104,9 @@ export const siteConfig = {
       enabled: true,
       name: { en: "Books", zh: "书籍" },
     },
-    flows: {
+    flow: {
       enabled: true,
       name: { en: "Flow", zh: "随笔" },
-    },
-    notes: {
-      enabled: true,
-      name: { en: "Notes", zh: "笔记" },
     },
   },
 
