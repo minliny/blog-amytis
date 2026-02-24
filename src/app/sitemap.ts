@@ -34,7 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     ...book.chapters.map((ch) => ({
-      url: `${baseUrl}/books/${book.slug}/${ch.file}`,
+      url: `${baseUrl}/books/${book.slug}/${ch.id}`,
       lastModified: book.date,
       changeFrequency: 'monthly' as const,
       priority: 0.7,

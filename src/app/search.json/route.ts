@@ -20,11 +20,11 @@ export async function GET() {
   const books = getAllBooks();
   for (const book of books) {
     for (const ch of book.chapters) {
-      const chapter = getBookChapter(book.slug, ch.file);
+      const chapter = getBookChapter(book.slug, ch.id);
       if (chapter) {
         searchIndex.push({
           title: `${chapter.title} — ${book.title}`,
-          slug: `books/${book.slug}/${ch.file}`,
+          slug: `books/${book.slug}/${ch.id}`,
           date: book.date,
           excerpt: chapter.excerpt || '',
           category: 'Book',

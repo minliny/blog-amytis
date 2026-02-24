@@ -87,7 +87,7 @@ export default function Home() {
         coverImage: b.coverImage,
         authors: b.authors,
         chapterCount: b.chapters.length,
-        firstChapter: b.chapters[0]?.file,
+        firstChapter: b.chapters[0]?.id,
       }))
     : [];
 
