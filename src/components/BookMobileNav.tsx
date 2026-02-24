@@ -17,7 +17,7 @@ export default function BookMobileNav({ bookSlug, bookTitle, toc, chapters, curr
   const { t } = useLanguage();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const currentIndex = chapters.findIndex(ch => ch.file === currentChapter);
+  const currentIndex = chapters.findIndex(ch => ch.id === currentChapter);
   const prevChapter = currentIndex > 0 ? chapters[currentIndex - 1] : null;
   const nextChapter = currentIndex < chapters.length - 1 ? chapters[currentIndex + 1] : null;
 
@@ -51,7 +51,7 @@ export default function BookMobileNav({ bookSlug, bookTitle, toc, chapters, curr
       <div className="flex gap-3 mb-3">
         {prevChapter ? (
           <Link
-            href={`/books/${bookSlug}/${prevChapter.file}`}
+            href={`/books/${bookSlug}/${prevChapter.id}`}
             className="flex-1 flex items-center gap-2 py-2.5 px-3 rounded-lg bg-muted/5 hover:bg-muted/10 no-underline transition-colors group"
           >
             <svg className="w-4 h-4 flex-shrink-0 text-muted group-hover:text-accent transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -67,7 +67,7 @@ export default function BookMobileNav({ bookSlug, bookTitle, toc, chapters, curr
         )}
         {nextChapter ? (
           <Link
-            href={`/books/${bookSlug}/${nextChapter.file}`}
+            href={`/books/${bookSlug}/${nextChapter.id}`}
             className="flex-1 flex items-center justify-end gap-2 py-2.5 px-3 rounded-lg bg-muted/5 hover:bg-muted/10 no-underline transition-colors group text-right"
           >
             <div className="min-w-0">
@@ -113,19 +113,19 @@ export default function BookMobileNav({ bookSlug, bookTitle, toc, chapters, curr
                   </div>
                   <ol className="space-y-1">
                     {item.chapters.map(ch => {
-                      const isCurrent = ch.file === currentChapter;
-                      const chIdx = chapters.findIndex(c => c.file === ch.file);
+                      const isCurrent = ch.id === currentChapter;
+                      const chIdx = chapters.findIndex(c => c.id === ch.id);
                       const isPast = chIdx < currentIndex;
 
                       return (
-                        <li key={ch.file}>
+                        <li key={ch.id}>
                           {isCurrent ? (
                             <div className="flex items-center gap-3 py-1.5 px-2 rounded-lg bg-accent/5">
                               <span className="text-sm font-semibold text-accent truncate">{ch.title}</span>
                             </div>
                           ) : (
                             <Link
-                              href={`/books/${bookSlug}/${ch.file}`}
+                              href={`/books/${bookSlug}/${ch.id}`}
                               className={`block py-1.5 px-2 rounded-lg text-sm no-underline hover:bg-muted/5 transition-colors ${
                                 isPast ? 'text-foreground/70 hover:text-foreground' : 'text-muted hover:text-foreground'
                               }`}
@@ -140,19 +140,19 @@ export default function BookMobileNav({ bookSlug, bookTitle, toc, chapters, curr
                 </div>
               );
             } else {
-              const isCurrent = item.file === currentChapter;
-              const chIdx = chapters.findIndex(c => c.file === item.file);
+              const isCurrent = item.id === currentChapter;
+              const chIdx = chapters.findIndex(c => c.id === item.id);
               const isPast = chIdx < currentIndex;
 
               return (
-                <div key={item.file}>
+                <div key={item.id}>
                   {isCurrent ? (
                     <div className="flex items-center gap-3 py-1.5 px-2 rounded-lg bg-accent/5">
                       <span className="text-sm font-semibold text-accent truncate">{item.title}</span>
                     </div>
                   ) : (
                     <Link
-                      href={`/books/${bookSlug}/${item.file}`}
+                      href={`/books/${bookSlug}/${item.id}`}
                       className={`block py-1.5 px-2 rounded-lg text-sm no-underline hover:bg-muted/5 transition-colors ${
                         isPast ? 'text-foreground/70 hover:text-foreground' : 'text-muted hover:text-foreground'
                       }`}

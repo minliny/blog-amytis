@@ -16,7 +16,7 @@ interface BookSidebarProps {
 
 export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, currentChapter, headings = [] }: BookSidebarProps) {
   const { t } = useLanguage();
-  const currentIndex = chapters.findIndex(ch => ch.file === currentChapter);
+  const currentIndex = chapters.findIndex(ch => ch.id === currentChapter);
   const [headingsCollapsed, setHeadingsCollapsed] = useState(false);
   const currentItemRef = useRef<HTMLLIElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
@@ -27,7 +27,7 @@ export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, curren
     const initial: Record<string, boolean> = {};
     for (const item of toc) {
       if ('part' in item) {
-        const containsCurrent = item.chapters.some(ch => ch.file === currentChapter);
+        const containsCurrent = item.chapters.some(ch => ch.id === currentChapter);
         initial[item.part] = !containsCurrent;
       }
     }
@@ -96,7 +96,7 @@ export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, curren
   // Expand part containing current chapter when it changes
   useEffect(() => {
     for (const item of toc) {
-      if ('part' in item && item.chapters.some(ch => ch.file === currentChapter)) {
+      if ('part' in item && item.chapters.some(ch => ch.id === currentChapter)) {
         setCollapsedParts(prev => ({ ...prev, [item.part]: false }));
       }
     }
@@ -156,23 +156,23 @@ export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, curren
   toc.forEach((item) => {
     if ('part' in item) {
       item.chapters.forEach(ch => {
-        chapterIndices.set(ch.file, currentGlobalIdx++);
+        chapterIndices.set(ch.id, currentGlobalIdx++);
       });
     } else {
-      chapterIndices.set(item.file, currentGlobalIdx++);
+      chapterIndices.set(item.id, currentGlobalIdx++);
     }
   });
 
   // Helper to render a chapter link + inline headings if current
-  const renderChapterItem = (ch: { title: string; file: string }) => {
-    const isCurrent = ch.file === currentChapter;
-    const idx = chapterIndices.get(ch.file) ?? 0;
+  const renderChapterItem = (ch: { title: string; id: string }) => {
+    const isCurrent = ch.id === currentChapter;
+    const idx = chapterIndices.get(ch.id) ?? 0;
     const isPast = idx < currentIndex;
 
     return (
-      <li key={ch.file} ref={isCurrent ? currentItemRef : undefined}>
+      <li key={ch.id} ref={isCurrent ? currentItemRef : undefined}>
         <Link
-          href={`/books/${bookSlug}/${ch.file}`}
+          href={`/books/${bookSlug}/${ch.id}`}
           className={`block py-2 px-3 rounded-lg text-sm no-underline transition-all duration-200 ${
             isCurrent
               ? 'bg-accent/10 text-accent font-semibold border-l-2 border-accent'

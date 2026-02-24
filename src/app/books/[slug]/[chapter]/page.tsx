@@ -12,7 +12,7 @@ export async function generateStaticParams() {
 
   for (const book of books) {
     for (const ch of book.chapters) {
-      params.push({ slug: book.slug, chapter: ch.file });
+      params.push({ slug: book.slug, chapter: ch.id });
     }
   }
 

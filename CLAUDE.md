@@ -171,11 +171,11 @@ chapters:
   - part: "Part I: Getting Started"    # Optional part grouping
     chapters:
       - title: "Chapter Title"
-        file: "chapter-file"           # Maps to chapter-file.mdx in same directory
+        id: "chapter-file"             # Maps to chapter-file.mdx or chapter-file/index.mdx
   - part: "Part II: Advanced"
     chapters:
       - title: "Another Chapter"
-        file: "another-chapter"
+        id: "another-chapter"
 ---
 ```
 

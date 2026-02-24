@@ -105,7 +105,7 @@ export default async function BookLandingPage({ params }: { params: Promise<{ sl
           {firstChapter && (
             <div className="mt-8">
               <Link
-                href={`/books/${book.slug}/${firstChapter.file}`}
+                href={`/books/${book.slug}/${firstChapter.id}`}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl font-sans font-medium text-sm hover:bg-accent/90 no-underline transition-colors shadow-lg shadow-accent/20"
               >
                 {t('start_reading')}
@@ -131,9 +131,9 @@ export default async function BookLandingPage({ params }: { params: Promise<{ sl
                   </h3>
                   <ol className="space-y-2 pl-4 border-l-2 border-muted/10">
                     {item.chapters.map(ch => (
-                      <li key={ch.file}>
+                      <li key={ch.id}>
                         <Link
-                          href={`/books/${book.slug}/${ch.file}`}
+                          href={`/books/${book.slug}/${ch.id}`}
                           className="group flex items-center gap-3 py-2 text-foreground/80 hover:text-accent no-underline transition-colors"
                         >
                           <svg className="w-4 h-4 text-muted group-hover:text-accent flex-shrink-0 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -149,8 +149,8 @@ export default async function BookLandingPage({ params }: { params: Promise<{ sl
             } else {
               return (
                 <Link
-                  key={item.file}
-                  href={`/books/${book.slug}/${item.file}`}
+                  key={item.id}
+                  href={`/books/${book.slug}/${item.id}`}
                   className="group flex items-center gap-3 py-2 text-foreground/80 hover:text-accent no-underline transition-colors"
                 >
                   <svg className="w-4 h-4 text-muted group-hover:text-accent flex-shrink-0 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
