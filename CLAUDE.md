@@ -26,27 +26,14 @@ bun run build:dev          # Development build (no image optimization, faster) â
 bun run clean              # Remove .next, out, public/posts directories
 
 # Content creation
-bun run new "Post Title"              # Create new post (flat file)
-bun run new "Title" --folder          # Create as folder with index.mdx
-bun run new "Title" --prefix weekly   # Create with prefix (e.g., weekly-title)
-bun run new "Title" --template custom # Use custom template from templates/
-bun run new "Title" --md              # Create as .md instead of .mdx
-bun run new "Title" --series my-series # Create post in content/series/my-series/
-bun run new-series "Series Name"      # Create new series with cover image
-bun run new-from-pdf doc.pdf          # Create post from PDF (converts pages to images)
-bun run new-from-pdf doc.pdf --title "My Document"  # With custom title
-bun run new-from-pdf doc.pdf --scale 3.0            # Higher resolution (default: 2.0)
+bun run new "Post Title"              # Create new post
+bun run new-series "Series Name"      # Create new series
+bun run new-from-pdf doc.pdf          # Create post from PDF
 bun run new-from-images ./photos      # Create post from image folder
-bun run new-from-images ./photos --title "My Gallery"  # With custom title
-bun run new-from-images ./photos --sort date           # Sort by date (default: name)
-bun run new-from-images ./photos --no-copy             # Reference images instead of copying
-bun run new-flow                    # Create today's flow note (.md)
-bun run new-flow "My Title"         # Create flow with custom title
-bun run new-flow --mdx              # Use .mdx format instead
-bun run new-flow-from-chat                             # Import all new files from imports/chats/
-bun run sync-book                   # Sync chapters list for all books from disk
-bun run sync-book <slug>            # Sync chapters list for one book
-bun run sync-book <slug> --update-titles  # Also refresh titles from chapter frontmatter
+bun run new-flow                      # Create today's flow note
+bun run new-flow-from-chat            # Import all new files from imports/chats/
+bun run sync-book                     # Sync chapters list for all books from disk
+bun run sync-book <slug>              # Sync chapters list for one book
 ```
 
 ## Architecture
