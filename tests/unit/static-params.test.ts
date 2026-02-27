@@ -115,7 +115,7 @@ beforeAll(() => {
     getSeriesAuthors: () => [],
 
     getAuthorSlug: (name: string) =>
-      name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
     resolveAuthorParam: () => null,
 
     getAdjacentFlows: () => ({ prev: null, next: null }),
