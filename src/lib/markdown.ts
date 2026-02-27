@@ -586,7 +586,7 @@ export function getPostsByAuthor(author: string): PostData[] {
 
 export function getAuthorSlug(author: string): string {
   const slugger = new GithubSlugger();
-  return slugger.slug(author.trim());
+  return slugger.slug(author.trim()).replace(/^-+|-+$/g, '');
 }
 
 export function getAllAuthors(): Record<string, number> {
