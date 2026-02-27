@@ -105,7 +105,37 @@ bun run new-from-images ./photos                  # Create post from image folde
 bun run new-from-images ./photos --title "Gallery" # With custom title
 bun run new-from-images ./photos --sort date      # Sort by date (default: name)
 bun run new-from-images ./photos --no-copy        # Reference images instead of copying
+bun run new-note "Concept"                        # Create a new atomic note
+bun run new-flow-from-chat                        # Import all new files in imports/chats/
+bun run sync-book                                 # Sync book chapters with files on disk
+bun run series-draft "series-slug"                # Set all posts in a series to draft
+bun run series-draft "series-slug" --undraft      # Remove draft status from series posts
 ```
+
+### Importing Chat Logs to Flows
+
+Amytis includes a powerful script to convert chat logs (like those from LLMs or messaging apps) into Flow entries.
+
+1. Place your `.txt` or `.log` files in `imports/chats/`.
+2. Ensure the format is:
+   ```
+   Author Name YYYY-MM-DD HH:mm:ss
+   Message content line 1
+   Message content line 2
+   ```
+3. Run the importer:
+   ```bash
+   bun run new-flow-from-chat
+   ```
+
+Options:
+- `--all`: Re-import every file (ignores history).
+- `--dry-run`: Preview changes without writing files.
+- `--author "Name"`: Only include messages from a specific author.
+- `--append`: Append to existing flow files instead of skipping.
+- `--timestamp`: Include timestamps in the rendered blocks.
+
+Import history is tracked in `imports/chats/.imported`.
 
 ## Configuration
 

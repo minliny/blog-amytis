@@ -37,11 +37,19 @@ The `/graph` route visualizes your entire digital garden as an interactive netwo
 - **Edges**: Represent wiki-links connecting them.
 - **Interaction**: Click a node to navigate to that page.
 
+### 5. Flows (`/flows`)
+Flows are a stream-style collection of daily notes, micro-blogging, or imported chat logs. They are ideal for quick thoughts that don't necessarily warrant a full blog post.
+
+- **Location:** `content/flows/YYYY/MM/DD.mdx`
+- **Navigation:** Grouped by date in a timeline view.
+- **Importing:** Use `bun run new-flow-from-chat` to bring in external conversations.
+
 ## How to Use
 
-1. **Create a Note**: Run `bun new "My Concept" --note` (or manually create `content/notes/my-concept.mdx`).
-2. **Link to it**: In a blog post or another note, type `[[my-concept]]`.
-3. **Explore**: Visit `/notes` to see your collection, or `/graph` to see the connections.
+1. **Create a Note**: Run `bun run new-note "My Concept"` (or `bun run new "My Concept" --note`).
+2. **Create a Flow**: Run `bun run new-flow`.
+3. **Link to it**: In a blog post, note, or flow, type `[[my-concept]]` or `[[2026-02-27]]`.
+4. **Explore**: Visit `/notes` or `/flows` to see your collection, or `/graph` to see the connections.
 
 ## Configuration
 

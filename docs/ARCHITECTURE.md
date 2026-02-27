@@ -4,7 +4,7 @@ Amytis is a static site generator built with **Next.js 16 (App Router)**, design
 
 ## Core Stack
 
-- **Framework:** Next.js 16.1.1 (App Router) with React 19
+- **Framework:** Next.js 16.1.6 (App Router) with React 19
 - **Runtime:** Bun
 - **Styling:** Tailwind CSS v4 with CSS variables for theming
 - **Content:** Local `.md`/`.mdx` files parsed at build time

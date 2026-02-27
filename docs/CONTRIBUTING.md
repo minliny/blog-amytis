@@ -60,11 +60,12 @@ Books are manually structured in `content/books/`.
 Notes live in `content/notes/`.
 
 ```bash
-# Create a new note
+# Create a new note using the dedicated script
+bun run new-note "Zettelkasten Method"
+
+# Or using the general new script
 bun run new "Zettelkasten Method" --note
 ```
-
-Or manually create `content/notes/zettelkasten-method.mdx`.
 
 ### Importing Content
 
@@ -74,6 +75,20 @@ bun run new-from-pdf doc.pdf --title "My Doc"
 
 # Image folder to post
 bun run new-from-images ./photos --title "Gallery"
+
+# Chat logs to flows
+bun run new-flow-from-chat
+```
+
+### Maintenance Tools
+
+```bash
+# Sync book chapters with files in the folder
+bun run sync-book
+
+# Bulk draft/publish a series
+bun run series-draft "my-series"
+bun run series-draft "my-series" --undraft
 ```
 
 ## Running Tests
