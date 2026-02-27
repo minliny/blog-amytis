@@ -57,4 +57,5 @@ next-env.d.ts
 /.claude/
 
 # raw import files (chat exports, PDFs, etc.) — not published content
-/imports/
+/imports/*
+!/imports/README.md
