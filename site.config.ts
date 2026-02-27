@@ -104,13 +104,9 @@ export const siteConfig = {
       enabled: true,
       name: { en: "Books", zh: "书籍" },
     },
-    flows: {
+    flow: {
       enabled: true,
       name: { en: "Flow", zh: "随笔" },
-    },
-    notes: {
-      enabled: true,
-      name: { en: "Notes", zh: "笔记" },
     },
   },
 
@@ -153,6 +149,13 @@ export const siteConfig = {
 
   // ── Appearance ────────────────────────────────────────────────────────────
   themeColor: 'default', // 'default' | 'blue' | 'rose' | 'amber'
+
+  // ── Browser compatibility warning ─────────────────────────────────────────
+  browserCheck: {
+    // URL shown in the outdated-browser banner. Set to '' to hide the link
+    // (useful for corporate/intranet deployments where IT manages upgrades).
+    updateUrl: 'https://browsehappy.com/',
+  },
 
   // ── Analytics ─────────────────────────────────────────────────────────────
   analytics: {

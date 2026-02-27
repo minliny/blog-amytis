@@ -23,16 +23,16 @@ interface DisplayResult {
 const CONTENT_TYPES: ContentType[] = [
   'All',
   ...(siteConfig.features?.posts?.enabled !== false ? ['Post' as ContentType] : []),
-  ...(siteConfig.features?.flows?.enabled !== false ? ['Flow' as ContentType] : []),
+  ...(siteConfig.features?.flow?.enabled !== false ? ['Flow' as ContentType] : []),
   ...(siteConfig.features?.books?.enabled !== false ? ['Book' as ContentType] : []),
-  ...(siteConfig.features?.notes?.enabled !== false ? ['Note' as ContentType] : []),
+  ...(siteConfig.features?.flow?.enabled !== false ? ['Note' as ContentType] : []),
 ];
 
 const CONTENT_TYPE_FEATURE: Record<Exclude<ContentType, 'All'>, keyof typeof siteConfig.features> = {
   Post: 'posts',
-  Flow: 'flows',
+  Flow: 'flow',
   Book: 'books',
-  Note: 'notes',
+  Note: 'flow',
 };
 const RECENT_KEY = 'amytis-recent-searches';
 const MAX_RECENT = 5;

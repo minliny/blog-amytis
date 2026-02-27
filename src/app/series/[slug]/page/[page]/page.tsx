@@ -23,6 +23,7 @@ export async function generateStaticParams() {
         }
     }
   });
+  if (params.length === 0) return [{ slug: '_', page: '2' }];
   return params;
 }
 

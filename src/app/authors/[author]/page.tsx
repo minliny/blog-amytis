@@ -12,10 +12,12 @@ import TranslatedText from '@/components/TranslatedText';
 
 export async function generateStaticParams() {
   const authors = getAllAuthors();
+  const authorNames = Object.keys(authors);
+  if (authorNames.length === 0) return [{ author: '_' }];
   const params = new Set<string>();
 
   // Generate slug-based routes and keep legacy name-based routes for compatibility.
-  for (const authorName of Object.keys(authors)) {
+  for (const authorName of authorNames) {
     params.add(getAuthorSlug(authorName));
     params.add(authorName);
   }

@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Analytics from "@/components/Analytics";
+import BrowserDetectionBanner from "@/components/BrowserDetectionBanner";
 import { siteConfig } from "../../site.config";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { LanguageProvider } from "@/components/LanguageProvider";
@@ -89,7 +90,7 @@ export default function RootLayout({
     const seriesKeys = Object.keys(allSeries).sort();
     const filteredKeys = featuredSeries && featuredSeries.length > 0
       ? seriesKeys.filter(slug => featuredSeries.includes(slug))
-      : seriesKeys.slice(0, 5);
+      : [];
     seriesList = filteredKeys.map(slug => ({
       name: getSeriesData(slug)?.title || allSeries[slug][0]?.series || slug,
       slug,
@@ -106,7 +107,7 @@ export default function RootLayout({
       ? allBooks
           .filter(book => featuredBookSlugs.includes(book.slug))
           .map(book => ({ name: book.title, slug: book.slug }))
-      : allBooks.slice(0, 5).map(book => ({ name: book.title, slug: book.slug }));
+      : [];
   }
 
   return (
@@ -128,6 +129,7 @@ export default function RootLayout({
             <div className="selection:bg-accent/20 selection:text-accent dark:selection:bg-accent/30 dark:selection:text-accent min-h-screen flex flex-col">
               <Navbar seriesList={seriesList} booksList={booksList} />
               <main id="main-content" className="pt-16 flex-grow">
+                <BrowserDetectionBanner updateUrl={siteConfig.browserCheck?.updateUrl} />
                 {children}
               </main>
               <Footer />

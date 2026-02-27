@@ -9,9 +9,9 @@ import Tag from '@/components/Tag';
 import Link from 'next/link';
 
 export function generateStaticParams() {
+  if (siteConfig.features?.flow?.enabled === false) return [{ slug: '_' }];
   const notes = getAllNotes();
-  // Return a placeholder when empty so Next.js static export doesn't error on the dynamic route
-  if (notes.length === 0) return [{ slug: '_empty' }];
+  if (notes.length === 0) return [{ slug: '_' }];
   return notes.map(note => ({ slug: note.slug }));
 }
 
@@ -35,6 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export default async function NotePage({ params }: { params: Promise<{ slug: string }> }) {
+  if (siteConfig.features?.flow?.enabled === false) notFound();
   const { slug } = await params;
   const note = getNoteBySlug(slug);
   if (!note) notFound();

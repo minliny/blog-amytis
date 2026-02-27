@@ -16,7 +16,7 @@ interface BookSidebarProps {
 
 export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, currentChapter, headings = [] }: BookSidebarProps) {
   const { t } = useLanguage();
-  const currentIndex = chapters.findIndex(ch => ch.file === currentChapter);
+  const currentIndex = chapters.findIndex(ch => ch.id === currentChapter);
   const [headingsCollapsed, setHeadingsCollapsed] = useState(false);
   const currentItemRef = useRef<HTMLLIElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
@@ -27,7 +27,7 @@ export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, curren
     const initial: Record<string, boolean> = {};
     for (const item of toc) {
       if ('part' in item) {
-        const containsCurrent = item.chapters.some(ch => ch.file === currentChapter);
+        const containsCurrent = item.chapters.some(ch => ch.id === currentChapter);
         initial[item.part] = !containsCurrent;
       }
     }
@@ -96,7 +96,7 @@ export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, curren
   // Expand part containing current chapter when it changes
   useEffect(() => {
     for (const item of toc) {
-      if ('part' in item && item.chapters.some(ch => ch.file === currentChapter)) {
+      if ('part' in item && item.chapters.some(ch => ch.id === currentChapter)) {
         setCollapsedParts(prev => ({ ...prev, [item.part]: false }));
       }
     }
@@ -156,23 +156,23 @@ export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, curren
   toc.forEach((item) => {
     if ('part' in item) {
       item.chapters.forEach(ch => {
-        chapterIndices.set(ch.file, currentGlobalIdx++);
+        chapterIndices.set(ch.id, currentGlobalIdx++);
       });
     } else {
-      chapterIndices.set(item.file, currentGlobalIdx++);
+      chapterIndices.set(item.id, currentGlobalIdx++);
     }
   });
 
   // Helper to render a chapter link + inline headings if current
-  const renderChapterItem = (ch: { title: string; file: string }) => {
-    const isCurrent = ch.file === currentChapter;
-    const idx = chapterIndices.get(ch.file) ?? 0;
+  const renderChapterItem = (ch: { title: string; id: string }) => {
+    const isCurrent = ch.id === currentChapter;
+    const idx = chapterIndices.get(ch.id) ?? 0;
     const isPast = idx < currentIndex;
 
     return (
-      <li key={ch.file} ref={isCurrent ? currentItemRef : undefined}>
+      <li key={ch.id} ref={isCurrent ? currentItemRef : undefined}>
         <Link
-          href={`/books/${bookSlug}/${ch.file}`}
+          href={`/books/${bookSlug}/${ch.id}`}
           className={`block py-2 px-3 rounded-lg text-sm no-underline transition-all duration-200 ${
             isCurrent
               ? 'bg-accent/10 text-accent font-semibold border-l-2 border-accent'
@@ -196,27 +196,19 @@ export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, curren
     >
       {/* Book Header */}
       <div className="mb-6 pb-4 border-b border-muted/10">
-        <Link href={`/books/${bookSlug}`} className="group block no-underline">
-          <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-accent mb-2 block">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-accent">
             {t('book')}
           </span>
-          <h3 className="font-serif font-bold text-heading text-lg leading-snug group-hover:text-accent transition-colors">
-            {bookTitle}
-          </h3>
-        </Link>
-
-        {/* Progress */}
-        <div className="mt-3 flex items-center gap-3">
-          <div className="flex-1 h-1 bg-muted/10 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-accent/60 rounded-full transition-all duration-500"
-              style={{ width: `${((currentIndex + 1) / chapters.length) * 100}%` }}
-            />
-          </div>
           <span className="text-xs font-mono text-muted whitespace-nowrap">
             {currentIndex + 1}/{chapters.length}
           </span>
         </div>
+        <Link href={`/books/${bookSlug}`} className="group block no-underline">
+          <h3 className="font-serif font-bold text-heading text-lg leading-snug group-hover:text-accent transition-colors">
+            {bookTitle}
+          </h3>
+        </Link>
       </div>
 
       {/* TOC */}

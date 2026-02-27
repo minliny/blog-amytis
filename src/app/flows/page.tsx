@@ -1,6 +1,7 @@
 import { getAllFlows, getFlowTags } from '@/lib/markdown';
 import { siteConfig } from '../../../site.config';
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { t, tWith, resolveLocale } from '@/lib/i18n';
 import FlowContent from '@/components/FlowContent';
 import FlowHubTabs from '@/components/FlowHubTabs';
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default function FlowsPage() {
+  if (siteConfig.features?.flow?.enabled === false) notFound();
   const allFlows = getAllFlows();
   const totalPages = Math.ceil(allFlows.length / PAGE_SIZE);
   const flows = allFlows.slice(0, PAGE_SIZE);

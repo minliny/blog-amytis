@@ -61,13 +61,13 @@ export default function BookLayout({ book, chapter }: BookLayoutProps) {
           </header>
 
           {/* Content */}
-          <MarkdownRenderer content={chapter.content} latex={chapter.latex} slug={`books/${book.slug}`} />
+          <MarkdownRenderer content={chapter.content} latex={chapter.latex} slug={chapter.isFolder ? `books/${book.slug}/${chapter.slug}` : `books/${book.slug}`} />
 
           {/* Prev/Next navigation */}
           <nav className="mt-16 pt-8 border-t border-muted/10 flex gap-4">
             {chapter.prevChapter ? (
               <Link
-                href={`/books/${book.slug}/${chapter.prevChapter.file}`}
+                href={`/books/${book.slug}/${chapter.prevChapter.id}`}
                 className="flex-1 group flex items-center gap-3 py-4 px-5 rounded-xl bg-muted/5 hover:bg-muted/10 no-underline transition-colors"
               >
                 <svg className="w-5 h-5 flex-shrink-0 text-muted group-hover:text-accent transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -85,7 +85,7 @@ export default function BookLayout({ book, chapter }: BookLayoutProps) {
             )}
             {chapter.nextChapter ? (
               <Link
-                href={`/books/${book.slug}/${chapter.nextChapter.file}`}
+                href={`/books/${book.slug}/${chapter.nextChapter.id}`}
                 className="flex-1 group flex items-center justify-end gap-3 py-4 px-5 rounded-xl bg-muted/5 hover:bg-muted/10 no-underline transition-colors text-right"
               >
                 <div className="min-w-0">

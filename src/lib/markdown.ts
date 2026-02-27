@@ -754,15 +754,15 @@ export function getSeriesData(slug: string): PostData | null {
 
 export interface BookChapterEntry {
   title: string;
-  file: string;
+  id: string;
   part?: string;
 }
 
 export interface BookTocPart {
   part: string;
-  chapters: { title: string; file: string }[];
+  chapters: { title: string; id: string }[];
 }
-export type BookTocItem = BookTocPart | { title: string; file: string };
+export type BookTocItem = BookTocPart | { title: string; id: string };
 
 export interface BookData {
   title: string;
@@ -787,13 +787,14 @@ export interface BookChapterData {
   excerpt?: string;
   latex: boolean;
   readingTime: string;
-  prevChapter: { title: string; file: string } | null;
-  nextChapter: { title: string; file: string } | null;
+  isFolder: boolean;
+  prevChapter: { title: string; id: string } | null;
+  nextChapter: { title: string; id: string } | null;
 }
 
 const BookChapterRefSchema = z.object({
   title: z.string(),
-  file: z.string(),
+  id: z.string(),
 });
 
 const BookTocItemSchema: z.ZodType<BookTocItem> = z.union([
@@ -827,10 +828,10 @@ function flattenBookChapters(toc: BookTocItem[]): BookChapterEntry[] {
   for (const item of toc) {
     if ('part' in item) {
       for (const ch of item.chapters) {
-        result.push({ title: ch.title, file: ch.file, part: item.part });
+        result.push({ title: ch.title, id: ch.id, part: item.part });
       }
     } else {
-      result.push({ title: item.title, file: item.file });
+      result.push({ title: item.title, id: item.id });
     }
   }
   return result;
@@ -861,10 +862,12 @@ export function getBookData(slug: string): BookData | null {
   // Warn about missing chapter files
   const chapters = flattenBookChapters(data.chapters);
   for (const ch of chapters) {
-    const chMdx = path.join(bookDir, `${ch.file}.mdx`);
-    const chMd = path.join(bookDir, `${ch.file}.md`);
-    if (!fs.existsSync(chMdx) && !fs.existsSync(chMd)) {
-      console.warn(`Book "${slug}": chapter file "${ch.file}" not found`);
+    const chMdx = path.join(bookDir, `${ch.id}.mdx`);
+    const chMd = path.join(bookDir, `${ch.id}.md`);
+    const chFolderMdx = path.join(bookDir, ch.id, 'index.mdx');
+    const chFolderMd = path.join(bookDir, ch.id, 'index.md');
+    if (!fs.existsSync(chMdx) && !fs.existsSync(chMd) && !fs.existsSync(chFolderMdx) && !fs.existsSync(chFolderMd)) {
+      console.warn(`Book "${slug}": chapter "${ch.id}" not found`);
     }
   }
 
@@ -901,9 +904,14 @@ export function getBookChapter(bookSlug: string, chapterSlug: string): BookChapt
   const bookDir = path.join(booksDirectory, bookSlug);
   const chMdx = path.join(bookDir, `${chapterSlug}.mdx`);
   const chMd = path.join(bookDir, `${chapterSlug}.md`);
+  const chFolderMdx = path.join(bookDir, chapterSlug, 'index.mdx');
+  const chFolderMd = path.join(bookDir, chapterSlug, 'index.md');
   let fullPath = '';
+  let isFolder = false;
   if (fs.existsSync(chMdx)) fullPath = chMdx;
   else if (fs.existsSync(chMd)) fullPath = chMd;
+  else if (fs.existsSync(chFolderMdx)) { fullPath = chFolderMdx; isFolder = true; }
+  else if (fs.existsSync(chFolderMd)) { fullPath = chFolderMd; isFolder = true; }
   else return null;
 
   const fileContents = fs.readFileSync(fullPath, 'utf8');
@@ -926,7 +934,7 @@ export function getBookChapter(bookSlug: string, chapterSlug: string): BookChapt
   const excerpt = data.excerpt || generateExcerpt(contentWithoutH1);
 
   // Find prev/next
-  const chapterIndex = book.chapters.findIndex(ch => ch.file === chapterSlug);
+  const chapterIndex = book.chapters.findIndex(ch => ch.id === chapterSlug);
   const prevChapter = chapterIndex > 0 ? book.chapters[chapterIndex - 1] : null;
   const nextChapter = chapterIndex < book.chapters.length - 1 ? book.chapters[chapterIndex + 1] : null;
 
@@ -939,8 +947,9 @@ export function getBookChapter(bookSlug: string, chapterSlug: string): BookChapt
     excerpt,
     latex: data.latex,
     readingTime,
-    prevChapter: prevChapter ? { title: prevChapter.title, file: prevChapter.file } : null,
-    nextChapter: nextChapter ? { title: nextChapter.title, file: nextChapter.file } : null,
+    isFolder,
+    prevChapter: prevChapter ? { title: prevChapter.title, id: prevChapter.id } : null,
+    nextChapter: nextChapter ? { title: nextChapter.title, id: nextChapter.id } : null,
   };
 }
 

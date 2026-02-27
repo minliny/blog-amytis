@@ -9,9 +9,9 @@ import TagContentTabs from '@/components/TagContentTabs';
 
 export async function generateStaticParams() {
   const tags = getAllTags();
-  return Object.keys(tags).map((tag) => ({
-    tag,
-  }));
+  const tagKeys = Object.keys(tags);
+  if (tagKeys.length === 0) return [{ tag: '_' }];
+  return tagKeys.map((tag) => ({ tag }));
 }
 
 export const dynamicParams = false;

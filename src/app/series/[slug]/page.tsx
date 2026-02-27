@@ -12,9 +12,9 @@ const PAGE_SIZE = siteConfig.pagination.series;
 
 export async function generateStaticParams() {
   const allSeries = getAllSeries();
-  return Object.keys(allSeries).map((slug) => ({
-    slug,
-  }));
+  const slugs = Object.keys(allSeries);
+  if (slugs.length === 0) return [{ slug: '_' }];
+  return slugs.map((slug) => ({ slug }));
 }
 
 export const dynamicParams = false;

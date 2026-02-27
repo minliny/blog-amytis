@@ -42,6 +42,10 @@ next-env.d.ts
 
 # copied assets
 /public/posts/
+/public/books/
+/public/series/
+/public/flows/
+/public/notes/
 
 # pagefind index (generated after build)
 /public/pagefind/
@@ -55,3 +59,7 @@ next-env.d.ts
 
 # claude
 /.claude/
+
+# raw import files (chat exports, PDFs, etc.) — not published content
+/imports/*
+!/imports/README.md

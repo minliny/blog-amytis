@@ -3,6 +3,7 @@ import PostList from '@/components/PostList';
 import Pagination from '@/components/Pagination';
 import { siteConfig } from '../../../../../site.config';
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { t, resolveLocale } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
 
@@ -13,7 +14,7 @@ export function generateStaticParams() {
   const totalPages = Math.ceil(allPosts.length / PAGE_SIZE);
 
   // Generate params for page 2 to totalPages (page 1 is handled by /posts/page.tsx)
-  if (totalPages <= 1) return [];
+  if (totalPages <= 1) return [{ page: '2' }];
 
   return Array.from({ length: totalPages - 1 }, (_, i) => ({
     page: (i + 2).toString(),
@@ -34,6 +35,8 @@ export default async function PostsPage({ params }: { params: Promise<{ page: st
   const page = parseInt(pageStr);
   const allPosts = getAllPosts();
   const totalPages = Math.ceil(allPosts.length / PAGE_SIZE);
+
+  if (isNaN(page) || page < 2 || page > totalPages) notFound();
 
   const start = (page - 1) * PAGE_SIZE;
   const end = start + PAGE_SIZE;

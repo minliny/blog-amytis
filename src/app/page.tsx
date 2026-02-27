@@ -52,7 +52,7 @@ export default function Home() {
   // Load data only for sections that are both enabled on homepage and globally
   const allSeries = has('featured-series') && features?.series?.enabled !== false ? getFeaturedSeries() : {};
   const featuredBooks = has('featured-books') && features?.books?.enabled !== false ? getFeaturedBooks() : [];
-  const recentFlows = has('recent-flows') && features?.flows?.enabled !== false
+  const recentFlows = has('recent-flows') && features?.flow?.enabled !== false
     ? getRecentFlows(recentFlowsMax)
     : [];
   const needsPosts = has('featured-posts') || has('latest-posts');
@@ -87,11 +87,11 @@ export default function Home() {
         coverImage: b.coverImage,
         authors: b.authors,
         chapterCount: b.chapters.length,
-        firstChapter: b.chapters[0]?.file,
+        firstChapter: b.chapters[0]?.id,
       }))
     : [];
 
-  const recentNoteItems: RecentNoteItem[] = has('recent-flows') && features?.flows?.enabled !== false
+  const recentNoteItems: RecentNoteItem[] = has('recent-flows') && features?.flow?.enabled !== false
     ? recentFlows.map(f => ({
         slug: f.slug,
         date: f.date,
@@ -147,7 +147,7 @@ export default function Home() {
         if (features?.posts?.enabled === false) return null;
         return <LatestWritingSection key="latest-posts" posts={posts} totalCount={allPosts.length} />;
       case 'recent-flows':
-        if (features?.flows?.enabled === false) return null;
+        if (features?.flow?.enabled === false) return null;
         return <RecentNotesSection key="recent-flows" notes={recentNoteItems} />;
       default:
         return null;

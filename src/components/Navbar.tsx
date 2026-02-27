@@ -25,10 +25,11 @@ interface NavbarProps {
 // Map from nav URL to feature key
 const FEATURE_URLS: Partial<Record<string, keyof typeof siteConfig.features>> = {
   '/posts': 'posts',
-  '/flows': 'flows',
+  '/flows': 'flow',
+  '/notes': 'flow',
+  '/graph': 'flow',
   '/series': 'series',
   '/books': 'books',
-  '/notes': 'notes',
 };
 
 export default function Navbar({ seriesList = [], booksList = [] }: NavbarProps) {

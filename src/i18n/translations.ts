@@ -127,6 +127,9 @@ export const translations = {
     all_notes: "All Notes",
     no_notes: "No notes yet.",
     more: "More",
+    browser_outdated: "Your browser is outdated and may not display this site correctly.",
+    browser_update: "Update your browser",
+    browser_dismiss: "Dismiss",
   },
   zh: {
     home: "首页",
@@ -256,6 +259,9 @@ export const translations = {
     all_notes: "全部笔记",
     no_notes: "暂无笔记。",
     more: "更多",
+    browser_outdated: "您的浏览器版本过旧，可能无法正常显示本站内容。",
+    browser_update: "更新浏览器",
+    browser_dismiss: "关闭",
   },
 };
 

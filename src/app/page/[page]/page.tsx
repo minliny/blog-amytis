@@ -15,6 +15,7 @@ export async function generateStaticParams() {
   for (let i = 2; i <= totalPages; i++) {
     params.push({ page: i.toString() });
   }
+  if (params.length === 0) return [{ page: '2' }];
   return params;
 }
 

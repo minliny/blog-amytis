@@ -30,6 +30,7 @@ function resolvePostFromParam(rawSlug: string) {
  */
 export async function generateStaticParams() {
   const posts = getAllPosts();
+  if (posts.length === 0) return [{ slug: '_' }];
   return posts.map((post) => ({ slug: post.slug }));
 }
 
