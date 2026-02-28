@@ -47,10 +47,10 @@ export default function Hero({ tagline, title, subtitle, postCount, seriesCount,
   const resolvedSubtitle = resolveLocaleValue(subtitle, language);
 
   const chips = [
+    flowCount   ? { href: '#recent-flows',    count: flowCount,   label: 'flows'  } : null,
     postCount   ? { href: '#featured-posts',  count: postCount,   label: 'posts'  } : null,
     seriesCount ? { href: '#featured-series', count: seriesCount, label: 'series' } : null,
     bookCount   ? { href: '#featured-books',  count: bookCount,   label: 'books'  } : null,
-    flowCount   ? { href: '#recent-flows',    count: flowCount,   label: 'flows'  } : null,
   ].filter((c): c is NavChipProps => c !== null);
 
   return (
