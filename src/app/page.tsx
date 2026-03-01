@@ -1,4 +1,5 @@
-import { getAllPosts, getFeaturedSeries, getSeriesData, getFeaturedPosts, getFeaturedBooks, getRecentFlows } from '@/lib/markdown';
+import type { ReactNode } from 'react';
+import { getAllPosts, getAllFlows, getFeaturedSeries, getSeriesData, getFeaturedPosts, getFeaturedBooks, getRecentFlows } from '@/lib/markdown';
 import { siteConfig } from '../../site.config';
 import Hero from '@/components/Hero';
 import CuratedSeriesSection, { SeriesItem } from '@/components/CuratedSeriesSection';
@@ -103,6 +104,7 @@ export default function Home() {
     ? featuredPosts.map(p => ({
         slug: p.slug,
         title: p.title,
+        subtitle: p.subtitle,
         excerpt: p.excerpt,
         date: p.date,
         category: p.category,
@@ -110,6 +112,12 @@ export default function Home() {
         coverImage: p.coverImage,
       }))
     : [];
+
+  // Stats for hero navigation chips
+  const heroPostCount = allPosts.length;
+  const heroSeriesCount = Object.keys(allSeries).length;
+  const heroBookCount = featuredBooks.length;
+  const heroFlowCount = has('hero') && features?.flow?.enabled !== false ? getAllFlows().length : 0;
 
   const renderSection = (section: HomepageSection) => {
     switch (section.id) {
@@ -130,7 +138,6 @@ export default function Home() {
             key="featured-books"
             books={bookItems}
             maxItems={section.maxItems ?? 4}
-            scrollThreshold={section.scrollThreshold ?? 2}
           />
         );
       case 'featured-posts':
@@ -140,7 +147,6 @@ export default function Home() {
             key="featured-posts"
             allFeatured={featuredItems}
             maxItems={section.maxItems ?? 4}
-            scrollThreshold={section.scrollThreshold ?? 1}
           />
         );
       case 'latest-posts':
@@ -154,6 +160,54 @@ export default function Home() {
     }
   };
 
+  // Build content sections, pairing latest-posts + recent-flows into a two-column layout
+  const sectionsForContent = sections.filter(s => s.id !== 'hero');
+  const latestIdx = sectionsForContent.findIndex(s => s.id === 'latest-posts');
+  const flowsIdx = sectionsForContent.findIndex(s => s.id === 'recent-flows');
+  const pairLatestFlows = latestIdx >= 0 && flowsIdx >= 0;
+
+  // Show a divider after the two-column section when series follows it
+  const divideBeforeSeries = pairLatestFlows
+    && has('featured-series')
+    && features?.series?.enabled !== false
+    && seriesItems.length > 0;
+
+  const renderList: ReactNode[] = [];
+  const skippedIds = new Set<string>();
+
+  for (const section of sectionsForContent) {
+    if (skippedIds.has(section.id)) continue;
+
+    if (pairLatestFlows && (section.id === 'latest-posts' || section.id === 'recent-flows')) {
+      skippedIds.add(section.id === 'latest-posts' ? 'recent-flows' : 'latest-posts');
+      const showLatest = features?.posts?.enabled !== false;
+      const showFlows = features?.flow?.enabled !== false && recentNoteItems.length > 0;
+      if (showLatest || showFlows) {
+        renderList.push(
+          <div key="latest-flows-combined" className={`grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 ${divideBeforeSeries ? 'mb-16' : 'mb-24'}`}>
+            {showLatest && (
+              <div className="lg:col-span-7">
+                <LatestWritingSection posts={posts} totalCount={allPosts.length} />
+              </div>
+            )}
+            {showFlows && (
+              <div className="lg:col-span-5">
+                <RecentNotesSection notes={recentNoteItems} />
+              </div>
+            )}
+          </div>
+        );
+        if (divideBeforeSeries) {
+          renderList.push(
+            <div key="series-divider" className="border-t border-muted/10 mb-16" />
+          );
+        }
+      }
+    } else {
+      renderList.push(renderSection(section));
+    }
+  }
+
   return (
     <div>
       {has('hero') && (
@@ -161,11 +215,21 @@ export default function Home() {
           tagline={siteConfig.hero.tagline}
           title={siteConfig.hero.title}
           subtitle={siteConfig.hero.subtitle}
+          postCount={heroPostCount}
+          seriesCount={heroSeriesCount}
+          bookCount={heroBookCount}
+          flowCount={heroFlowCount}
+          featureNames={{
+            flow:   features?.flow?.name,
+            posts:  features?.posts?.name,
+            series: features?.series?.name,
+            books:  features?.books?.name,
+          }}
         />
       )}
 
-      <div className="layout-main pt-0 md:pt-0">
-        {sections.filter(s => s.id !== 'hero').map(renderSection)}
+      <div className="layout-main pt-0 md:pt-0 [&>*:last-child]:mb-0">
+        {renderList}
       </div>
     </div>
   );

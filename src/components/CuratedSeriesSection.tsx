@@ -38,8 +38,8 @@ export default function CuratedSeriesSection({ allSeries, maxItems, scrollThresh
   if (allSeries.length === 0) return null;
 
   return (
-    <section className="mb-24">
-      <div className="flex items-center justify-between mb-12">
+    <section id="featured-series" className="mb-24">
+      <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-serif font-bold text-heading">{t('curated_series')}</h2>
         <div className="flex items-center gap-4">
           {allSeries.length > maxItems && (
@@ -73,7 +73,7 @@ export default function CuratedSeriesSection({ allSeries, maxItems, scrollThresh
                   : 'flex-1'
               }`}
             >
-              <Link href={series.url} className="relative h-56 w-full overflow-hidden bg-muted/10 block focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-inset">
+              <Link href={series.url} className="relative h-44 w-full overflow-hidden bg-muted/10 block focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-inset">
                 <CoverImage
                   src={series.coverImage}
                   title={series.title}
@@ -82,7 +82,7 @@ export default function CuratedSeriesSection({ allSeries, maxItems, scrollThresh
                 />
                 <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
               </Link>
-              <div className="p-8 flex flex-col flex-1 relative z-10">
+              <div className="p-6 flex flex-col flex-1 relative z-10">
                 <div className="mb-4">
                   <span className="badge-accent">
                     {series.postCount} {t('parts')}

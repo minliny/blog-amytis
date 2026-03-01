@@ -71,9 +71,15 @@ export default function PostLayout({ post, relatedPosts, seriesPosts, seriesTitl
               <span className="font-mono">{post.readingTime}</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-heading leading-tight mb-6">
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-heading leading-tight mb-4">
               {post.title}
             </h1>
+
+            {post.subtitle && (
+              <p className="text-xl md:text-2xl font-serif italic text-muted leading-snug mb-6">
+                {post.subtitle}
+              </p>
+            )}
 
             <div className="flex items-center gap-2 mb-8 text-sm font-serif italic text-muted">
               <span>{t('written_by')}</span>

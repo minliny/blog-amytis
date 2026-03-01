@@ -6,12 +6,14 @@ interface PostListProps {
   posts: PostData[];
   showExcerpt?: boolean;
   showTags?: boolean;
+  excerptLines?: 1 | 2;
 }
 
 export default function PostList({
   posts,
   showExcerpt = true,
   showTags = true,
+  excerptLines = 2,
 }: PostListProps) {
   if (posts.length === 0) {
     return (
@@ -49,18 +51,18 @@ export default function PostList({
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 p-5 sm:p-6 flex flex-col">
+                <div className="flex-1 p-5 sm:p-6 flex flex-col overflow-hidden">
                   {/* Meta info */}
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-mono text-muted mb-3">
-                    <span>{post.date}</span>
-                    <span className="hidden sm:inline">•</span>
-                    <span className="text-accent/80">{post.readingTime}</span>
                     {post.category && (
                       <>
+                        <span className="text-accent uppercase tracking-wider">{post.category}</span>
                         <span className="hidden sm:inline">•</span>
-                        <span className="uppercase tracking-wider">{post.category}</span>
                       </>
                     )}
+                    <span>{post.readingTime}</span>
+                    <span className="hidden sm:inline">•</span>
+                    <span>{post.date}</span>
                     {post.draft && (
                       <span className="hidden sm:inline text-[10px] font-bold text-red-500 bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded tracking-wider">
                         DRAFT
@@ -74,9 +76,9 @@ export default function PostList({
                   </h3>
 
                   {/* Excerpt */}
-                  {showExcerpt && post.excerpt && (
-                    <p className="text-sm text-muted leading-relaxed line-clamp-2 mb-4">
-                      {post.excerpt}
+                  {showExcerpt && (post.subtitle || post.excerpt) && (
+                    <p className={`text-sm text-muted leading-relaxed ${excerptLines === 1 ? 'line-clamp-1' : 'line-clamp-2 mb-4'}`}>
+                      {post.subtitle || post.excerpt}
                     </p>
                   )}
 

@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import HorizontalScroll from './HorizontalScroll';
 import CoverImage from './CoverImage';
 import { useLanguage } from './LanguageProvider';
 import { shuffle } from '@/lib/shuffle';
@@ -10,6 +9,7 @@ import { shuffle } from '@/lib/shuffle';
 export interface FeaturedPost {
   slug: string;
   title: string;
+  subtitle?: string;
   excerpt: string;
   date: string;
   category: string;
@@ -20,10 +20,9 @@ export interface FeaturedPost {
 interface FeaturedStoriesSectionProps {
   allFeatured: FeaturedPost[];
   maxItems: number;
-  scrollThreshold: number;
 }
 
-export default function FeaturedStoriesSection({ allFeatured, maxItems, scrollThreshold }: FeaturedStoriesSectionProps) {
+export default function FeaturedStoriesSection({ allFeatured, maxItems }: FeaturedStoriesSectionProps) {
   const { t } = useLanguage();
   const [displayed, setDisplayed] = useState(() => allFeatured.slice(0, maxItems));
 
@@ -35,11 +34,13 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems, scrollTh
     setDisplayed(shuffle(allFeatured).slice(0, maxItems));
   }, [allFeatured, maxItems]);
 
-  if (allFeatured.length === 0) return null;
+  if (displayed.length === 0) return null;
+
+  const [hero, ...secondary] = displayed;
 
   return (
-    <section className="mb-24">
-      <div className="flex items-center justify-between mb-12">
+    <section id="featured-posts" className="mb-24">
+      <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-serif font-bold text-heading">{t('featured_articles')}</h2>
         {allFeatured.length > maxItems && (
           <button
@@ -54,53 +55,83 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems, scrollTh
           </button>
         )}
       </div>
-      <HorizontalScroll
-        itemCount={displayed.length}
-        scrollThreshold={scrollThreshold}
-      >
-        <div className={`flex gap-8 ${displayed.length > scrollThreshold ? 'pb-4' : 'flex-col'}`}>
-          {displayed.map(post => (
-            <div
-              key={post.slug}
-              className={`group snap-start ${
-                displayed.length > scrollThreshold
-                  ? 'w-[90vw] md:w-[70vw] lg:w-[60vw] flex-shrink-0'
-                  : 'w-full'
-              }`}
-            >
-              <div className={`grid grid-cols-1 ${displayed.length > scrollThreshold ? 'md:grid-cols-1 lg:grid-cols-12' : 'md:grid-cols-12'} gap-8 items-center`}>
-                <Link href={`/posts/${post.slug}`} className={`${displayed.length > scrollThreshold ? 'lg:col-span-7' : 'md:col-span-7'} relative aspect-[16/9] overflow-hidden rounded-2xl bg-muted/10 block focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2 focus:ring-offset-background`}>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+        {/* Hero card — full image with obi (belly band) text overlay */}
+        <div className={secondary.length > 0 ? 'lg:col-span-7' : 'lg:col-span-12'}>
+          <Link href={`/posts/${hero.slug}`} className={`group block no-underline${secondary.length > 0 ? ' h-full' : ''}`}>
+            <div className={`relative overflow-hidden rounded-2xl bg-muted/10 ${secondary.length > 0 ? 'aspect-[16/9] lg:aspect-auto lg:h-full' : 'aspect-[16/9]'}`}>
+              <CoverImage
+                src={hero.coverImage}
+                title={hero.title}
+                slug={hero.slug}
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
+              {/* Obi text band */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                <div className="flex items-center gap-2 text-xs font-mono text-white/60 mb-3">
+                  <span className="text-accent uppercase tracking-wider">{hero.category}</span>
+                  <span>·</span>
+                  <span>{hero.readingTime}</span>
+                  <span>·</span>
+                  <span>{hero.date}</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-serif font-bold text-white mb-3 leading-snug group-hover:text-accent/90 transition-colors line-clamp-2">
+                  {hero.title}
+                </h3>
+                {(hero.subtitle || hero.excerpt) && (
+                  <p className="text-white/65 text-sm leading-relaxed line-clamp-1">
+                    {hero.subtitle || hero.excerpt}
+                  </p>
+                )}
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* Secondary cards — box style with flush right image */}
+        {secondary.length > 0 && (
+          <div className="lg:col-span-5 flex flex-col gap-4">
+            {secondary.map(post => (
+              <Link
+                key={post.slug}
+                href={`/posts/${post.slug}`}
+                className="group flex no-underline rounded-2xl border border-muted/20 bg-muted/5 overflow-hidden hover:border-accent/30 hover:bg-muted/10 hover:shadow-lg hover:shadow-accent/5 transition-all duration-300 h-32"
+              >
+                {/* Text content */}
+                <div className="flex-1 p-4 flex flex-col min-w-0">
+                  <div className="flex items-center gap-2 text-xs font-mono text-muted mb-2">
+                    <span className="text-accent uppercase tracking-wider truncate max-w-[5rem]">{post.category}</span>
+                    <span className="shrink-0">·</span>
+                    <span className="shrink-0">{post.readingTime}</span>
+                    <span className="shrink-0">·</span>
+                    <span className="shrink-0">{post.date}</span>
+                  </div>
+                  <h4 className="font-serif font-bold text-heading group-hover:text-accent transition-colors line-clamp-2 text-base leading-snug">
+                    {post.title}
+                  </h4>
+                  {(post.subtitle || post.excerpt) && (
+                    <p className="text-xs text-muted leading-relaxed line-clamp-1 mt-1">
+                      {post.subtitle || post.excerpt}
+                    </p>
+                  )}
+                </div>
+                {/* Cover image — flush to right edge, full card height */}
+                <div className="relative w-32 flex-shrink-0 overflow-hidden bg-muted/10">
                   <CoverImage
                     src={post.coverImage}
                     title={post.title}
                     slug={post.slug}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
-                </Link>
-                <div className={`${displayed.length > scrollThreshold ? 'lg:col-span-5' : 'md:col-span-5'} flex flex-col justify-center`}>
-                  <div className="flex items-center gap-3 text-xs font-mono text-muted mb-6">
-                    <span className="text-accent uppercase tracking-wider">{post.category}</span>
-                    <span>•</span>
-                    <span>{post.readingTime}</span>
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-serif font-bold text-heading mb-4 leading-snug group-hover:text-accent transition-colors line-clamp-2">
-                    <Link href={`/posts/${post.slug}`} className="no-underline focus:outline-none focus:text-accent">
-                      {post.title}
-                    </Link>
-                  </h3>
-                  <p className="text-muted text-base leading-relaxed mb-6 line-clamp-2">
-                    {post.excerpt}
-                  </p>
-                  <div className="flex items-center gap-4 text-xs font-mono text-muted/80">
-                    <span>{post.date}</span>
-                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </HorizontalScroll>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }
