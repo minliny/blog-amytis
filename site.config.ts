@@ -154,6 +154,9 @@ export const siteConfig = {
       showInHeader: true,   // Show author byline below the post title
       showAuthorCard: true, // Show author bio card at the end of the post
     },
+    // Series slugs whose posts are hidden from the main posts listing.
+    // Posts remain accessible via their series page and direct URLs.
+    excludeFromListing: [] as string[],
     archive: {
       showAuthors: true,
     },

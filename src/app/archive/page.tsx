@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAllPosts, getSeriesData, PostData } from '@/lib/markdown';
+import { getListingPosts, getSeriesData, PostData } from '@/lib/markdown';
 import { siteConfig } from '../../../site.config';
 import { resolveLocale, t } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
@@ -40,7 +40,7 @@ function groupPostsByDate(posts: PostData[]): GroupedPosts {
 }
 
 export default function ArchivePage() {
-  const posts = getAllPosts();
+  const posts = getListingPosts();
   const groupedPosts = groupPostsByDate(posts);
   const showAuthors = siteConfig.posts?.archive?.showAuthors;
 

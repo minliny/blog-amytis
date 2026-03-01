@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { getAllPosts, getAllFlows, getFeaturedSeries, getSeriesData, getFeaturedPosts, getFeaturedBooks, getRecentFlows } from '@/lib/markdown';
+import { getListingPosts, getAllFlows, getFeaturedSeries, getSeriesData, getFeaturedPosts, getFeaturedBooks, getRecentFlows } from '@/lib/markdown';
 import { siteConfig } from '../../site.config';
 import Hero from '@/components/Hero';
 import CuratedSeriesSection, { SeriesItem } from '@/components/CuratedSeriesSection';
@@ -57,7 +57,7 @@ export default function Home() {
     ? getRecentFlows(recentFlowsMax)
     : [];
   const needsPosts = has('featured-posts') || has('latest-posts');
-  const allPosts = needsPosts && features?.posts?.enabled !== false ? getAllPosts() : [];
+  const allPosts = needsPosts && features?.posts?.enabled !== false ? getListingPosts() : [];
   const featuredPosts = has('featured-posts') && features?.posts?.enabled !== false ? getFeaturedPosts() : [];
 
   const posts = allPosts.slice(0, latestPostsMax);

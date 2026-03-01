@@ -1,4 +1,4 @@
-import { getAllPosts } from '@/lib/markdown';
+import { getListingPosts } from '@/lib/markdown';
 import { siteConfig } from '../../../site.config';
 import { resolveLocale } from '@/lib/i18n';
 import { getPostUrl } from '@/lib/urls';
@@ -6,7 +6,7 @@ import { getPostUrl } from '@/lib/urls';
 export const dynamic = 'force-static';
 
 export async function GET() {
-  const posts = getAllPosts();
+  const posts = getListingPosts();
   const baseUrl = siteConfig.baseUrl;
 
   const rssItemsXml = posts

@@ -1,4 +1,4 @@
-import { getAllPosts } from '@/lib/markdown';
+import { getListingPosts } from '@/lib/markdown';
 import { siteConfig } from '../../../../site.config';
 import PostCard from '@/components/PostCard';
 import Pagination from '@/components/Pagination';
@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import PageHeader from '@/components/PageHeader';
 
 export async function generateStaticParams() {
-  const allPosts = getAllPosts();
+  const allPosts = getListingPosts();
   const pageSize = siteConfig.pagination.posts;
   const totalPages = Math.ceil(allPosts.length / pageSize);
 
@@ -28,7 +28,7 @@ export default async function PaginatedPage({
 }) {
   const { page } = await params;
   const currentPage = parseInt(page, 10);
-  const allPosts = getAllPosts();
+  const allPosts = getListingPosts();
   const pageSize = siteConfig.pagination.posts;
   const totalPages = Math.ceil(allPosts.length / pageSize);
 

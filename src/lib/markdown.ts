@@ -357,6 +357,17 @@ export function getAllPosts(): PostData[] {
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
+/**
+ * Returns posts for the main listing pages, honouring posts.excludeFromListing.
+ * Use this instead of getAllPosts() on any listing/pagination page.
+ * Individual post routes and series pages still use getAllPosts() directly.
+ */
+export function getListingPosts(): PostData[] {
+  const excluded = new Set(siteConfig.posts?.excludeFromListing ?? []);
+  if (excluded.size === 0) return getAllPosts();
+  return getAllPosts().filter(p => !p.series || !excluded.has(p.series));
+}
+
 function findPostFile(name: string, targetSlug: string): PostData | null {
   // Check standard posts
   let fullPath = path.join(contentDirectory, `${name}.mdx`);
