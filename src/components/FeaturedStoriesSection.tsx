@@ -68,7 +68,7 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems }: Featur
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
               {/* Obi text band */}
               <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
                 <div className="flex items-center gap-2 text-xs font-mono text-white/60 mb-3">
@@ -103,14 +103,19 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems }: Featur
                 <div className="flex items-center gap-2 text-xs font-mono text-muted mb-2">
                   <span className="text-accent uppercase tracking-wider">{post.category}</span>
                   <span>·</span>
+                  <span>{post.readingTime}</span>
+                  <span>·</span>
                   <span>{post.date}</span>
                 </div>
-                <h4 className="font-serif font-bold text-heading group-hover:text-accent transition-colors line-clamp-2 text-base leading-snug mb-1">
+                <h4 className="font-serif font-bold text-heading group-hover:text-accent transition-colors line-clamp-2 text-base leading-snug">
                   {post.title}
                 </h4>
-                {post.excerpt && (
-                  <p className="text-sm text-muted line-clamp-1">{post.excerpt}</p>
-                )}
+                <span className="mt-2 inline-flex items-center gap-1 text-xs font-mono text-muted/50 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-200">
+                  Read
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
               </Link>
             ))}
           </div>
