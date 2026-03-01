@@ -227,7 +227,7 @@ export default function Home() {
         />
       )}
 
-      <div className="layout-main pt-0 md:pt-0">
+      <div className="layout-main pt-0 md:pt-0 [&>*:last-child]:mb-0">
         {renderList}
       </div>
     </div>
