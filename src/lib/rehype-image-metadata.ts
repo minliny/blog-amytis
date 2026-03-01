@@ -3,9 +3,11 @@ import sizeOf from 'image-size';
 import path from 'path';
 import fs from 'fs';
 import { Root, Element } from 'hast';
+import { getCdnImageUrl } from './image-utils';
 
 interface Options {
   slug?: string;
+  cdnBaseUrl?: string;
 }
 
 export default function rehypeImageMetadata(options: Options) {
@@ -42,7 +44,7 @@ export default function rehypeImageMetadata(options: Options) {
             if (dimensions) {
               node.properties.width = dimensions.width;
               node.properties.height = dimensions.height;
-              node.properties.src = publicPath;
+              node.properties.src = getCdnImageUrl(publicPath, options.cdnBaseUrl ?? '');
             }
           }
         } catch {

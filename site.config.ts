@@ -147,6 +147,15 @@ export const siteConfig = {
     recentCount: 5,
   },
 
+  // ── Images ────────────────────────────────────────────────────────────────
+  images: {
+    // CDN base URL for serving images (leave empty to serve locally)
+    // e.g., "https://cdn.example.com" or "https://your-bucket.r2.dev"
+    // When set, local image paths like /posts/slug/images/cover.jpg are rewritten
+    // to https://cdn.example.com/posts/slug/images/cover.jpg at render time.
+    cdnBaseUrl: "",
+  },
+
   // ── Appearance ────────────────────────────────────────────────────────────
   themeColor: 'default', // 'default' | 'blue' | 'rose' | 'amber'
 
