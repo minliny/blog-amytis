@@ -33,6 +33,7 @@ const PostSchema = z.object({
   sort: z.enum(['date-desc', 'date-asc', 'manual']).optional().default('date-desc'),
   posts: z.array(z.string()).optional(),
   featured: z.boolean().optional().default(false),
+  pinned: z.boolean().optional().default(false),
   draft: z.boolean().optional().default(false),
   latex: z.boolean().optional().default(false),
   toc: z.boolean().optional().default(true),
@@ -65,6 +66,7 @@ export interface PostData {
   sort?: 'date-desc' | 'date-asc' | 'manual';
   posts?: string[];
   featured?: boolean;
+  pinned?: boolean;
   draft?: boolean;
   latex?: boolean;
   toc?: boolean;
@@ -217,6 +219,7 @@ function parseMarkdownFile(fullPath: string, slug: string, dateFromFileName?: st
     sort: data.sort,
     posts: data.posts,
     featured: data.featured,
+    pinned: data.pinned,
     draft: data.draft,
     latex: data.latex,
     toc: data.toc,
