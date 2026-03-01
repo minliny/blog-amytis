@@ -166,6 +166,12 @@ export default function Home() {
   const flowsIdx = sectionsForContent.findIndex(s => s.id === 'recent-flows');
   const pairLatestFlows = latestIdx >= 0 && flowsIdx >= 0;
 
+  // Show a divider after the two-column section when series follows it
+  const divideBeforeSeries = pairLatestFlows
+    && has('featured-series')
+    && features?.series?.enabled !== false
+    && seriesItems.length > 0;
+
   const renderList: ReactNode[] = [];
   const skippedIds = new Set<string>();
 
@@ -178,7 +184,7 @@ export default function Home() {
       const showFlows = features?.flow?.enabled !== false && recentNoteItems.length > 0;
       if (showLatest || showFlows) {
         renderList.push(
-          <div key="latest-flows-combined" className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mb-24">
+          <div key="latest-flows-combined" className={`grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 ${divideBeforeSeries ? 'mb-16' : 'mb-24'}`}>
             {showLatest && (
               <div className="lg:col-span-7">
                 <LatestWritingSection posts={posts} totalCount={allPosts.length} />
@@ -191,6 +197,11 @@ export default function Home() {
             )}
           </div>
         );
+        if (divideBeforeSeries) {
+          renderList.push(
+            <div key="series-divider" className="border-t border-muted/10 mb-16" />
+          );
+        }
       }
     } else {
       renderList.push(renderSection(section));
