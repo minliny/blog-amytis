@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   title: resolveLocale(siteConfig.title),
   description: resolveLocale(siteConfig.description),
   icons: {
-    icon: "/icon.svg",
+    icon: siteConfig.logo?.favicon || "/icon.svg",
   },
   openGraph: {
     siteName: resolveLocale(siteConfig.title),

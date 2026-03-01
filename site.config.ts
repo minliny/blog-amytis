@@ -25,6 +25,13 @@ export const siteConfig = {
 
   // ── Site identity ─────────────────────────────────────────────────────────
   title: { en: "Amytis", zh: "Amytis" },
+  logo: {
+    // Path to navbar logo image served from public/ (leave empty for the default built-in icon)
+    // Accepts SVG, PNG, etc. — e.g. "/logo.svg" or "/images/my-logo.png"
+    src: "",
+    // Path to favicon served from public/ (defaults to /icon.svg)
+    favicon: "/icon.svg",
+  },
   description: { en: "Amytis — an elegant open-source framework for building your personal digital garden.", zh: "Amytis — 优雅的开源数字花园框架。" },
   baseUrl: "https://example.com", // Replace with your actual domain
   ogImage: "/og-image.png", // Default OG/social preview image — place a 1200×630 PNG at public/og-image.png
