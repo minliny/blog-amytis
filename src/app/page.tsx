@@ -104,6 +104,7 @@ export default function Home() {
     ? featuredPosts.map(p => ({
         slug: p.slug,
         title: p.title,
+        subtitle: p.subtitle,
         excerpt: p.excerpt,
         date: p.date,
         category: p.category,

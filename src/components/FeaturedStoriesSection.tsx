@@ -9,6 +9,7 @@ import { shuffle } from '@/lib/shuffle';
 export interface FeaturedPost {
   slug: string;
   title: string;
+  subtitle?: string;
   excerpt: string;
   date: string;
   category: string;
@@ -80,9 +81,9 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems }: Featur
                 <h3 className="text-2xl md:text-3xl font-serif font-bold text-white mb-3 leading-snug group-hover:text-accent/90 transition-colors line-clamp-2">
                   {hero.title}
                 </h3>
-                {hero.excerpt && (
+                {(hero.subtitle || hero.excerpt) && (
                   <p className="text-white/65 text-sm leading-relaxed line-clamp-2">
-                    {hero.excerpt}
+                    {hero.subtitle || hero.excerpt}
                   </p>
                 )}
               </div>

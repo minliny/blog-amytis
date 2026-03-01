@@ -20,6 +20,7 @@ const ExternalLinkSchema = z.object({
 const PostSchema = z.object({
   title: z.string(),
   date: z.union([z.string(), z.date()]).transform(val => new Date(val).toISOString().split('T')[0]).optional(),
+  subtitle: z.string().optional(),
   excerpt: z.string().optional(),
   category: z.string().optional().default('Uncategorized'),
   tags: z.array(z.string()).optional().default([]),
@@ -51,6 +52,7 @@ export interface ExternalLink {
 export interface PostData {
   slug: string;
   title: string;
+  subtitle?: string;
   date: string;
   excerpt: string;
   category: string;
@@ -199,6 +201,7 @@ function parseMarkdownFile(fullPath: string, slug: string, dateFromFileName?: st
   return {
     slug,
     title: data.title,
+    subtitle: data.subtitle,
     date,
     excerpt,
     category: data.category,
