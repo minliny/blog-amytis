@@ -98,20 +98,25 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems }: Featur
               <Link
                 key={post.slug}
                 href={`/posts/${post.slug}`}
-                className="group flex no-underline rounded-2xl border border-muted/20 bg-muted/5 overflow-hidden hover:border-accent/30 hover:bg-muted/10 hover:shadow-lg hover:shadow-accent/5 transition-all duration-300 h-28"
+                className="group flex no-underline rounded-2xl border border-muted/20 bg-muted/5 overflow-hidden hover:border-accent/30 hover:bg-muted/10 hover:shadow-lg hover:shadow-accent/5 transition-all duration-300 h-32"
               >
                 {/* Text content */}
                 <div className="flex-1 p-4 flex flex-col min-w-0">
                   <div className="flex items-center gap-2 text-xs font-mono text-muted mb-2">
-                    <span className="text-accent uppercase tracking-wider">{post.category}</span>
-                    <span>·</span>
-                    <span>{post.readingTime}</span>
-                    <span>·</span>
-                    <span>{post.date}</span>
+                    <span className="text-accent uppercase tracking-wider truncate max-w-[5rem]">{post.category}</span>
+                    <span className="shrink-0">·</span>
+                    <span className="shrink-0">{post.readingTime}</span>
+                    <span className="shrink-0">·</span>
+                    <span className="shrink-0">{post.date}</span>
                   </div>
                   <h4 className="font-serif font-bold text-heading group-hover:text-accent transition-colors line-clamp-2 text-base leading-snug">
                     {post.title}
                   </h4>
+                  {(post.subtitle || post.excerpt) && (
+                    <p className="text-xs text-muted leading-relaxed line-clamp-1 mt-1">
+                      {post.subtitle || post.excerpt}
+                    </p>
+                  )}
                 </div>
                 {/* Cover image — flush to right edge, full card height */}
                 <div className="relative w-32 flex-shrink-0 overflow-hidden bg-muted/10">
