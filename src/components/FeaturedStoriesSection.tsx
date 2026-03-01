@@ -59,8 +59,8 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems }: Featur
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
         {/* Hero card — full image with obi (belly band) text overlay */}
         <div className={secondary.length > 0 ? 'lg:col-span-7' : 'lg:col-span-12'}>
-          <Link href={`/posts/${hero.slug}`} className="group block no-underline">
-            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-muted/10">
+          <Link href={`/posts/${hero.slug}`} className={`group block no-underline${secondary.length > 0 ? ' h-full' : ''}`}>
+            <div className={`relative overflow-hidden rounded-2xl bg-muted/10 ${secondary.length > 0 ? 'aspect-[16/9] lg:aspect-auto lg:h-full' : 'aspect-[16/9]'}`}>
               <CoverImage
                 src={hero.coverImage}
                 title={hero.title}
@@ -93,7 +93,7 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems }: Featur
 
         {/* Secondary cards — box style with flush right image */}
         {secondary.length > 0 && (
-          <div className="lg:col-span-5 flex flex-col gap-4 lg:justify-center">
+          <div className="lg:col-span-5 flex flex-col gap-4">
             {secondary.map(post => (
               <Link
                 key={post.slug}
@@ -120,7 +120,7 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems }: Featur
                   </span>
                 </div>
                 {/* Cover image — flush to right edge, full card height */}
-                <div className="relative w-24 flex-shrink-0 overflow-hidden bg-muted/10">
+                <div className="relative w-32 flex-shrink-0 overflow-hidden bg-muted/10">
                   <CoverImage
                     src={post.coverImage}
                     title={post.title}
