@@ -5,7 +5,7 @@ import SimpleLayout from '@/layouts/SimpleLayout';
 import { Metadata } from 'next';
 import { siteConfig } from '../../../../site.config';
 import { resolveLocale } from '@/lib/i18n';
-import { getPostsBasePath } from '@/lib/urls';
+import { getPostsBasePath, getSeriesCustomPaths } from '@/lib/urls';
 
 function safeDecodeParam(param: string): string {
   try {
@@ -25,32 +25,43 @@ function resolvePostFromParam(rawSlug: string) {
   );
 }
 
-/**
- * Generates the static paths for all blog posts at build time.
- * This ensures fast page loads and SEO optimization.
- */
 export async function generateStaticParams() {
-  if (getPostsBasePath() !== 'posts') return []; // Route disabled; custom path handles this
-  const posts = getAllPosts();
-  if (posts.length === 0) return [{ slug: '_' }];
-  return posts.map((post) => ({ slug: post.slug }));
+  const params: { prefix: string; slug: string }[] = [];
+
+  // Custom posts basePath — all posts served at /[basePath]/[slug]
+  const basePath = getPostsBasePath();
+  if (basePath !== 'posts') {
+    getAllPosts().forEach(post => params.push({ prefix: basePath, slug: post.slug }));
+  }
+
+  // Series custom paths — only posts belonging to that series
+  for (const [seriesSlug, customPath] of Object.entries(getSeriesCustomPaths())) {
+    getSeriesPosts(seriesSlug).forEach(post =>
+      params.push({ prefix: customPath, slug: post.slug })
+    );
+  }
+
+  return params;
 }
 
 export const dynamicParams = false;
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ prefix: string; slug: string }>;
+}): Promise<Metadata> {
   const { slug: rawSlug } = await params;
   const post = resolvePostFromParam(rawSlug);
 
   if (!post) {
-    return {
-      title: 'Post Not Found',
-    };
+    return { title: 'Post Not Found' };
   }
 
-  const ogImage = post.coverImage && !post.coverImage.startsWith('text:') && !post.coverImage.startsWith('./')
-    ? post.coverImage
-    : siteConfig.ogImage;
+  const ogImage =
+    post.coverImage && !post.coverImage.startsWith('text:') && !post.coverImage.startsWith('./')
+      ? post.coverImage
+      : siteConfig.ogImage;
 
   return {
     title: `${post.title} | ${resolveLocale(siteConfig.title)}`,
@@ -80,20 +91,29 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function PostPage({
+export default async function PrefixPostPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ prefix: string; slug: string }>;
 }) {
-  const { slug: rawSlug } = await params;
+  const { prefix, slug: rawSlug } = await params;
   const slug = safeDecodeParam(rawSlug);
-  const post = resolvePostFromParam(rawSlug);
 
+  // Validate the prefix is a known custom path
+  const basePath = getPostsBasePath();
+  const customPaths = getSeriesCustomPaths();
+  const isValidBasePath = prefix === basePath && basePath !== 'posts';
+  const matchedSeriesSlug = Object.entries(customPaths).find(([, path]) => path === prefix)?.[0];
+
+  if (!isValidBasePath && !matchedSeriesSlug) {
+    notFound();
+  }
+
+  const post = resolvePostFromParam(rawSlug);
   if (!post) {
     notFound();
   }
 
-  // Determine layout based on frontmatter
   const layout = post.layout || 'post';
 
   if (layout === 'simple') {
@@ -113,6 +133,16 @@ export default async function PostPage({
     seriesTitle = seriesData?.title;
   }
 
-  // Default to standard post layout
-  return <PostLayout post={post} relatedPosts={relatedPosts} seriesPosts={seriesPosts} seriesTitle={seriesTitle} prevPost={prev} nextPost={next} backlinks={backlinks} slugRegistry={slugRegistry} />;
+  return (
+    <PostLayout
+      post={post}
+      relatedPosts={relatedPosts}
+      seriesPosts={seriesPosts}
+      seriesTitle={seriesTitle}
+      prevPost={prev}
+      nextPost={next}
+      backlinks={backlinks}
+      slugRegistry={slugRegistry}
+    />
+  );
 }
