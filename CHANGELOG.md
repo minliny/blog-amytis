@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2026-03-02
+
+### Added
+- **Configurable URL Topology**: Added support for `posts.basePath` and `series.customPaths` so posts and series can be served under custom prefixes.
+- **Single-Language Mode**: Added `i18n.enabled` to disable multilingual routing/UI when running a single-locale site.
+- **Homepage Content Controls**: Added pinned-post support and optional post subtitles for improved featured and latest sections.
+- **Author Profile Expansion**: Added configurable default authors plus optional author avatar/social images and header/card visibility toggles.
+- **Publishing Controls**: Added `posts.excludeFromListing` to keep selected series posts out of the main `/posts` feed.
+- **Deployment & Media**: Added one-command Linux/nginx deploy script and `images.cdnBaseUrl` support for serving images from a CDN.
+- **Branding Controls**: Added configurable logo and favicon paths in `site.config.ts`.
+
+### Changed
+- **Homepage Design System**: Refined homepage layout and card hierarchy across hero, featured content, latest writing, and series sections.
+- **Subscribe Surface**: Moved `/subscribe` to content-driven authoring so users can fully edit subscription copy in Markdown/MDX.
+- **Documentation**: Updated architecture, deployment, and configuration guides to reflect current routing and feature behavior.
+
+### Fixed
+- **Static Export Stability**: Fixed `output: "export"` edge cases by returning placeholder params for empty/disabled dynamic routes.
+- **Dynamic Routing Conflicts**: Resolved route naming and generation conflicts for custom prefixes and static params.
+- **Navigation Consistency**: Fixed mismatch between navigation post URL and configured posts base path.
+- **Book Route Safety**: Prevented invalid book chapter params by validating chapter existence before route generation.
+- **Image Handling**: Fixed markdown image path resolution across content types and ensured CDN prefixing is applied consistently.
+- **Rendering & Type Safety**: Fixed TypeScript handling for custom `rss-feed` element and addressed dev-time WebP 404 behavior.
+
 ## [1.9.0] - 2026-02-28
 
 ### Added
