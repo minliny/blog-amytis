@@ -21,6 +21,9 @@ export interface NavItem {
   children?: NavChildItem[]; // static sub-links rendered as a dropdown
 }
 
+// Defined up-front so nav and posts config stay in sync — change once here
+const postsBasePath = 'posts'; // Change to e.g. 'articles' to serve all posts at /articles/[slug]
+
 // Defined up-front so footer.connect can reference these URLs without duplication
 const social = {
   github: "https://github.com/your-username",
@@ -56,7 +59,7 @@ export const siteConfig = {
 
   // ── Navigation ────────────────────────────────────────────────────────────
   nav: [
-    { name: "Posts", url: "/posts", weight: 1 },
+    { name: "Posts", url: `/${postsBasePath}`, weight: 1 },
     { name: "Series", url: "/series", weight: 2 },
     { name: "About", url: "/about", weight: 3 },
     { name: "More", url: "", weight: 4, children: [
@@ -149,7 +152,7 @@ export const siteConfig = {
     notes: 20,
   },
   posts: {
-    basePath: 'posts', // Change to e.g. 'articles' to serve all posts at /articles/[slug]
+    basePath: postsBasePath,
     toc: true,
     showFuturePosts: false,
     includeDateInUrl: false,
