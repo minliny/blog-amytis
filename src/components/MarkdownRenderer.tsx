@@ -119,7 +119,7 @@ export default function MarkdownRenderer({ content, latex = false, slug, slugReg
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { node: _node, width: _w, height: _h, className: _cls, ...rest } = props;
       return (
-        <div className="relative w-full my-6 rounded-lg overflow-hidden" style={{ aspectRatio: '16 / 9' }}>
+        <div className="relative w-full my-6 rounded-lg overflow-hidden aspect-video">
           <iframe
             {...rest}
             className="absolute inset-0 w-full h-full border-0"

@@ -46,13 +46,16 @@ describe("Integration: Feed Utils", () => {
 
   test("maxItems = 0 returns all posts", () => {
     const originalMaxItems = siteConfig.feed.maxItems;
+    const originalIncludeFlows = siteConfig.feed.includeFlows;
     try {
       siteConfig.feed.maxItems = 0;
+      siteConfig.feed.includeFlows = false;
       const items = getFeedItems();
       const allPosts = getAllPosts();
       expect(items.length).toBe(allPosts.length);
     } finally {
       siteConfig.feed.maxItems = originalMaxItems;
+      siteConfig.feed.includeFlows = originalIncludeFlows;
     }
   });
 

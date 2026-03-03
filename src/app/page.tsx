@@ -117,8 +117,8 @@ export default function Home() {
 
   // Stats for hero navigation chips
   const heroPostCount = allPosts.length;
-  const heroSeriesCount = features?.series?.enabled !== false ? Object.keys(getAllSeries()).length : undefined;
-  const heroBookCount = features?.books?.enabled !== false ? getAllBooks().length : undefined;
+  const heroSeriesCount = has('hero') && features?.series?.enabled !== false ? Object.keys(getAllSeries()).length : undefined;
+  const heroBookCount = has('hero') && features?.books?.enabled !== false ? getAllBooks().length : undefined;
   const heroFlowCount = has('hero') && features?.flow?.enabled !== false ? getAllFlows().length : undefined;
 
   const renderSection = (section: HomepageSection) => {

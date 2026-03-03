@@ -4,8 +4,18 @@ import { getFeedItems } from '@/lib/feed-utils';
 
 export const dynamic = 'force-static';
 
+const escapeXml = (v: string) =>
+  v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+   .replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+
+const escapeCdata = (v: string) => v.replace(/]]>/g, ']]]]><![CDATA[>');
+
 export async function GET() {
-  const { content: contentMode } = siteConfig.feed;
+  const { format, content: contentMode } = siteConfig.feed;
+  if (format === 'atom') {
+    return new Response('Not Found', { status: 404 });
+  }
+
   const baseUrl = siteConfig.baseUrl.replace(/\/+$/, '');
   const items = getFeedItems();
   const useFullContent = contentMode === 'full';
@@ -14,16 +24,16 @@ export async function GET() {
   const rssItemsXml = items
     .map((item) => {
       const fullContentXml = useFullContent
-        ? `\n          <content:encoded><![CDATA[${item.content}]]></content:encoded>`
+        ? `\n          <content:encoded><![CDATA[${escapeCdata(item.content)}]]></content:encoded>`
         : '';
       return `
         <item>
-          <title><![CDATA[${item.title}]]></title>
-          <link>${item.url}</link>
-          <guid>${item.url}</guid>
+          <title><![CDATA[${escapeCdata(item.title)}]]></title>
+          <link>${escapeXml(item.url)}</link>
+          <guid>${escapeXml(item.url)}</guid>
           <pubDate>${item.date.toUTCString()}</pubDate>
-          <description><![CDATA[${item.excerpt}]]></description>${fullContentXml}
-          ${item.tags.map((tag) => `<category>${tag}</category>`).join('')}
+          <description><![CDATA[${escapeCdata(item.excerpt)}]]></description>${fullContentXml}
+          ${item.tags.map((tag) => `<category><![CDATA[${escapeCdata(tag)}]]></category>`).join('')}
         </item>`;
     })
     .join('');
@@ -31,12 +41,12 @@ export async function GET() {
   const rssXml = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"${contentNs}>
   <channel>
-    <title><![CDATA[${resolveLocale(siteConfig.title)}]]></title>
-    <link>${baseUrl}</link>
-    <description><![CDATA[${resolveLocale(siteConfig.description)}]]></description>
+    <title><![CDATA[${escapeCdata(resolveLocale(siteConfig.title))}]]></title>
+    <link>${escapeXml(baseUrl)}</link>
+    <description><![CDATA[${escapeCdata(resolveLocale(siteConfig.description))}]]></description>
     <language>${siteConfig.i18n.defaultLocale}</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${baseUrl}/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="${escapeXml(baseUrl)}/feed.xml" rel="self" type="application/rss+xml" />
     ${rssItemsXml}
   </channel>
 </rss>`;

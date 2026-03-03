@@ -98,6 +98,10 @@ function extractTarball(tarPath: string, outDir: string): void {
 // Patch helpers
 // ---------------------------------------------------------------------------
 
+function escapeTemplateLiteral(str: string): string {
+  return str.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g, "\\${");
+}
+
 export function patchSiteConfig(projectDir: string, title: string, description: string): void {
   const configPath = path.join(projectDir, "site.config.ts");
   if (!fs.existsSync(configPath)) {
@@ -120,9 +124,10 @@ export function patchSiteConfig(projectDir: string, title: string, description: 
   );
 
   // footerText — replace "Amytis" occurrences in template literals with project title
+  const safeTitle = escapeTemplateLiteral(title);
   src = src.replace(
     /footerText:\s*\{\s*en:\s*`[^`]*`,\s*zh:\s*`[^`]*`\s*\}/,
-    `footerText: { en: \`© \${new Date().getFullYear()} ${title}. All rights reserved.\`, zh: \`© \${new Date().getFullYear()} ${title}. 保留所有权利。\` }`
+    `footerText: { en: \`© \${new Date().getFullYear()} ${safeTitle}. All rights reserved.\`, zh: \`© \${new Date().getFullYear()} ${safeTitle}. 保留所有权利。\` }`
   );
 
   fs.writeFileSync(configPath, src, "utf8");

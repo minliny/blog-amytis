@@ -47,11 +47,15 @@ describe("Integration: Books", () => {
   });
 
   test("getAllBooks excludes drafts in production", () => {
-    const books = getAllBooks();
-    if (process.env.NODE_ENV === "production") {
+    const prev = process.env.NODE_ENV;
+    process.env.NODE_ENV = "production";
+    try {
+      const books = getAllBooks();
       books.forEach((book) => {
         expect(book.draft).toBe(false);
       });
+    } finally {
+      process.env.NODE_ENV = prev;
     }
   });
 });
