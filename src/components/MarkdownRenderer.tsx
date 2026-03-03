@@ -119,6 +119,7 @@ export default function MarkdownRenderer({ content, latex = false, slug, slugReg
             width={Number(width)}
             height={Number(height)}
             className="max-w-full h-auto rounded-lg my-4"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
             unoptimized={isDev || isExternal}
           />
         );
@@ -133,7 +134,7 @@ export default function MarkdownRenderer({ content, latex = false, slug, slugReg
   const allComponents = { ...components, 'rss-feed': () => <RssFeedWidget /> } as any;
 
   return (
-    <div className="prose prose-lg max-w-none text-foreground
+    <div className="prose prose-lg max-w-none overflow-x-hidden text-foreground
           prose-headings:font-serif prose-headings:text-heading 
           prose-p:text-foreground prose-p:leading-loose
           prose-strong:text-heading prose-strong:font-semibold
