@@ -98,7 +98,7 @@ function extractTarball(tarPath: string, outDir: string, stripPrefix: string): v
 // Patch helpers
 // ---------------------------------------------------------------------------
 
-function patchSiteConfig(projectDir: string, title: string, description: string): void {
+export function patchSiteConfig(projectDir: string, title: string, description: string): void {
   const configPath = path.join(projectDir, "site.config.ts");
   if (!fs.existsSync(configPath)) {
     console.warn("  Warning: site.config.ts not found, skipping patch");
@@ -128,7 +128,7 @@ function patchSiteConfig(projectDir: string, title: string, description: string)
   fs.writeFileSync(configPath, src, "utf8");
 }
 
-function patchPackageJson(projectDir: string, projectName: string): void {
+export function patchPackageJson(projectDir: string, projectName: string): void {
   const pkgPath = path.join(projectDir, "package.json");
   if (!fs.existsSync(pkgPath)) {
     console.warn("  Warning: package.json not found, skipping patch");
@@ -217,7 +217,9 @@ Happy gardening!
 `);
 }
 
-main().catch((err) => {
-  console.error("\nError:", (err as Error).message);
-  process.exit(1);
-});
+if (import.meta.main) {
+  main().catch((err) => {
+    console.error("\nError:", (err as Error).message);
+    process.exit(1);
+  });
+}
