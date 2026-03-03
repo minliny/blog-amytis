@@ -77,7 +77,7 @@ function downloadFile(url: string, dest: string): Promise<void> {
   });
 }
 
-function extractTarball(tarPath: string, outDir: string, stripPrefix: string): void {
+function extractTarball(tarPath: string, outDir: string): void {
   // Extract into a temp dir, then move the inner folder out
   const tmpDir = `${outDir}.__tmp__`;
   fs.mkdirSync(tmpDir, { recursive: true });
@@ -182,7 +182,7 @@ async function main(): Promise<void> {
 
   // 4. Extract
   console.log("Extracting...");
-  extractTarball(tarDest, targetDir, tag);
+  extractTarball(tarDest, targetDir);
   console.log(`  Scaffolded: ${targetDir}`);
 
   // 5-6. Prompt for site metadata
