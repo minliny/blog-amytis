@@ -202,7 +202,7 @@ export const siteConfig = {
 
   // ── Analytics ─────────────────────────────────────────────────────────────
   analytics: {
-    provider: 'umami', // 'umami' | 'plausible' | 'google' | null
+    providers: ['umami'] as ('umami' | 'plausible' | 'google')[], // enable one or many; [] disables analytics
     umami: {
       websiteId: process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID || '', // Your Umami Website ID
       src: process.env.NEXT_PUBLIC_UMAMI_URL || 'https://us.umami.is/script.js', // Default or self-hosted URL
