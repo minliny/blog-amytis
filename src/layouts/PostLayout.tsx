@@ -133,10 +133,6 @@ export default function PostLayout({ post, relatedPosts, seriesPosts, seriesTitl
             </div>
           )}
 
-          {post.externalLinks && post.externalLinks.length > 0 && (
-            <ExternalLinks links={post.externalLinks} />
-          )}
-
           <Backlinks backlinks={backlinks ?? []} />
 
           <ShareBar
@@ -149,9 +145,13 @@ export default function PostLayout({ post, relatedPosts, seriesPosts, seriesTitl
             <AuthorCard authors={post.authors} />
           )}
 
-          <PostNavigation prev={prevPost ?? null} next={nextPost ?? null} />
-
           <Comments slug={post.slug} postUrl={postUrl} />
+
+          {post.externalLinks && post.externalLinks.length > 0 && (
+            <ExternalLinks links={post.externalLinks} />
+          )}
+
+          <PostNavigation prev={prevPost ?? null} next={nextPost ?? null} />
 
           <RelatedPosts posts={relatedPosts || []} />
         </article>
