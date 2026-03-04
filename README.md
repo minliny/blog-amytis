@@ -6,7 +6,7 @@
 
 [**Live Demo**](https://amytis.vercel.app/)
 
-![Amytis Screenshot](public/screenshot.png)
+![Amytis Screenshot](public/images/amytis-screenshot.jpg)
 
 ## The Knowledge Ladder
 

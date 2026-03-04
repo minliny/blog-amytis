@@ -6,7 +6,7 @@
 
 [**在线演示**](https://amytis.vercel.app/)
 
-![Amytis 截图](public/screenshot.png)
+![Amytis 截图](public/images/amytis-screenshot.jpg)
 
 ## 知识阶梯
 
