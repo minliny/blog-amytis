@@ -116,8 +116,18 @@ export default async function PrefixPostPage({
 
   const layout = post.layout || 'post';
 
+  const siteUrl = siteConfig.baseUrl.replace(/\/+$/, '');
+  const jsonLd = buildPostJsonLd({
+    post,
+    postUrl: `${siteUrl}${getPostUrl(post)}`,
+    siteTitle: resolveLocale(siteConfig.title),
+    siteUrl,
+    defaultOgImage: siteConfig.ogImage,
+  });
+  const jsonLdScript = <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />;
+
   if (layout === 'simple') {
-    return <SimpleLayout post={post} />;
+    return <>{jsonLdScript}<SimpleLayout post={post} /></>;
   }
 
   const relatedPosts = getRelatedPosts(post.slug);
@@ -133,18 +143,9 @@ export default async function PrefixPostPage({
     seriesTitle = seriesData?.title;
   }
 
-  const siteUrl = siteConfig.baseUrl.replace(/\/+$/, '');
-  const jsonLd = buildPostJsonLd({
-    post,
-    postUrl: `${siteUrl}${getPostUrl(post)}`,
-    siteTitle: resolveLocale(siteConfig.title),
-    siteUrl,
-    defaultOgImage: siteConfig.ogImage,
-  });
-
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
+      {jsonLdScript}
       <PostLayout
         post={post}
         relatedPosts={relatedPosts}
