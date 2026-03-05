@@ -1,11 +1,14 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { PostData, Heading } from '@/lib/markdown';
 import { getPostUrl } from '@/lib/urls';
 import { useLanguage } from './LanguageProvider';
-import { useScrollY } from '@/hooks/useScrollY';
+import { useActiveHeading } from '@/hooks/useActiveHeading';
+import { useSidebarAutoScroll } from '@/hooks/useSidebarAutoScroll';
+import { scrollToHeading } from '@/lib/scroll-utils';
+import { padNumber } from '@/lib/format-utils';
 import ShareBar from './ShareBar';
 import { siteConfig } from '../../site.config';
 
@@ -45,59 +48,10 @@ export default function PostSidebar({ seriesSlug, seriesTitle, posts, currentSlu
   const progressIndex = hasSeries ? sortedPosts!.findIndex(p => p.slug === currentSlug) : -1;
   const currentItemRef = useRef<HTMLLIElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
-  const [activeHeadingId, setActiveHeadingId] = useState<string>('');
   const [tocCollapsed, setTocCollapsed] = useState(false);
   const [seriesCollapsed, setSeriesCollapsed] = useState(false);
-  const scrollY = useScrollY();
-
-  // Derive active heading from shared scroll position
-  useEffect(() => {
-    if (activeHeadings.length === 0) return;
-
-    const headingElements = activeHeadings
-      .map(h => document.getElementById(h.id))
-      .filter(Boolean) as HTMLElement[];
-
-    if (headingElements.length === 0) return;
-
-    const scrollPosition = scrollY + 100;
-    let current = headingElements[0];
-    for (const el of headingElements) {
-      if (el.offsetTop <= scrollPosition) {
-        current = el;
-      } else {
-        break;
-      }
-    }
-
-    const rafId = requestAnimationFrame(() => {
-      if (current) setActiveHeadingId(current.id);
-    });
-    return () => cancelAnimationFrame(rafId);
-  }, [scrollY, activeHeadings]);
-
-  const scrollToHeading = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: elementPosition - offset, behavior: 'smooth' });
-      history.pushState(null, '', `#${id}`);
-    }
-  };
-
-  // Auto-scroll sidebar to current series item
-  useEffect(() => {
-    if (currentItemRef.current && sidebarRef.current) {
-      const sidebar = sidebarRef.current;
-      const item = currentItemRef.current;
-      const itemTop = item.offsetTop;
-      const itemHeight = item.offsetHeight;
-      const sidebarHeight = sidebar.clientHeight;
-      sidebar.scrollTop = itemTop - sidebarHeight / 2 + itemHeight / 2;
-    }
-  }, [currentSlug]);
+  const activeHeadingId = useActiveHeading(activeHeadings);
+  useSidebarAutoScroll(sidebarRef, currentItemRef, currentSlug);
 
   return (
     <aside
@@ -225,7 +179,7 @@ export default function PostSidebar({ seriesSlug, seriesTitle, posts, currentSlu
                                 ? 'bg-accent/20 text-accent'
                                 : 'bg-muted/10 text-muted group-hover:bg-muted/20 group-hover:text-foreground'
                           }`}>
-                            {String(item + 1).padStart(2, '0')}
+                            {padNumber(item + 1)}
                           </div>
                           <div className="flex-1 min-w-0 pt-0.5">
                             <span className={`block text-sm leading-snug transition-colors ${

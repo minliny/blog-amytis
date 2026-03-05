@@ -1,9 +1,12 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { BookTocItem, BookChapterEntry, Heading } from '@/lib/markdown';
 import { useLanguage } from './LanguageProvider';
+import { useActiveHeading } from '@/hooks/useActiveHeading';
+import { useSidebarAutoScroll } from '@/hooks/useSidebarAutoScroll';
+import { scrollToHeading } from '@/lib/scroll-utils';
 
 interface BookSidebarProps {
   bookSlug: string;
@@ -20,7 +23,7 @@ export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, curren
   const [headingsCollapsed, setHeadingsCollapsed] = useState(false);
   const currentItemRef = useRef<HTMLLIElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
-  const [activeHeadingId, setActiveHeadingId] = useState<string>('');
+  const activeHeadingId = useActiveHeading(headings);
 
   // Track which parts are collapsed
   const [collapsedParts, setCollapsedParts] = useState<Record<string, boolean>>(() => {
@@ -38,60 +41,7 @@ export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, curren
     setCollapsedParts(prev => ({ ...prev, [part]: !prev[part] }));
   };
 
-  // Scroll tracking for page headings
-  const handleScroll = useCallback(() => {
-    if (headings.length === 0) return;
-
-    const headingElements = headings
-      .map(h => document.getElementById(h.id))
-      .filter(Boolean) as HTMLElement[];
-
-    if (headingElements.length === 0) return;
-
-    const scrollPosition = window.scrollY + 100;
-    let current = headingElements[0];
-    for (const el of headingElements) {
-      if (el.offsetTop <= scrollPosition) {
-        current = el;
-      } else {
-        break;
-      }
-    }
-
-    if (current) {
-      setActiveHeadingId(current.id);
-    }
-  }, [headings]);
-
-  useEffect(() => {
-    if (headings.length === 0) return;
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll, headings.length]);
-
-  // Smooth scroll to heading
-  const scrollToHeading = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: elementPosition - offset, behavior: 'smooth' });
-      history.pushState(null, '', `#${id}`);
-    }
-  };
-
-  useEffect(() => {
-    if (currentItemRef.current && sidebarRef.current) {
-      const sidebar = sidebarRef.current;
-      const item = currentItemRef.current;
-      const itemTop = item.offsetTop;
-      const itemHeight = item.offsetHeight;
-      const sidebarHeight = sidebar.clientHeight;
-      sidebar.scrollTop = itemTop - sidebarHeight / 2 + itemHeight / 2;
-    }
-  }, [currentChapter]);
+  useSidebarAutoScroll(sidebarRef, currentItemRef, currentChapter);
 
   // Expand part containing current chapter when it changes
   useEffect(() => {

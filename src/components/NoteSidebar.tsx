@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import { useScrollY } from '@/hooks/useScrollY';
+import { useActiveHeading } from '@/hooks/useActiveHeading';
+import { scrollToHeading } from '@/lib/scroll-utils';
 import type { BacklinkSource, Heading } from '@/lib/markdown';
 import { useLanguage } from './LanguageProvider';
 
@@ -15,34 +16,8 @@ interface NoteSidebarProps {
 
 export default function NoteSidebar({ headings, showToc, backlinks, breadcrumb }: NoteSidebarProps) {
   const { t } = useLanguage();
-  const scrollY = useScrollY();
-  const [activeHeadingId, setActiveHeadingId] = useState('');
   const [tocCollapsed, setTocCollapsed] = useState(false);
-
-  useEffect(() => {
-    if (!showToc || headings.length === 0) return;
-    const elements = headings
-      .map(h => document.getElementById(h.id))
-      .filter(Boolean) as HTMLElement[];
-    if (!elements.length) return;
-    const scrollPosition = scrollY + 100;
-    let current = elements[0];
-    for (const el of elements) {
-      if (el.offsetTop <= scrollPosition) current = el;
-      else break;
-    }
-    const rafId = requestAnimationFrame(() => { if (current) setActiveHeadingId(current.id); });
-    return () => cancelAnimationFrame(rafId);
-  }, [scrollY, headings, showToc]);
-
-  const scrollToHeading = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    const el = document.getElementById(id);
-    if (el) {
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
-      history.pushState(null, '', `#${id}`);
-    }
-  };
+  const activeHeadingId = useActiveHeading(headings, showToc);
 
   return (
     <aside className="hidden lg:block sticky top-20 self-start w-[280px] max-h-[calc(100vh-6rem)] overflow-y-auto pr-4 scrollbar-hide hover:scrollbar-thin">
