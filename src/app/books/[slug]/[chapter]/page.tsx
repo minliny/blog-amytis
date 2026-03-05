@@ -4,7 +4,8 @@ import { Metadata } from 'next';
 import { siteConfig } from '../../../../../site.config';
 import BookLayout from '@/layouts/BookLayout';
 import { resolveLocale } from '@/lib/i18n';
-import { buildBookChapterJsonLd } from '@/lib/json-ld';
+import { buildBookChapterJsonLd, serializeJsonLd } from '@/lib/json-ld';
+import { getBookUrl, getBookChapterUrl } from '@/lib/urls';
 
 export async function generateStaticParams() {
   const books = getAllBooks();
@@ -63,15 +64,15 @@ export default async function BookChapterPage({ params }: { params: Promise<{ sl
   const jsonLd = buildBookChapterJsonLd({
     chapter,
     book,
-    chapterUrl: `${siteUrl}/books/${slug}/${chapterSlug}`,
-    bookUrl: `${siteUrl}/books/${slug}`,
+    chapterUrl: `${siteUrl}${getBookChapterUrl(slug, chapterSlug)}`,
+    bookUrl: `${siteUrl}${getBookUrl(slug)}`,
     siteTitle: resolveLocale(siteConfig.title),
     siteUrl,
   });
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       <BookLayout book={book} chapter={chapter} />
     </>
   );

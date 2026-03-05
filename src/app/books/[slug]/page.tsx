@@ -6,7 +6,8 @@ import CoverImage from '@/components/CoverImage';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import Link from 'next/link';
 import { t, resolveLocale } from '@/lib/i18n';
-import { buildBookJsonLd } from '@/lib/json-ld';
+import { buildBookJsonLd, serializeJsonLd } from '@/lib/json-ld';
+import { getBookUrl } from '@/lib/urls';
 
 export async function generateStaticParams() {
   const books = getAllBooks();
@@ -62,7 +63,7 @@ export default async function BookLandingPage({ params }: { params: Promise<{ sl
   const siteUrl = siteConfig.baseUrl.replace(/\/+$/, '');
   const jsonLd = buildBookJsonLd({
     book,
-    bookUrl: `${siteUrl}/books/${slug}`,
+    bookUrl: `${siteUrl}${getBookUrl(slug)}`,
     siteTitle: resolveLocale(siteConfig.title),
     siteUrl,
     defaultOgImage: siteConfig.ogImage,
@@ -70,7 +71,7 @@ export default async function BookLandingPage({ params }: { params: Promise<{ sl
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
     <div className="layout-main">
       <header className="mb-16">
         {/* Cover image */}

@@ -6,7 +6,7 @@ import { Metadata } from 'next';
 import { siteConfig } from '../../../../site.config';
 import { resolveLocale } from '@/lib/i18n';
 import { getPostsBasePath, getSeriesCustomPaths, getPostUrl } from '@/lib/urls';
-import { buildPostJsonLd } from '@/lib/json-ld';
+import { buildPostJsonLd, serializeJsonLd } from '@/lib/json-ld';
 
 function safeDecodeParam(param: string): string {
   try {
@@ -144,7 +144,7 @@ export default async function PrefixPostPage({
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       <PostLayout
         post={post}
         relatedPosts={relatedPosts}

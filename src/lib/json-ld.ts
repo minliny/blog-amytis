@@ -71,18 +71,30 @@ function buildAuthors(names: string[]): SchemaPerson[] {
 
 /**
  * Resolve an absolute image URL for structured data.
- * Mirrors the cover-image logic used in generateMetadata across all page components:
- * use coverImage only if it is an external HTTP URL, otherwise fall back to defaultOgImage.
+ * Accepts external URLs (http/https) and site-relative paths (/books/..., /posts/...).
+ * Rejects relative paths (./images/...) and text placeholders (text:...).
  */
 function resolveImageUrl(
   coverImage: string | undefined,
   defaultOgImage: string,
   siteUrl: string,
 ): string {
-  if (coverImage && coverImage.startsWith('http')) {
-    return coverImage;
+  const toAbsolute = (url: string) =>
+    url.startsWith('http') ? url : `${siteUrl}${url.startsWith('/') ? url : `/${url}`}`;
+
+  if (coverImage && !coverImage.startsWith('text:') && !coverImage.startsWith('./')) {
+    return toAbsolute(coverImage);
   }
-  return defaultOgImage.startsWith('http') ? defaultOgImage : `${siteUrl}${defaultOgImage}`;
+  return toAbsolute(defaultOgImage);
+}
+
+/**
+ * Serialize a JSON-LD graph to a string safe for injection into a <script> tag.
+ * JSON.stringify does not escape '<', so a value containing '</script>' could
+ * break the script block. Replacing '<' with '\u003c' prevents this.
+ */
+export function serializeJsonLd(schema: SchemaGraph): string {
+  return JSON.stringify(schema).replace(/</g, '\\u003c');
 }
 
 function wrapGraph(nodes: SchemaNode[]): SchemaGraph {
