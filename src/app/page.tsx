@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     images: [{ url: siteConfig.ogImage, width: 1200, height: 630 }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: resolveLocale(siteConfig.title),
     description: resolveLocale(siteConfig.description),
   },
@@ -116,7 +116,9 @@ export default function Home() {
     : [];
 
   // Stats for hero navigation chips
-  const heroPostCount = allPosts.length;
+  const heroPostCount = has('hero') && features?.posts?.enabled !== false
+    ? (needsPosts ? allPosts : getAllPosts()).length
+    : undefined;
   const heroSeriesCount = has('hero') && features?.series?.enabled !== false ? Object.keys(getAllSeries()).length : undefined;
   const heroBookCount = has('hero') && features?.books?.enabled !== false ? getAllBooks().length : undefined;
   const heroFlowCount = has('hero') && features?.flow?.enabled !== false ? getAllFlows().length : undefined;
