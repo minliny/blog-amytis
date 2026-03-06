@@ -3,13 +3,16 @@ import Link from 'next/link';
 import { siteConfig } from '../../../site.config';
 import { Metadata } from 'next';
 import CoverImage from '@/components/CoverImage';
-import { t, resolveLocale } from '@/lib/i18n';
+import { t, resolveLocale, tWith } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
 
-export const metadata: Metadata = {
-  title: `${t('books')} | ${resolveLocale(siteConfig.title)}`,
-  description: 'Structured long-form books and guides.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const books = getAllBooks();
+  return {
+    title: `${t('books')} | ${resolveLocale(siteConfig.title)}`,
+    description: tWith('books_subtitle', { count: books.length }),
+  };
+}
 
 export default function BooksPage() {
   const books = getAllBooks();

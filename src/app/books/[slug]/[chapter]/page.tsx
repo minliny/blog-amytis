@@ -42,9 +42,27 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return { title: 'Chapter Not Found' };
   }
 
+  const ogImage = book.coverImage && !book.coverImage.startsWith('text:') && !book.coverImage.startsWith('./')
+    ? book.coverImage
+    : siteConfig.ogImage;
+
   return {
     title: `${chapter.title} - ${book.title} | ${resolveLocale(siteConfig.title)}`,
     description: chapter.excerpt,
+    openGraph: {
+      title: `${chapter.title} - ${book.title}`,
+      description: chapter.excerpt,
+      type: 'article',
+      url: `${siteConfig.baseUrl}${getBookChapterUrl(slug, chapterSlug)}`,
+      siteName: resolveLocale(siteConfig.title),
+      images: [{ url: ogImage, width: 1200, height: 630, alt: chapter.title }],
+    },
+    twitter: {
+      card: ogImage !== siteConfig.ogImage ? 'summary_large_image' : 'summary',
+      title: `${chapter.title} - ${book.title}`,
+      description: chapter.excerpt,
+      images: [ogImage],
+    },
   };
 }
 
