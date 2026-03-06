@@ -81,7 +81,7 @@ function buildAuthors(names: string[]): SchemaPerson[] {
  * Accepts external URLs (http/https) and site-relative paths (/books/..., /posts/...).
  * Rejects relative paths (./images/...) and text placeholders (text:...).
  */
-function resolveImageUrl(
+export function resolveImageUrl(
   coverImage: string | undefined,
   defaultOgImage: string,
   siteUrl: string,

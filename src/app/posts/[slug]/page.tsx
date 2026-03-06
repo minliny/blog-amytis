@@ -6,7 +6,7 @@ import { Metadata } from 'next';
 import { siteConfig } from '../../../../site.config';
 import { resolveLocale } from '@/lib/i18n';
 import { getPostsBasePath, getPostUrl } from '@/lib/urls';
-import { buildPostJsonLd, serializeJsonLd } from '@/lib/json-ld';
+import { buildPostJsonLd, serializeJsonLd, resolveImageUrl } from '@/lib/json-ld';
 
 function safeDecodeParam(param: string): string {
   try {
@@ -60,10 +60,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   const siteUrl = siteConfig.baseUrl.replace(/\/+$/, '');
-  const rawOgImage = (post.coverImage && !post.coverImage.startsWith('text:'))
-    ? post.coverImage
-    : siteConfig.ogImage;
-  const ogImage = rawOgImage.startsWith('http') ? rawOgImage : `${siteUrl}${rawOgImage.startsWith('/') ? rawOgImage : `/${rawOgImage}`}`;
+  const ogImage = resolveImageUrl(post.coverImage, siteConfig.ogImage, siteUrl);
 
   return {
     title: `${post.title} | ${resolveLocale(siteConfig.title)}`,
