@@ -1,4 +1,5 @@
 import { getAllBooks } from '@/lib/markdown';
+import { getBookUrl } from '@/lib/urls';
 import Link from 'next/link';
 import { siteConfig } from '../../../site.config';
 import { Metadata } from 'next';
@@ -29,7 +30,7 @@ export default function BooksPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {books.map(book => (
-          <Link key={book.slug} href={`/books/${book.slug}`} className="group block no-underline">
+          <Link key={book.slug} href={getBookUrl(book.slug)} className="group block no-underline">
             <div className="card-base h-full group flex flex-col p-0 overflow-hidden">
               <div className="relative h-48 w-full overflow-hidden bg-muted/10">
                 <CoverImage
