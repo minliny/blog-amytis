@@ -30,6 +30,12 @@ function markdownToHtml(markdown: string): string {
   return String(result);
 }
 
+/**
+ * Returns feed items for RSS/Atom generation.
+ * Includes all published posts (converted to HTML) and optionally flow notes
+ * when `siteConfig.feed.includeFlows` is enabled. Results are sorted by date
+ * descending and capped at `siteConfig.feed.maxItems` (0 = unlimited).
+ */
 export function getFeedItems(): FeedItem[] {
   const { maxItems, includeFlows } = siteConfig.feed;
   const baseUrl = siteConfig.baseUrl.replace(/\/+$/, '');
