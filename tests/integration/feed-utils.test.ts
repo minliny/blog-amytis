@@ -120,4 +120,26 @@ describe("Integration: Feed Utils", () => {
       siteConfig.feed.maxItems = originalMaxItems;
     }
   });
+
+  test("feed item content is rendered HTML, not raw Markdown", () => {
+    const items = getFeedItems();
+    items.forEach((item) => {
+      if (item.content.trim().length === 0) return;
+      // Rendered HTML must contain at least one HTML tag
+      expect(item.content).toMatch(/<[a-z][^>]*>/i);
+      // Markdown headings should not appear outside code blocks
+      const strippedCodeBlocks = item.content.replace(/<pre[\s\S]*?<\/pre>/gi, '');
+      expect(strippedCodeBlocks).not.toMatch(/^#{1,6}\s/m);
+    });
+  });
+
+  test("feed items with authors have a non-empty authors array", () => {
+    const items = getFeedItems();
+    items.forEach((item) => {
+      if (item.authors !== undefined) {
+        expect(Array.isArray(item.authors)).toBe(true);
+        expect(item.authors.length).toBeGreaterThan(0);
+      }
+    });
+  });
 });
