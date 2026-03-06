@@ -44,3 +44,8 @@ export function getBookUrl(slug: string): string {
 export function getBookChapterUrl(bookSlug: string, chapterSlug: string): string {
   return `/books/${bookSlug}/${chapterSlug}`;
 }
+
+/** Returns the canonical URL path for a flow note. */
+export function getFlowUrl(slug: string): string {
+  return `/flows/${slug}`;
+}
