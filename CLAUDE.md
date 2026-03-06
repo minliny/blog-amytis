@@ -138,6 +138,7 @@ Key configuration options:
 ```yaml
 ---
 title: "Post Title"
+subtitle: "Optional subtitle line"  # Rendered below the title in italic
 date: "2026-01-01"
 excerpt: "Optional summary (auto-generated if omitted)"
 category: "Category Name"
