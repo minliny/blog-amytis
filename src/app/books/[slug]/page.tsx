@@ -72,7 +72,7 @@ export default async function BookLandingPage({ params }: { params: Promise<{ sl
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
-    <div className="layout-main">
+      <div className="layout-main">
       <header className="mb-16">
         {/* Cover image */}
         {book.coverImage && (
@@ -183,7 +183,7 @@ export default async function BookLandingPage({ params }: { params: Promise<{ sl
           <MarkdownRenderer content={book.content} slug={`books/${book.slug}`} />
         </section>
       )}
-    </div>
+      </div>
     </>
   );
 }

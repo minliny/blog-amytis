@@ -99,7 +99,7 @@ export default function BookMobileNav({ bookSlug, bookTitle, toc, chapters, curr
                             </div>
                           ) : (
                             <Link
-                              href={`/books/${bookSlug}/${ch.id}`}
+                              href={getBookChapterUrl(bookSlug, ch.id)}
                               className={`block py-1.5 px-2 rounded-lg text-sm no-underline hover:bg-muted/5 transition-colors ${
                                 isPast ? 'text-foreground/70 hover:text-foreground' : 'text-muted hover:text-foreground'
                               }`}

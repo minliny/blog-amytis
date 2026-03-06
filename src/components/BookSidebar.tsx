@@ -6,6 +6,7 @@ import { BookTocItem, BookChapterEntry, Heading } from '@/lib/markdown';
 import { useLanguage } from './LanguageProvider';
 import { useSidebarAutoScroll } from '@/hooks/useSidebarAutoScroll';
 import InlineBookToc from './InlineBookToc';
+import { getBookChapterUrl } from '@/lib/urls';
 
 interface BookSidebarProps {
   bookSlug: string;
@@ -81,7 +82,7 @@ export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, curren
     return (
       <li key={ch.id} ref={isCurrent ? currentItemRef : undefined}>
         <Link
-          href={`/books/${bookSlug}/${ch.id}`}
+          href={getBookChapterUrl(bookSlug, ch.id)}
           className={`block py-2 px-3 rounded-lg text-sm no-underline transition-all duration-200 ${
             isCurrent
               ? 'bg-accent/10 text-accent font-semibold border-l-2 border-accent'
@@ -162,7 +163,7 @@ export default function BookSidebar({ bookSlug, bookTitle, toc, chapters, curren
       {/* Footer */}
       <div className="mt-6 pt-4 border-t border-muted/10">
         <Link
-          href={`/books/${bookSlug}`}
+          href="/books"
           className="text-xs font-sans text-muted hover:text-accent transition-colors no-underline flex items-center gap-1"
         >
           {t('all_books')}

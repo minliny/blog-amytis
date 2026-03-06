@@ -52,7 +52,14 @@ interface SchemaArticle {
   isPartOf: { '@type': 'Book'; '@id': string; name: string };
 }
 
-type SchemaNode = SchemaBlogPosting | SchemaBook | SchemaArticle;
+interface SchemaWebSite {
+  '@type': 'WebSite';
+  name: string;
+  url: string;
+  description?: string;
+}
+
+type SchemaNode = SchemaBlogPosting | SchemaBook | SchemaArticle | SchemaWebSite;
 
 interface SchemaGraph {
   '@context': 'https://schema.org';
@@ -99,6 +106,12 @@ export function serializeJsonLd(schema: SchemaGraph): string {
 
 function wrapGraph(nodes: SchemaNode[]): SchemaGraph {
   return { '@context': 'https://schema.org', '@graph': nodes };
+}
+
+export interface WebsiteJsonLdParams {
+  siteTitle: string;
+  siteUrl: string;
+  description?: string;
 }
 
 // ── Public param types ────────────────────────────────────────────────────────
@@ -149,6 +162,20 @@ export interface BookChapterJsonLdParams {
 }
 
 // ── Builders ──────────────────────────────────────────────────────────────────
+
+export function buildWebsiteJsonLd(params: WebsiteJsonLdParams): SchemaGraph {
+  const { siteTitle, siteUrl, description } = params;
+  const base = siteUrl.replace(/\/+$/, '');
+
+  const node: SchemaWebSite = {
+    '@type': 'WebSite',
+    name: siteTitle,
+    url: base,
+    description: description || undefined,
+  };
+
+  return wrapGraph([node]);
+}
 
 export function buildPostJsonLd(params: PostJsonLdParams): SchemaGraph {
   const { post, postUrl, siteTitle, siteUrl, defaultOgImage } = params;
