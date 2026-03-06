@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const books = getAllBooks();
   return {
     title: `${t('books')} | ${resolveLocale(siteConfig.title)}`,
-    description: tWith('books_subtitle', { count: books.length }),
+    description: books.length === 1 ? t('books_subtitle_one') : tWith('books_subtitle', { count: books.length }),
   };
 }
 

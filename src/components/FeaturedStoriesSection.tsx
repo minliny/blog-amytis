@@ -51,8 +51,10 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems }: Featur
 
   // Use a daily seed so SSR and client hydration agree on the initial order,
   // preventing a visible reshuffle flash on page load.
-  const dailySeed = Math.floor(Date.now() / 86400000);
-  const [shuffledNonPinned, setShuffledNonPinned] = useState<FeaturedPost[]>(() => shuffleSeeded(nonPinned, dailySeed));
+  const [shuffledNonPinned, setShuffledNonPinned] = useState<FeaturedPost[]>(() => {
+    const dailySeed = Math.floor(Date.now() / 86400000);
+    return shuffleSeeded(nonPinned, dailySeed);
+  });
 
   const handleShuffle = useCallback(() => {
     setShuffledNonPinned(shuffle(nonPinned));

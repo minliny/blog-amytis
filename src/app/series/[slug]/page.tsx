@@ -109,9 +109,15 @@ export default async function SeriesPage({ params }: { params: Promise<{ slug: s
               {description}
             </p>
           )}
-          {allPosts.length > 0 && (
+          {allPosts.length > 0 && (() => {
+            // Pick the first installment respecting sort order:
+            // date-desc (default) → oldest is last; date-asc/manual → oldest/first is [0]
+            const firstPost = (seriesData?.sort === 'date-asc' || seriesData?.sort === 'manual')
+              ? allPosts[0]
+              : allPosts[allPosts.length - 1];
+            return (
             <Link
-              href={getPostUrl(allPosts[0])}
+              href={getPostUrl(firstPost)}
               className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent text-white text-sm font-medium hover:bg-accent/90 transition-colors no-underline"
             >
               {t('start_reading')}
@@ -119,7 +125,8 @@ export default async function SeriesPage({ params }: { params: Promise<{ slug: s
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </Link>
-          )}
+            );
+          })()}
           {authors.length > 0 && (
             <p className="mt-4 text-sm text-muted">
               <span className="mr-1">{t('written_by')}</span>

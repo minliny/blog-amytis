@@ -183,6 +183,7 @@ function getSeriesTitle(slug: string): string | undefined {
   else if (fs.existsSync(indexPathMd)) fullPath = indexPathMd;
   else return undefined;
   const { data } = matter(fs.readFileSync(fullPath, 'utf8'));
+  if (data.draft === true) return undefined;
   return typeof data.title === 'string' ? data.title : undefined;
 }
 
