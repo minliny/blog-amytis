@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import CoverImage from './CoverImage';
 import { useLanguage } from './LanguageProvider';
-import { shuffle } from '@/lib/shuffle';
+import { shuffle, shuffleSeeded } from '@/lib/shuffle';
 import { getPostUrl } from '@/lib/urls';
 
 export interface FeaturedPost {
@@ -49,12 +49,10 @@ export default function FeaturedStoriesSection({ allFeatured, maxItems }: Featur
 
   const nonPinned = allFeatured.filter(p => !p.pinned);
 
-  const [shuffledNonPinned, setShuffledNonPinned] = useState<FeaturedPost[]>(() => nonPinned);
-
-  useEffect(() => {
-    setShuffledNonPinned(shuffle(nonPinned));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allFeatured]);
+  // Use a daily seed so SSR and client hydration agree on the initial order,
+  // preventing a visible reshuffle flash on page load.
+  const dailySeed = Math.floor(Date.now() / 86400000);
+  const [shuffledNonPinned, setShuffledNonPinned] = useState<FeaturedPost[]>(() => shuffleSeeded(nonPinned, dailySeed));
 
   const handleShuffle = useCallback(() => {
     setShuffledNonPinned(shuffle(nonPinned));

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import HorizontalScroll from './HorizontalScroll';
 import CoverImage from './CoverImage';
 import { useLanguage } from './LanguageProvider';
-import { shuffle } from '@/lib/shuffle';
+import { shuffle, shuffleSeeded } from '@/lib/shuffle';
 import { getPostUrl } from '@/lib/urls';
 
 export interface SeriesItem {
@@ -26,11 +26,10 @@ interface CuratedSeriesSectionProps {
 
 export default function CuratedSeriesSection({ allSeries, maxItems, scrollThreshold }: CuratedSeriesSectionProps) {
   const { t } = useLanguage();
-  const [displayed, setDisplayed] = useState(() => allSeries.slice(0, maxItems));
-
-  useEffect(() => {
-    setDisplayed(shuffle(allSeries).slice(0, maxItems));
-  }, [allSeries, maxItems]);
+  // Use a daily seed so SSR and client hydration agree on the initial order,
+  // preventing a visible reshuffle flash on page load.
+  const dailySeed = Math.floor(Date.now() / 86400000);
+  const [displayed, setDisplayed] = useState(() => shuffleSeeded(allSeries, dailySeed).slice(0, maxItems));
 
   const handleShuffle = useCallback(() => {
     setDisplayed(shuffle(allSeries).slice(0, maxItems));
