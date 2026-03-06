@@ -155,6 +155,25 @@ export function getSeriesAuthors(seriesSlug: string): string[] | null {
   return null;
 }
 
+/**
+ * Resolve display authors for a series: explicit series authors first,
+ * then top contributors aggregated from the series' posts.
+ */
+export function resolveSeriesAuthors(slug: string, posts: PostData[]): string[] {
+  const explicit = getSeriesAuthors(slug);
+  if (explicit) return explicit;
+  if (posts.length === 0) return [];
+  const counts = new Map<string, number>();
+  for (const post of posts) {
+    for (const author of post.authors) {
+      counts.set(author, (counts.get(author) || 0) + 1);
+    }
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([name]) => name);
+}
+
 function getSeriesTitle(slug: string): string | undefined {
   if (!fs.existsSync(seriesDirectory)) return undefined;
   const indexPathMdx = path.join(seriesDirectory, slug, 'index.mdx');
