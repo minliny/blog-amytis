@@ -139,6 +139,9 @@ export const translations = {
     browser_dismiss: "Dismiss",
     toc_expand: "Expand table of contents",
     toc_collapse: "Collapse table of contents",
+    archive_description: "A complete chronological archive of all articles.",
+    tags_description: "Explore topics spanning all articles and flow notes.",
+    posts_description: "Browse all articles.",
   },
   zh: {
     home: "首页",
@@ -280,6 +283,9 @@ export const translations = {
     browser_dismiss: "关闭",
     toc_expand: "展开目录",
     toc_collapse: "收起目录",
+    archive_description: "全部文章的时间轴归档。",
+    tags_description: "浏览全部文章与随笔的主题标签。",
+    posts_description: "浏览全部文章。",
   },
 };
 
