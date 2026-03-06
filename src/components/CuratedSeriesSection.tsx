@@ -28,8 +28,10 @@ export default function CuratedSeriesSection({ allSeries, maxItems, scrollThresh
   const { t } = useLanguage();
   // Use a daily seed so SSR and client hydration agree on the initial order,
   // preventing a visible reshuffle flash on page load.
-  const dailySeed = Math.floor(Date.now() / 86400000);
-  const [displayed, setDisplayed] = useState(() => shuffleSeeded(allSeries, dailySeed).slice(0, maxItems));
+  const [displayed, setDisplayed] = useState(() => {
+    const dailySeed = Math.floor(Date.now() / 86400000);
+    return shuffleSeeded(allSeries, dailySeed).slice(0, maxItems);
+  });
 
   const handleShuffle = useCallback(() => {
     setDisplayed(shuffle(allSeries).slice(0, maxItems));
