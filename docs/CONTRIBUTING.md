@@ -93,7 +93,9 @@ bun run series-draft "my-series" --undraft
 ```bash
 bun test                   # Run all tests
 bun run test:unit          # Run unit tests
+bun run test:int           # Run integration tests
 bun run test:e2e           # Run end-to-end tests
+bun run validate           # Lint + test + build:dev
 ```
 
 ## Building

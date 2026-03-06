@@ -53,7 +53,7 @@ Flows are a stream-style collection of daily notes, micro-blogging, or imported 
 
 ## Configuration
 
-In `site.config.ts`, ensure flow features are enabled (the graph and notes surfaces are flow-related in current routing):
+Flows are controlled by `site.config.ts`, while notes and the graph are always routed when corresponding content exists:
 
 ```typescript
 export const siteConfig = {
@@ -66,3 +66,9 @@ export const siteConfig = {
   }
 };
 ```
+
+Related settings that shape the digital-garden experience live alongside that flag:
+
+- `flows.recentCount`: controls how many flow entries appear on the homepage.
+- `pagination.flows` and `pagination.notes`: control listing page sizes.
+- `homepage.sections`: lets you enable, disable, or reorder homepage sections such as recent flows.

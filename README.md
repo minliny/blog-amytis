@@ -85,6 +85,8 @@ cd my-garden
 bun dev
 ```
 
+The scaffold command downloads the latest tagged Amytis release, installs dependencies, and patches `site.config.ts` and `package.json` with your project metadata.
+
 ### Clone & Run
 
 1. **Install Dependencies:**
@@ -97,6 +99,8 @@ bun dev
    bun dev
    ```
    Visit [http://localhost:3000](http://localhost:3000).
+
+   > **Search in dev:** the Pagefind index is generated during `bun run build:dev`. Run it once before testing Cmd/Ctrl+K locally, and re-run it after content changes.
 
 3. **Build for Production (Static Export):**
    ```bash
@@ -131,6 +135,7 @@ bun run test:e2e
 
 ## Create Content
 bun run new "Post Title"
+bun run new-weekly "Weekly Topic"
 bun run new-series "Series Name"
 bun run new-note "Concept"
 bun run new-flow
@@ -220,6 +225,8 @@ amytis/
     components/         # React components
     lib/
       markdown.ts       # Data access layer
+  packages/
+    create-amytis/      # `bun create amytis` scaffold CLI
   site.config.ts        # Site configuration
 ```
 

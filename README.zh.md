@@ -76,6 +76,8 @@ cd my-garden
 bun dev
 ```
 
+该脚手架会下载最新发布版 Amytis，自动安装依赖，并根据你的项目信息更新 `site.config.ts` 和 `package.json`。
+
 ### 克隆运行
 
 1. **安装依赖**
@@ -88,6 +90,8 @@ bun dev
    bun dev
    ```
    打开 [http://localhost:3000](http://localhost:3000)。
+
+   > **本地搜索说明：** Pagefind 索引是在执行 `bun run build:dev` 时生成的。本地测试 Cmd/Ctrl+K 前先运行一次；内容更新后也需要重新生成。
 
 3. **生产构建（静态导出）**
    ```bash
@@ -122,6 +126,7 @@ bun run test:e2e
 
 ## Create Content
 bun run new "Post Title"
+bun run new-weekly "Weekly Topic"
 bun run new-series "Series Name"
 bun run new-note "Concept"
 bun run new-flow
@@ -173,6 +178,8 @@ amytis/
     app/
     components/
     lib/
+  packages/
+    create-amytis/
   site.config.ts
 ```
 

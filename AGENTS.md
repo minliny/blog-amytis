@@ -1,21 +1,25 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `src/app/`: Next.js App Router pages and route handlers (`posts`, `series`, `tags`, `authors`, feeds, sitemap).
+- `src/app/`: Next.js App Router pages and route handlers (`posts`, `series`, `books`, `flows`, `notes`, `tags`, `authors`, feeds, graph, sitemap, custom `[slug]` routes).
 - `src/components/`: Reusable UI building blocks (cards, navigation, search, i18n/theme controls).
-- `src/lib/`: Content parsing and shared logic (`markdown.ts`, i18n helpers, rehype utilities).
-- `content/posts/`, `content/series/`: Markdown/MDX source content. Use folder posts (`index.mdx` + `images/` or `assets/`) when media is co-located.
+- `src/lib/`: Content parsing and shared logic (`markdown.ts`, feed helpers, URL helpers, rehype/remark utilities).
+- `content/`: Markdown/MDX source content for posts, series, books, notes, flows, and static pages. Use folder posts (`index.mdx` + `images/` or `assets/`) when media is co-located.
 - `tests/`: Integration/e2e/tooling suites; keep focused utility tests near source (example: `src/lib/markdown.test.ts`).
 - `scripts/`: Bun-based authoring/import tooling.
+- `packages/create-amytis/`: The `bun create amytis` scaffold CLI; keep its tests aligned with repo scaffolding behavior.
 
 ## Build, Test, and Development Commands
 - `bun install`: Install dependencies.
 - `bun dev`: Run local dev server at `http://localhost:3000`.
-- `bun run build`: Production export build (asset copy + Next build + image optimizer).
-- `bun run build:dev`: Build without export image optimization.
-- `bun run clean`: Remove generated outputs (`.next`, `out`, `public/posts`).
+- `bun run build`: Production export build (copy assets, generate graph, Next build, optimize images, generate Pagefind index in `out/pagefind`).
+- `bun run build:dev`: Build without export image optimization and generate the dev search index in `public/pagefind`.
+- `bun run build:graph`: Regenerate the knowledge graph data.
+- `bun run validate`: Run the recommended pre-PR validation sequence (`lint`, `test`, `build:dev`).
+- `bun run clean`: Remove generated outputs (`.next`, `out`, `public/posts`, `public/books`, `public/flows`).
 - `bun run lint`: Run ESLint.
 - `bun test` / `bun run test:unit` / `bun run test:int` / `bun run test:e2e`: Run all or scoped tests.
+- Content tooling: `bun run new`, `bun run new-weekly`, `bun run new-series`, `bun run new-note`, `bun run new-flow`, `bun run new-flow-from-chat`, `bun run new-from-pdf`, `bun run new-from-images`, `bun run import-book`, `bun run sync-book`, `bun run series-draft`.
 
 ## Coding Style & Naming Conventions
 - Use TypeScript for app and utility code; MDX/Markdown for content.
@@ -27,12 +31,14 @@
 - Project uses `output: "export"` and `trailingSlash: true` in `next.config.ts`.
 - In `generateStaticParams()`, return raw segment values; do not pre-encode with `encodeURIComponent`.
 - Never link to route placeholders like `/posts/[slug]`; always link to concrete slugs (for example, `/posts/中文测试文章`).
+- Posts may also resolve through custom top-level paths via `series.customPaths` and `[slug]/[postSlug]`; preserve those URL helpers instead of hardcoding paths.
 - When touching dynamic routes, verify both ASCII and Unicode paths.
 
 ## Testing Guidelines
 - Test framework: Bun (`bun:test`). File pattern: `*.test.ts`.
-- Add tests when changing slug resolution, content parsing, routing, or scaffolding scripts.
+- Add tests when changing slug resolution, content parsing, routing, feed generation, or scaffolding scripts.
 - Before PR: run `bun run lint && bun test && bun run build:dev`.
+- Search in local dev depends on the Pagefind output from `bun run build:dev`; regenerate it when changing content or search behavior.
 
 ## Commit & Pull Request Guidelines
 - Follow Conventional Commits used in history (`feat:`, `fix:`, `refactor:`, `docs:`, `release:`).
