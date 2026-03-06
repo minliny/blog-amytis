@@ -46,8 +46,8 @@ export default function CuratedSeriesSection({ allSeries, maxItems, scrollThresh
             <button
               onClick={handleShuffle}
               className="text-sm text-muted hover:text-accent transition-colors focus:outline-none"
-              aria-label="Shuffle series"
-              title="Show different series"
+              aria-label={t('shuffle_series')}
+              title={t('shuffle_series')}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />

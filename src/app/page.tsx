@@ -8,7 +8,8 @@ import SelectedBooksSection, { BookItem } from '@/components/SelectedBooksSectio
 import LatestWritingSection from '@/components/LatestWritingSection';
 import RecentNotesSection, { RecentNoteItem } from '@/components/RecentNotesSection';
 import { Metadata } from 'next';
-import { resolveLocale } from '@/lib/i18n';
+import { t, resolveLocale } from '@/lib/i18n';
+import { buildWebsiteJsonLd, serializeJsonLd } from '@/lib/json-ld';
 
 export const metadata: Metadata = {
   title: resolveLocale(siteConfig.title),
@@ -71,7 +72,7 @@ export default function Home() {
         return {
           name,
           title: seriesData?.title || name,
-          excerpt: seriesData?.excerpt || "A growing collection of related thoughts.",
+          excerpt: seriesData?.excerpt || t('series_default_excerpt'),
           coverImage: seriesData?.coverImage,
           url: `/series/${slug}`,
           postCount: seriesPosts.length,
@@ -212,7 +213,15 @@ export default function Home() {
     }
   }
 
+  const websiteJsonLd = buildWebsiteJsonLd({
+    siteTitle: resolveLocale(siteConfig.title),
+    siteUrl: siteConfig.baseUrl,
+    description: resolveLocale(siteConfig.description),
+  });
+
   return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(websiteJsonLd) }} />
     <div>
       {has('hero') && (
         <Hero
@@ -236,5 +245,6 @@ export default function Home() {
         {renderList}
       </div>
     </div>
+    </>
   );
 }
