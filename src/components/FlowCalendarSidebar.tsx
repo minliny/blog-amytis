@@ -15,6 +15,7 @@ interface FlowCalendarSidebarProps {
 }
 
 const WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export default function FlowCalendarSidebar({ entryDates, currentDate, tags, selectedTag, onTagSelect, breadcrumb }: FlowCalendarSidebarProps) {
   const { t } = useLanguage();
@@ -25,6 +26,12 @@ export default function FlowCalendarSidebar({ entryDates, currentDate, tags, sel
 
   const today = new Date();
   const todayStr = today.toISOString().split('T')[0];
+  const isViewingCurrentMonth = viewYear === today.getFullYear() && viewMonth === today.getMonth();
+
+  function goToToday() {
+    setViewYear(today.getFullYear());
+    setViewMonth(today.getMonth());
+  }
 
   const entrySet = useMemo(() => new Set(entryDates), [entryDates]);
 
@@ -90,7 +97,18 @@ export default function FlowCalendarSidebar({ entryDates, currentDate, tags, sel
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
           </button>
-          <span className="text-sm font-medium text-heading">{monthLabel}</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm font-medium text-heading">{monthLabel}</span>
+            {!isViewingCurrentMonth && (
+              <button
+                onClick={goToToday}
+                className="text-[10px] px-1.5 py-0.5 rounded border border-muted/20 text-muted hover:border-accent hover:text-accent transition-colors"
+                aria-label="Go to today"
+              >
+                {t('today')}
+              </button>
+            )}
+          </div>
           <button
             onClick={nextMonth}
             className="p-1 text-muted hover:text-accent transition-colors"
@@ -209,7 +227,7 @@ export default function FlowCalendarSidebar({ entryDates, currentDate, tags, sel
                                 isCurrentMonth ? 'text-accent font-medium' : 'text-muted'
                               }`}
                             >
-                              <span>{padNumber(m)}</span>
+                              <span>{MONTH_NAMES[m - 1]}</span>
                               <span className="text-[10px]">{months[m]}</span>
                             </Link>
                           );
@@ -231,17 +249,18 @@ export default function FlowCalendarSidebar({ entryDates, currentDate, tags, sel
           <div className="flex flex-wrap gap-1.5">
             {Object.entries(tags)
               .sort((a, b) => b[1] - a[1])
-              .map(([tag]) => (
+              .map(([tag, count]) => (
                 <button
                   key={tag}
                   onClick={() => onTagSelect?.(tag)}
-                  className={`inline-flex items-center px-2 py-0.5 text-xs rounded-full border transition-colors ${
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full border transition-colors ${
                     selectedTag === tag
                       ? 'bg-accent text-white border-accent'
                       : 'border-muted/20 text-muted hover:border-accent hover:text-accent'
                   }`}
                 >
                   {tag}
+                  <span className={`text-[10px] ${selectedTag === tag ? 'opacity-80' : 'opacity-60'}`}>{count}</span>
                 </button>
               ))}
           </div>
