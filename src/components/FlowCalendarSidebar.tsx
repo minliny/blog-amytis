@@ -26,12 +26,6 @@ export default function FlowCalendarSidebar({ entryDates, currentDate, tags, sel
 
   const today = new Date();
   const todayStr = today.toISOString().split('T')[0];
-  const isViewingCurrentMonth = viewYear === today.getFullYear() && viewMonth === today.getMonth();
-
-  function goToToday() {
-    setViewYear(today.getFullYear());
-    setViewMonth(today.getMonth());
-  }
 
   const entrySet = useMemo(() => new Set(entryDates), [entryDates]);
 
@@ -97,18 +91,7 @@ export default function FlowCalendarSidebar({ entryDates, currentDate, tags, sel
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
           </button>
-          <div className="flex items-center gap-1.5">
-            <span className="text-sm font-medium text-heading">{monthLabel}</span>
-            {!isViewingCurrentMonth && (
-              <button
-                onClick={goToToday}
-                className="text-[10px] px-1.5 py-0.5 rounded border border-muted/20 text-muted hover:border-accent hover:text-accent transition-colors"
-                aria-label="Go to today"
-              >
-                {t('today')}
-              </button>
-            )}
-          </div>
+          <span className="text-sm font-medium text-heading">{monthLabel}</span>
           <button
             onClick={nextMonth}
             className="p-1 text-muted hover:text-accent transition-colors"
