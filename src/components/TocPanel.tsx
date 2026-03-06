@@ -49,12 +49,11 @@ export default function TocPanel({ headings, className = '' }: TocPanelProps) {
                   href={`#${h.id}`}
                   onClick={e => scrollToHeading(e, h.id)}
                   className={`block py-1 text-[13px] leading-snug no-underline transition-colors duration-200 ${
-                    h.level === 3 ? 'pl-6' : 'pl-3'
-                  } ${
                     isActive
                       ? 'text-accent font-medium border-l-2 border-accent -ml-px'
                       : 'text-foreground/70 hover:text-foreground'
                   }`}
+                  style={{ paddingLeft: `${(h.level - 1) * 0.75}rem` }}
                 >
                   {h.text}
                 </a>
