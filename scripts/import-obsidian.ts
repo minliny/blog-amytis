@@ -298,7 +298,7 @@ if (explicitFile) {
     const ok = processFile(filePath);
     if (ok && !dryRun) {
       markImported(filePath);
-      DATE_FILE_RE.test(path.basename(filePath)) ? flows++ : notes++;
+      if (DATE_FILE_RE.test(path.basename(filePath))) flows++; else notes++;
     } else if (!ok) {
       skipped++;
     }
