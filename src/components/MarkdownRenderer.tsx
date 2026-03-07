@@ -1,6 +1,7 @@
 import ReactMarkdown, { Components, ExtraProps } from 'react-markdown';
-import dynamic from 'next/dynamic';
 import RssFeedWidget from '@/components/RssFeedWidget';
+import Mermaid from '@/components/Mermaid';
+import CodeBlock from '@/components/CodeBlock';
 import KatexStyles from '@/components/KatexStyles';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -14,10 +15,6 @@ import ExportedImage from 'next-image-export-optimizer';
 import { PluggableList } from 'unified';
 import type { SlugRegistryEntry } from '@/lib/markdown';
 
-// Lazy-loaded: Mermaid is ~1.5 MB minified; only pages with diagrams pay the cost.
-const Mermaid = dynamic(() => import('@/components/Mermaid'), { ssr: false });
-// Lazy-loaded: splits the syntax-highlighter chunk out of every post page bundle.
-const CodeBlock = dynamic(() => import('@/components/CodeBlock'));
 
 interface MarkdownRendererProps {
   content: string;

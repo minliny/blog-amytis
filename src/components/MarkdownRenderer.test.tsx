@@ -34,11 +34,8 @@ describe("MarkdownRenderer", () => {
 
     const html = renderToStaticMarkup(<MarkdownRenderer content={content} />);
 
-    // Outer prose container clips overflow at the page level
     expect(html).toContain("overflow-x-hidden");
-    // MarkdownRenderer wraps <pre> in a div that allows CodeBlock to scroll internally.
-    // CodeBlock itself is lazy-loaded (next/dynamic) so its inner overflow-x-auto
-    // div is not present in synchronous SSR output — that is expected behaviour.
     expect(html).toContain("not-prose w-full min-w-0 max-w-full");
+    expect(html).toContain("overflow-x-auto");
   });
 });
