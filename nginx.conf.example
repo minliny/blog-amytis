@@ -42,11 +42,16 @@ server {
         application/json
         application/xml
         image/svg+xml
-        font/woff2;
+        font/woff;
+        # Note: WOFF2 is already Brotli-compressed internally — gzipping it adds
+        # CPU overhead with no size benefit, so it is intentionally excluded.
 
     # --- Security + HSTS ---
-    # HSTS: browsers skip the HTTP→HTTPS redirect on repeat visits (1 year)
+    # HSTS: browsers skip the HTTP→HTTPS redirect on repeat visits (1 year).
     # Only enable includeSubDomains if ALL subdomains serve HTTPS.
+    # NOTE: Nginx add_header in a location block does NOT inherit server-level
+    # add_header directives. Security headers must be repeated in every location
+    # block that sets its own add_header, otherwise they are silently dropped.
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-Frame-Options "SAMEORIGIN" always;
@@ -54,23 +59,35 @@ server {
     # --- Cache: Next.js static assets (content-hashed → cache forever) ---
     location /_next/static/ {
         add_header Cache-Control "public, max-age=31536000, immutable";
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "SAMEORIGIN" always;
         access_log off;
     }
 
     # --- Cache: images and fonts ---
     location ~* \.(webp|png|jpg|jpeg|gif|ico|svg|woff2|woff|ttf)$ {
         add_header Cache-Control "public, max-age=86400";
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "SAMEORIGIN" always;
         access_log off;
     }
 
     # --- Cache: feed files (short TTL so readers see new posts quickly) ---
     location ~* \.(xml|atom)$ {
         add_header Cache-Control "public, max-age=3600";
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "SAMEORIGIN" always;
     }
 
     # --- HTML pages: no cache (always fresh) ---
     location ~* \.html$ {
         add_header Cache-Control "no-cache";
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "SAMEORIGIN" always;
     }
 
     # --- Feed shortcuts ---
