@@ -3,9 +3,15 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
-  // Set to true so pages export as slug/index.html, which coexists with
-  // asset directories (slug/images/) and avoids 403 errors on trailing slash
+  // trailingSlash: true (default) — pages export as slug/index.html.
+  // Co-located asset directories (slug/images/) coexist cleanly and Nginx
+  // serves slug/ directly via the index directive. No redirect needed.
   trailingSlash: true,
+  // trailingSlash: false — pages export as slug.html.
+  // rehype-image-metadata rewrites image paths to absolute URLs so
+  // co-located images still work. Pair with the nginx.conf.example
+  // "Trailing slash removal" block to redirect /slug/ → /slug.
+  // trailingSlash: false,
   output: "export",
   images: {
     loader: "custom",

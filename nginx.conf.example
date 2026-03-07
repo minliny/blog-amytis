@@ -91,24 +91,32 @@ server {
     }
 
     # --- Feed shortcuts ---
-    # Redirect bare /feed and /atom to the canonical file URLs so that RSS
-    # readers and users who omit the extension get the correct canonical URL.
+    # Redirect bare /feed and /atom (with or without trailing slash) to the
+    # canonical file URLs so RSS readers and users who omit the extension work.
     location ~ ^/feed/?$ { return 301 /feed.xml; }
     location ~ ^/atom/?$ { return 301 /feed.atom; }
 
     # --- Static file serving ---
-    # next.config.ts sets trailingSlash: true, so pages are exported as
-    # slug/index.html (not slug.html). The order below handles:
-    #   1. $uri          — exact file match (feed.xml, images, etc.)
-    #   2. $uri/index.html — direct index file lookup (fastest for slug/ URLs)
-    #   3. $uri/         — directory lookup; Nginx issues a 301 to add the
-    #                      trailing slash when the browser omits it, then
-    #                      serves index.html via the `index` directive
-    #   4. =404          — nothing matched
+    # Choose ONE block below to match next.config.ts trailingSlash setting.
     autoindex off;
+
+    # -- trailingSlash: true (default) --
+    # Pages export as slug/index.html. Nginx serves slug/ via the index
+    # directive; requests without trailing slash get a 301 automatically.
     location / {
         try_files $uri $uri/index.html $uri/ =404;
     }
+
+    # -- trailingSlash: false --
+    # Pages export as slug.html. Comment out the block above and uncomment
+    # below. The location block redirects /slug/ → /slug so trailing-slash
+    # requests from bookmarks or external links resolve correctly.
+    # location ~ ^(.+)/$ {
+    #     return 301 $1;
+    # }
+    # location / {
+    #     try_files $uri $uri.html =404;
+    # }
 
     # --- SSL certificates (e.g. Let's Encrypt) ---
     ssl_certificate     /etc/letsencrypt/live/example.com/fullchain.pem;
