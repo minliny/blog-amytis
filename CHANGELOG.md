@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-03-07
+
+### Changed
+- **Feed Output Quality**: RSS and Atom feeds now render Markdown content as HTML, include richer item metadata, and send explicit cache headers for static deployments.
+- **Metadata Consistency**: Consolidated image URL resolution so Open Graph and JSON-LD metadata use the same asset handling logic.
+- **Documentation Sync**: Updated the English and Chinese READMEs plus contributor guidance to reflect current scaffolding behavior, dev-search setup, and workspace instructions.
+
+### Fixed
+- **RSS Standards Compliance**: Corrected the RSS MIME type to `application/rss+xml` and improved RSS/Atom structure for better reader compatibility.
+- **Feed Metadata Fidelity**: Improved handling of author fields, item content, and image metadata across feed generation and social preview output.
+- **Post Page Polish**: Improved post page OG images, previous/next navigation consistency, and TOC indentation.
+- **Book Link Consistency**: Standardized book links to use the shared URL helper.
+
+### Docs
+- **Developer Notes**: Added inline documentation for `getFeedItems()` behavior and configuration handling.
+- **Repository Instructions**: Refreshed repository-level agent instructions to match the current workspace layout and release workflow.
+
 ## [1.10.0] - 2026-03-02
 
 ### Added
