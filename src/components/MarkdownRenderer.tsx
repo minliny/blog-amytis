@@ -1,7 +1,7 @@
 import ReactMarkdown, { Components, ExtraProps } from 'react-markdown';
-import Mermaid from '@/components/Mermaid';
-import CodeBlock from '@/components/CodeBlock';
+import dynamic from 'next/dynamic';
 import RssFeedWidget from '@/components/RssFeedWidget';
+import KatexStyles from '@/components/KatexStyles';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import remarkMath from 'remark-math';
@@ -13,6 +13,11 @@ import remarkWikilinks from '@/lib/remark-wikilinks';
 import ExportedImage from 'next-image-export-optimizer';
 import { PluggableList } from 'unified';
 import type { SlugRegistryEntry } from '@/lib/markdown';
+
+// Lazy-loaded: Mermaid is ~1.5 MB minified; only pages with diagrams pay the cost.
+const Mermaid = dynamic(() => import('@/components/Mermaid'), { ssr: false });
+// Lazy-loaded: splits the syntax-highlighter chunk out of every post page bundle.
+const CodeBlock = dynamic(() => import('@/components/CodeBlock'));
 
 interface MarkdownRendererProps {
   content: string;
@@ -160,6 +165,8 @@ export default function MarkdownRenderer({ content, latex = false, slug, slugReg
   const allComponents = { ...components, 'rss-feed': () => <RssFeedWidget /> } as any;
 
   return (
+    <>
+    {latex && <KatexStyles />}
     <div className="prose prose-lg max-w-none min-w-0 overflow-x-hidden text-foreground
           prose-headings:font-serif prose-headings:text-heading 
           prose-p:text-foreground prose-p:leading-loose
@@ -177,5 +184,6 @@ export default function MarkdownRenderer({ content, latex = false, slug, slugReg
         {content}
       </ReactMarkdown>
     </div>
+    </>
   );
 }

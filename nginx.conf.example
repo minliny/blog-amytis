@@ -1,0 +1,64 @@
+# Example Nginx configuration for hosting the amytis static export (out/).
+# Copy this to /etc/nginx/sites-available/your-site and adjust as needed.
+
+server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    root /var/www/your-site;
+    index index.html;
+
+    # --- Compression ---
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_min_length 1024;
+    gzip_types
+        text/html
+        text/css
+        text/plain
+        application/javascript
+        application/json
+        application/xml
+        image/svg+xml
+        font/woff2;
+
+    # --- Cache: Next.js static assets (content-hashed → cache forever) ---
+    location /_next/static/ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        access_log off;
+    }
+
+    # --- Cache: images and fonts ---
+    location ~* \.(webp|png|jpg|jpeg|gif|ico|svg|woff2|woff|ttf)$ {
+        add_header Cache-Control "public, max-age=86400";
+        access_log off;
+    }
+
+    # --- Cache: feed files (short TTL so readers see new posts quickly) ---
+    location ~* \.(xml|atom)$ {
+        add_header Cache-Control "public, max-age=3600";
+    }
+
+    # --- HTML pages: no cache (always fresh) ---
+    location ~* \.html$ {
+        add_header Cache-Control "no-cache";
+    }
+
+    # --- SPA-style fallback for trailingSlash: true output ---
+    location / {
+        try_files $uri $uri/ $uri.html =404;
+    }
+
+    # SSL certificates (e.g. Let's Encrypt)
+    ssl_certificate     /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+}
+
+# Redirect HTTP → HTTPS
+server {
+    listen 80;
+    server_name example.com;
+    return 301 https://$host$request_uri;
+}
