@@ -54,6 +54,7 @@ export default function SimpleLayout({ post, titleKey, subtitleKey }: SimpleLayo
 
   const showComments = resolveCommentable(post.commentable, 'staticPages');
   const pageUrl = `${siteConfig.baseUrl.replace(/\/+$/, '')}/${post.slug}`;
+  const commentSlug = `pages/${post.slug}`;
 
   return (
     <div className="layout-main">
@@ -62,13 +63,13 @@ export default function SimpleLayout({ post, titleKey, subtitleKey }: SimpleLayo
           <PostSidebar currentSlug={post.slug} headings={post.headings} localeHeadings={localeHeadings} />
           <article className="min-w-0 w-full max-w-3xl overflow-x-hidden">
             {articleContent}
-            {showComments && <Comments slug={post.slug} postUrl={pageUrl} />}
+            {showComments && <Comments slug={commentSlug} postUrl={pageUrl} />}
           </article>
         </div>
       ) : (
         <article className="w-full max-w-3xl mx-auto overflow-x-hidden">
           {articleContent}
-          {showComments && <Comments slug={post.slug} postUrl={pageUrl} />}
+          {showComments && <Comments slug={commentSlug} postUrl={pageUrl} />}
         </article>
       )}
     </div>

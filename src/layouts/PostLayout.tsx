@@ -33,7 +33,11 @@ export default function PostLayout({ post, relatedPosts, seriesPosts, seriesTitl
   const showToc = siteConfig.posts?.toc !== false && post.toc !== false && post.headings && post.headings.length > 0;
   const hasSeries = !!(post.series && seriesPosts && seriesPosts.length > 0);
   const showSidebar = showToc || hasSeries;
-  const postUrl = `${siteConfig.baseUrl}${getPostUrl(post)}`;
+  const isStaticPage = commentCategory === 'staticPages';
+  const postUrl = isStaticPage
+    ? `${siteConfig.baseUrl.replace(/\/+$/, '')}/${post.slug}`
+    : `${siteConfig.baseUrl}${getPostUrl(post)}`;
+  const commentSlug = isStaticPage ? `pages/${post.slug}` : post.slug;
 
   return (
     <div className="layout-container">
@@ -148,7 +152,7 @@ export default function PostLayout({ post, relatedPosts, seriesPosts, seriesTitl
           />
 
           {resolveCommentable(post.commentable, commentCategory) && (
-            <Comments slug={post.slug} postUrl={postUrl} />
+            <Comments slug={commentSlug} postUrl={postUrl} />
           )}
 
           {post.externalLinks && post.externalLinks.length > 0 && (
