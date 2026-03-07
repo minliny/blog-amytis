@@ -246,7 +246,7 @@ When embedding third-party media, keep these in mind:
 - **`loading="lazy"`**: Add this to below-the-fold embeds to defer loading and improve page speed.
 - **`title` attribute**: Always provide a descriptive `title` for screen reader accessibility.
 - **Privacy-enhanced mode**: YouTube supports `youtube-nocookie.com` to reduce tracking when embeds don't auto-play.
-- **`allow` over `allowfullscreen`**: Use `allow="fullscreen"` instead of the deprecated `allowfullscreen` attribute. When both are present the browser warns that `allow` takes precedence.
+- **`allow` over `allowfullscreen`**: Use `allow="fullscreen"` instead of the deprecated `allowfullscreen` boolean attribute. Note that bare `allow="fullscreen"` restricts fullscreen to the iframe's own origin (more secure), whereas the legacy `allowfullscreen` was equivalent to `allow="fullscreen *"` (any origin). For third-party embeds like YouTube or Vimeo, `allow="fullscreen"` is the correct and preferred form. When both attributes are present the browser warns that `allow` takes precedence.
 - **`sandbox` attribute**: Use for untrusted embeds to restrict what the iframe can do.
 - **Twitch `parent` parameter**: Twitch requires your site's hostname in `parent` for embeds to work outside localhost.
 
