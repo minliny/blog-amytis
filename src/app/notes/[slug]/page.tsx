@@ -6,6 +6,8 @@ import { t, resolveLocale } from '@/lib/i18n';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NoteSidebar from '@/components/NoteSidebar';
 import Tag from '@/components/Tag';
+import ShareBar from '@/components/ShareBar';
+import Comments from '@/components/Comments';
 import Link from 'next/link';
 
 export function generateStaticParams() {
@@ -47,6 +49,7 @@ export default async function NotePage({ params }: { params: Promise<{ slug: str
   const showToc = note.toc !== false && note.headings.length > 0;
   const visibleBacklinks = note.backlinks !== false ? backlinks : [];
   const showSidebar = showToc || visibleBacklinks.length > 0;
+  const noteUrl = `${siteConfig.baseUrl}/notes/${note.slug}`;
 
   const breadcrumb = (
     <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-muted">
@@ -99,6 +102,10 @@ export default async function NotePage({ params }: { params: Promise<{ slug: str
           </header>
 
           <MarkdownRenderer content={note.content} slug={`notes/${note.slug}`} slugRegistry={slugRegistry} />
+
+          <ShareBar url={noteUrl} title={note.title} className="mt-8 mb-2" />
+
+          <Comments slug={`notes/${note.slug}`} postUrl={noteUrl} />
 
           {/* Prev/Next navigation */}
           <nav aria-label="Note navigation" className="mt-12 pt-12 border-t border-muted/20 grid grid-cols-2 gap-4">
