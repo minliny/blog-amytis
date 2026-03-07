@@ -20,8 +20,7 @@ Responsive 16:9 YouTube embed using a padded wrapper:
   <iframe
     src="https://www.youtube.com/embed/jNQXAC9IVRw?rel=0"
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    allowfullscreen
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; gyroscope; picture-in-picture; web-share"
     title="Me at the zoo — first YouTube video ever uploaded (2005)"
   ></iframe>
 </div>
@@ -39,7 +38,6 @@ Vimeo also supports responsive 16:9 embedding:
     src="https://player.vimeo.com/video/76979871?color=ff9933&title=0&byline=0&portrait=0"
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
     allow="autoplay; fullscreen; picture-in-picture"
-    allowfullscreen
     title="Big Buck Bunny — Blender Foundation (Vimeo)"
   ></iframe>
 </div>
@@ -114,8 +112,7 @@ Below is NASA's public live stream:
   <iframe
     src="https://www.youtube.com/embed/xAieE-QtOeM?autoplay=0"
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; gyroscope; picture-in-picture"
     title="NASA TV Live"
   ></iframe>
 </div>
@@ -130,7 +127,7 @@ Twitch requires your site's hostname in the `parent` query parameter (so the emb
   src="https://player.twitch.tv/?channel=CHANNEL_NAME&parent=your-domain.com"
   height="378"
   width="100%"
-  allowfullscreen
+  allow="fullscreen"
   title="Twitch Stream"
 ></iframe>
 ```
@@ -249,6 +246,7 @@ When embedding third-party media, keep these in mind:
 - **`loading="lazy"`**: Add this to below-the-fold embeds to defer loading and improve page speed.
 - **`title` attribute**: Always provide a descriptive `title` for screen reader accessibility.
 - **Privacy-enhanced mode**: YouTube supports `youtube-nocookie.com` to reduce tracking when embeds don't auto-play.
+- **`allow` over `allowfullscreen`**: Use `allow="fullscreen"` instead of the deprecated `allowfullscreen` attribute. When both are present the browser warns that `allow` takes precedence.
 - **`sandbox` attribute**: Use for untrusted embeds to restrict what the iframe can do.
 - **Twitch `parent` parameter**: Twitch requires your site's hostname in `parent` for embeds to work outside localhost.
 
