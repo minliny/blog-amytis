@@ -66,6 +66,50 @@ test.describe('Mobile Compatibility', () => {
     });
   });
 
+  // ── Navbar layout on narrow viewports ─────────────────────────────────────
+  test.describe('Navbar layout', () => {
+    test('brand link is visible and not clipped on phone', async ({ page }) => {
+      if (!isPhone(page)) test.skip();
+
+      await page.goto('/');
+      // The brand link (logo + site title) must be within the viewport
+      const brand = page.locator('nav a[href="/"]').first();
+      await expect(brand).toBeVisible();
+      const navBox = await page.locator('nav').first().boundingBox();
+      const brandBox = await brand.boundingBox();
+      expect(brandBox).not.toBeNull();
+      expect(navBox).not.toBeNull();
+      // Brand must start at or after the nav left edge (not clipped left)
+      expect(brandBox!.x).toBeGreaterThanOrEqual(navBox!.x - 1);
+      // Brand right edge must not exceed viewport width
+      expect(brandBox!.x + brandBox!.width).toBeLessThanOrEqual(page.viewportSize()!.width + 1);
+    });
+
+    test('search button and theme toggle are visible on phone', async ({ page }) => {
+      if (!isPhone(page)) test.skip();
+
+      await page.goto('/');
+      const searchBtn = page.getByRole('button', { name: /search/i });
+      const themeToggle = page.getByRole('button', { name: /toggle theme/i });
+      await expect(searchBtn).toBeVisible();
+      await expect(themeToggle).toBeVisible();
+    });
+
+    test('navbar controls do not overlap on phone', async ({ page }) => {
+      if (!isPhone(page)) test.skip();
+
+      await page.goto('/');
+      const brand = page.locator('nav a[href="/"]').first();
+      const hamburger = page.getByRole('button', { name: /open menu/i });
+      const brandBox = await brand.boundingBox();
+      const hamburgerBox = await hamburger.boundingBox();
+      expect(brandBox).not.toBeNull();
+      expect(hamburgerBox).not.toBeNull();
+      // Brand right edge must not overlap hamburger left edge
+      expect(brandBox!.x + brandBox!.width).toBeLessThanOrEqual(hamburgerBox!.x + 1);
+    });
+  });
+
   // ── Navigation ─────────────────────────────────────────────────────────────
   test.describe('Navigation', () => {
     test('correct nav variant is shown for the viewport', async ({ page }) => {
@@ -248,6 +292,54 @@ test.describe('Mobile Compatibility', () => {
       });
 
       expect(overflows).toBe(0);
+    });
+  });
+
+  // ── Homepage section headings ──────────────────────────────────────────────
+  test.describe('Homepage section headings', () => {
+    test('section headings and their view-all links are both visible on phone', async ({ page }) => {
+      if (!isPhone(page)) test.skip();
+
+      await page.goto('/');
+      await page.waitForLoadState('networkidle');
+
+      // Each section we care about: check the heading and the sibling link are
+      // both visible (i.e. the header row did not collapse one of them off-screen)
+      const sections = [
+        { id: 'latest-posts', linkPattern: /all (posts|articles)/i },
+        { id: 'featured-series', linkPattern: /all series/i },
+        { id: 'featured-books', linkPattern: /all books/i },
+        { id: 'recent-flows', linkPattern: /all flows/i },
+      ];
+
+      for (const { id, linkPattern } of sections) {
+        const section = page.locator(`#${id}`);
+        if (!(await section.count())) continue; // section may not be enabled
+
+        const heading = section.locator('h2').first();
+        await expect(heading).toBeVisible();
+
+        const viewAllLink = section.getByRole('link', { name: linkPattern });
+        if (await viewAllLink.count()) {
+          await expect(viewAllLink.first()).toBeVisible();
+        }
+      }
+    });
+
+    test('hero stats row is visible and causes no horizontal overflow', async ({ page }) => {
+      if (!isPhone(page)) test.skip();
+
+      await page.goto('/');
+      await page.waitForLoadState('networkidle');
+
+      // The hero stats container should not exceed the viewport width
+      expect(await hasNoHorizontalOverflow(page)).toBe(true);
+
+      // At least one stat link should be visible in the hero
+      const heroLinks = page.locator('header a[href^="#"]');
+      if (await heroLinks.count()) {
+        await expect(heroLinks.first()).toBeVisible();
+      }
     });
   });
 
