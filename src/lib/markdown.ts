@@ -617,9 +617,9 @@ export function getAllTags(): Record<string, number> {
     counts[key] = (counts[key] || 0) + 1;
   };
 
-  allPosts.forEach((post) => post.tags.forEach(add));
-  allFlows.forEach((flow) => flow.tags.forEach(add));
-  allNotes.forEach((note) => note.tags.forEach(add));
+  allPosts.forEach((post) => { post.tags.forEach(add); });
+  allFlows.forEach((flow) => { flow.tags.forEach(add); });
+  allNotes.forEach((note) => { note.tags.forEach(add); });
 
   // Return with original-casing display form as key so consumers can show it correctly.
   // Callers that use the key as a URL slug must call key.toLowerCase().
