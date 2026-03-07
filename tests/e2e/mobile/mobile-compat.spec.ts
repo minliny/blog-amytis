@@ -166,7 +166,7 @@ test.describe('Mobile Compatibility', () => {
       await page.goto('/posts/kitchen-sink');
       await page.waitForLoadState('networkidle');
       // Wait for article to render before querying series navigation
-      await page.locator('article').waitFor({ state: 'visible' });
+      await page.locator('article').first().waitFor({ state: 'visible' });
 
       // SeriesList renders below the post content on mobile as an alternative to the sidebar
       const seriesList = page.locator('[data-testid="series-list"], .lg\\:hidden nav[aria-label]');
@@ -231,7 +231,7 @@ test.describe('Mobile Compatibility', () => {
       // Wait for the article body to be present, then for all images to finish loading.
       // The kitchen-sink post has async content (Mermaid, KaTeX, syntax highlighting)
       // that can delay image layout settlement beyond networkidle.
-      await page.locator('article').waitFor({ state: 'visible' });
+      await page.locator('article').first().waitFor({ state: 'visible' });
       await page.waitForFunction(() =>
         Array.from(document.querySelectorAll('img')).every(
           (img) => img.complete && img.naturalWidth > 0,
