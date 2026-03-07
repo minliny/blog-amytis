@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { getPostsBasePath } from '../../../src/lib/urls';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -60,7 +61,7 @@ test.describe('Mobile Compatibility', () => {
     }
 
     test('post page has no horizontal overflow', async ({ page }) => {
-      await page.goto('/posts/kitchen-sink');
+      await page.goto(`/${getPostsBasePath()}/kitchen-sink`);
       await page.waitForLoadState('networkidle');
       expect(await hasNoHorizontalOverflow(page)).toBe(true);
     });
@@ -196,7 +197,7 @@ test.describe('Mobile Compatibility', () => {
     test('post sidebar is hidden on mobile and tablet viewports', async ({ page }) => {
       if (!isMobileViewport(page)) test.skip();
 
-      await page.goto('/posts/kitchen-sink');
+      await page.goto(`/${getPostsBasePath()}/kitchen-sink`);
       await page.waitForLoadState('networkidle');
 
       // PostSidebar is `hidden lg:block` – invisible below 1024px
@@ -207,13 +208,13 @@ test.describe('Mobile Compatibility', () => {
     test('SeriesList (mobile series nav) is visible on post pages on mobile', async ({ page }) => {
       if (!isMobileViewport(page)) test.skip();
 
-      await page.goto('/posts/kitchen-sink');
+      await page.goto(`/${getPostsBasePath()}/kitchen-sink`);
       await page.waitForLoadState('networkidle');
       // Wait for article to render before querying series navigation
       await page.locator('article').first().waitFor({ state: 'visible' });
 
       // SeriesList renders below the post content on mobile as an alternative to the sidebar
-      const seriesList = page.locator('[data-testid="series-list"], .lg\\:hidden nav[aria-label]');
+      const seriesList = page.locator('[data-testid="series-list"]');
       // It may not exist on posts without a series – just confirm the page loaded
       const count = await seriesList.count();
       if (count > 0) {
@@ -241,12 +242,15 @@ test.describe('Mobile Compatibility', () => {
 
   // ── Font sizes ─────────────────────────────────────────────────────────────
   test.describe('Font sizes', () => {
-    test('body text is at least 14px (avoids forced iOS zoom)', async ({ page }) => {
+    test('search input font size prevents iOS auto-zoom (>= 16px)', async ({ page }) => {
       await page.goto('/');
-      const fontSize = await getFontSizePx(page, 'body');
-      // Inputs zoom at <16px on iOS; body prose text is typically larger.
-      // We check a relaxed lower bound; the viewport-zoom concern applies mainly to inputs.
-      expect(fontSize).toBeGreaterThanOrEqual(14);
+      // iOS auto-zooms the viewport when a focused input has font-size < 16px.
+      // Open the search modal to access the input and verify the threshold.
+      const searchBtn = page.getByRole('button', { name: /search/i });
+      if (!(await searchBtn.count())) { test.skip(); return; }
+      await searchBtn.click();
+      const fontSize = await getFontSizePx(page, 'input[aria-label="Search"]');
+      expect(fontSize).toBeGreaterThanOrEqual(16);
     });
   });
 
@@ -270,7 +274,7 @@ test.describe('Mobile Compatibility', () => {
     });
 
     test('images do not overflow their containers on a post page', async ({ page }) => {
-      await page.goto('/posts/kitchen-sink');
+      await page.goto(`/${getPostsBasePath()}/kitchen-sink`);
       await page.waitForLoadState('networkidle');
       // Wait for the article body to be present, then for all images to finish loading.
       // The kitchen-sink post has async content (Mermaid, KaTeX, syntax highlighting)
