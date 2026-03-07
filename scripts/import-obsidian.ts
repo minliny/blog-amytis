@@ -90,6 +90,24 @@ function tagsLiteral(tags: string[]): string {
   return tags.length > 0 ? `[${tags.map(t => `"${t}"`).join(', ')}]` : '[]';
 }
 
+// Transforms Obsidian [[Target Title]] → [[target-title]] and
+// [[Target Title|Label]] → [[target-title|Label]] using the same
+// slugify logic applied to filenames, so wikilinks resolve correctly
+// after import. Code spans/blocks are left untouched.
+function transformWikilinks(body: string): string {
+  const segments = body.split(/(```[\s\S]*?```|`[^`]+`)/g);
+  return segments.map((seg, i) => {
+    if (i % 2 !== 0) return seg;
+    return seg.replace(
+      /\[\[([^\]|]+?)(?:\|([^\]]+?))?\]\]/g,
+      (_, target, label) => {
+        const slug = slugify(target.trim());
+        return label ? `[[${slug}|${label.trim()}]]` : `[[${slug}]]`;
+      },
+    );
+  }).join('');
+}
+
 // ── Import tracking ──────────────────────────────────────────────────────────
 
 // Keys are relative paths from OBSIDIAN_DIR root (e.g. "journals/2024-01-15.md")
@@ -121,7 +139,8 @@ function processFlow(filePath: string, filename: string): boolean {
   const parsed = matter(raw);
 
   const existingTags: string[] = Array.isArray(parsed.data.tags) ? parsed.data.tags.map(String) : [];
-  const { body, tags: inlineTags } = extractInlineTags(parsed.content);
+  const { body: taggedBody, tags: inlineTags } = extractInlineTags(parsed.content);
+  const body = transformWikilinks(taggedBody);
   const tags = [...new Set([...existingTags.map(t => t.toLowerCase()), ...inlineTags])].sort();
 
   const outDir  = path.join(FLOWS_DIR, year, month);
@@ -176,7 +195,8 @@ function processNote(filePath: string, filename: string): boolean {
   const existingTags: string[] = Array.isArray(parsed.data.tags) ? parsed.data.tags.map(String) : [];
   const aliases: string[]      = Array.isArray(parsed.data.aliases) ? parsed.data.aliases.map(String) : [];
 
-  const { body, tags: inlineTags } = extractInlineTags(parsed.content);
+  const { body: taggedBody, tags: inlineTags } = extractInlineTags(parsed.content);
+  const body = transformWikilinks(taggedBody);
   const tags = [...new Set([...existingTags.map(t => t.toLowerCase()), ...inlineTags])].sort();
 
   const escapedTitle = title.replace(/"/g, '\\"');
