@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const slug = decodeURIComponent(rawSlug);
   const seriesData = getSeriesData(slug);
   const title = seriesData?.title || slug;
-  const allPosts = getSeriesPosts(slug);
+  const allPosts = seriesData?.type === 'collection' ? getCollectionPosts(slug) : getSeriesPosts(slug);
   const totalPages = Math.ceil(allPosts.length / PAGE_SIZE);
   return {
     title: `${title} - ${tWith('page_of_total', { page, total: totalPages })} | ${resolveLocale(siteConfig.title)}`,

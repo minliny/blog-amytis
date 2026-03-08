@@ -112,11 +112,18 @@ describe("Integration: Collections", () => {
     expect(all["modern-web-dev"].length).toBe(4);
   });
 
-  test("getAllSeries collection posts match getCollectionPosts", () => {
+  test("getAllSeries collection posts are sorted by date descending", () => {
+    const posts = getAllSeries()["modern-web-dev"];
+    for (let i = 1; i < posts.length; i++) {
+      expect(posts[i - 1].date >= posts[i].date).toBe(true);
+    }
+  });
+
+  test("getAllSeries collection contains same posts as getCollectionPosts", () => {
     const all = getAllSeries();
     const direct = getCollectionPosts("modern-web-dev");
-    expect(all["modern-web-dev"].map((p) => p.slug)).toEqual(
-      direct.map((p) => p.slug)
+    expect(all["modern-web-dev"].map((p) => p.slug).sort()).toEqual(
+      direct.map((p) => p.slug).sort()
     );
   });
 });

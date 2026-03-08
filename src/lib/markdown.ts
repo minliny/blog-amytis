@@ -23,11 +23,11 @@ const CollectionItemSchema = z.union([
     series: z.string(),
     exclude: z.array(z.string()).optional(),
     label: z.string().optional(),
-  }),
+  }).strict(),
   z.object({
     post: z.string(),
     label: z.string().optional(),
-  }),
+  }).strict(),
 ]);
 
 export type CollectionItem =
@@ -63,6 +63,21 @@ const PostSchema = z.object({
   toc: z.boolean().optional().default(true),
   commentable: z.boolean().optional(),
   externalLinks: z.array(ExternalLinkSchema).optional().default([]),
+}).superRefine((data, ctx) => {
+  if (data.type === 'collection' && (!data.items || data.items.length === 0)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['items'],
+      message: 'Collections require at least one item.',
+    });
+  }
+  if (data.type !== 'collection' && data.items) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['items'],
+      message: '`items` is only valid when `type` is "collection".',
+    });
+  }
 });
 
 export interface Heading {
@@ -803,7 +818,7 @@ export function getAllSeries(): Record<string, PostData[]> {
       return; // Skip draft series in production
     }
     series[slug] = seriesData?.type === 'collection'
-      ? getCollectionPosts(slug)
+      ? getCollectionPosts(slug).slice().sort((a, b) => (a.date < b.date ? 1 : -1))
       : getSeriesPosts(slug);
   });
 

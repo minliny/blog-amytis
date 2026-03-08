@@ -62,5 +62,5 @@ export function getStaticPageUrl(slug: string): string {
 
 /** Returns the post URL with a ?collection= query param to preserve collection navigation context. */
 export function getPostUrlInCollection(post: { slug: string; series?: string }, collectionSlug: string): string {
-  return `${getPostUrl(post)}?collection=${collectionSlug}`;
+  return `${getPostUrl(post)}?${new URLSearchParams({ collection: collectionSlug }).toString()}`;
 }
