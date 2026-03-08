@@ -60,7 +60,6 @@ export async function generateStaticParams() {
       const segments = from.split('/').filter(Boolean);
       if (segments.length !== 2) continue;
       const [fromPrefix, fromPostSlug] = segments;
-      if (fromPostSlug !== post.slug) continue; // only prefix changes supported
       if (from === getPostUrl(post)) continue;   // skip if this is already the canonical path
       params.push({ slug: fromPrefix, postSlug: fromPostSlug });
     }
@@ -79,7 +78,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string; postSlug: string }>;
 }): Promise<Metadata> {
   const { slug: prefix, postSlug: rawPostSlug } = await params;
-  const post = resolvePostFromParam(rawPostSlug);
+  const currentPath = `/${safeDecodeParam(prefix)}/${safeDecodeParam(rawPostSlug)}`;
+  const post =
+    resolvePostFromParam(rawPostSlug) ??
+    getAllPosts().find(candidate => candidate.redirectFrom?.includes(currentPath));
 
   if (!post) {
     return { title: 'Post Not Found' };
@@ -87,7 +89,6 @@ export async function generateMetadata({
 
   const siteUrl = siteConfig.baseUrl.replace(/\/+$/, '');
   const canonicalUrl = getPostUrl(post);
-  const currentPath = `/${prefix}/${safeDecodeParam(rawPostSlug)}`;
 
   // For redirect pages, return minimal metadata pointing to the canonical URL
   if (canonicalUrl !== currentPath) {
@@ -136,26 +137,31 @@ export default async function PrefixPostPage({
   params: Promise<{ slug: string; postSlug: string }>;
 }) {
   const { slug: prefix, postSlug: rawPostSlug } = await params;
+  const currentPath = `/${safeDecodeParam(prefix)}/${safeDecodeParam(rawPostSlug)}`;
 
-  // Validate the prefix is a known path: custom basePath, series customPath, or auto-path series slug
+  // Resolve the post: first by slug, then fall back to redirectFrom lookup for renamed slugs.
+  const post =
+    resolvePostFromParam(rawPostSlug) ??
+    getAllPosts().find(candidate => candidate.redirectFrom?.includes(currentPath));
+  if (!post) {
+    notFound();
+  }
+
+  // Validate the prefix is a known path: custom basePath, series customPath, auto-path series slug,
+  // or a legacy redirectFrom path declared on the resolved post.
   const basePath = getPostsBasePath();
   const customPaths = getSeriesCustomPaths();
   const isValidBasePath = prefix === basePath && basePath !== 'posts';
   const matchedSeriesSlug = Object.entries(customPaths).find(([, path]) => path === prefix)?.[0];
   const isAutoSeriesPath = getSeriesAutoPaths() && !(prefix in customPaths) && getSeriesData(prefix) !== null;
+  const isLegacyRedirect = post.redirectFrom?.includes(currentPath) ?? false;
 
-  if (!isValidBasePath && !matchedSeriesSlug && !isAutoSeriesPath) {
-    notFound();
-  }
-
-  const post = resolvePostFromParam(rawPostSlug);
-  if (!post) {
+  if (!isValidBasePath && !matchedSeriesSlug && !isAutoSeriesPath && !isLegacyRedirect) {
     notFound();
   }
 
   // If the canonical URL differs from the current path, render a redirect page.
   const canonicalUrl = getPostUrl(post);
-  const currentPath = `/${prefix}/${safeDecodeParam(rawPostSlug)}`;
   if (canonicalUrl !== currentPath) {
     return <RedirectPage to={canonicalUrl} />;
   }
