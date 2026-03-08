@@ -1,4 +1,4 @@
-import { getPageBySlug, getAllPages, getListingPosts, getSeriesData, getSeriesPosts, getSeriesAuthors, getAuthorSlug } from '@/lib/markdown';
+import { getPageBySlug, getAllPages, getAllPosts, getListingPosts, getSeriesData, getSeriesPosts, getSeriesAuthors, getAuthorSlug } from '@/lib/markdown';
 import { notFound } from 'next/navigation';
 import PostLayout from '@/layouts/PostLayout';
 import SimpleLayout from '@/layouts/SimpleLayout';
@@ -11,7 +11,8 @@ import { Metadata } from 'next';
 import { siteConfig } from '../../../site.config';
 import { resolveLocale, t } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
-import { getPostsBasePath, getSeriesCustomPaths } from '@/lib/urls';
+import { getPostsBasePath, getSeriesCustomPaths, getPostUrl } from '@/lib/urls';
+import RedirectPage from '@/components/RedirectPage';
 
 const POST_PAGE_SIZE = siteConfig.pagination.posts;
 const SERIES_PAGE_SIZE = siteConfig.pagination.series;
@@ -33,6 +34,16 @@ export async function generateStaticParams() {
   // Add series custom path listings (e.g. /weeklies)
   for (const customPath of Object.values(getSeriesCustomPaths())) {
     params.push({ slug: customPath });
+  }
+
+  // Add single-segment redirectFrom paths (e.g. /old-slug)
+  for (const post of getAllPosts()) {
+    for (const from of post.redirectFrom ?? []) {
+      const segments = from.split('/').filter(Boolean);
+      if (segments.length !== 1) continue;
+      if (from === getPostUrl(post)) continue;
+      params.push({ slug: segments[0] });
+    }
   }
 
   return params;
@@ -64,6 +75,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description: seriesData.excerpt,
       };
     }
+  }
+
+  // Single-segment redirectFrom
+  const redirectPost = getAllPosts().find(p => p.redirectFrom?.includes(`/${slug}`));
+  if (redirectPost) {
+    return { title: redirectPost.title };
   }
 
   const page = getPageBySlug(slug);
@@ -192,6 +209,12 @@ export default async function Page({
         )}
       </div>
     );
+  }
+
+  // Check if slug is a single-segment redirectFrom path
+  const redirectPost = getAllPosts().find(p => p.redirectFrom?.includes(`/${slug}`));
+  if (redirectPost) {
+    return <RedirectPage to={getPostUrl(redirectPost)} />;
   }
 
   // Default: static page
