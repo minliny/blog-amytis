@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.0] - 2026-03-08
+
+### Added
+- **Series Auto Paths**: Added `series.autoPaths` so series posts can be served directly at `/<series-slug>/<post-slug>` without manual per-series path mapping.
+- **URL Migration Tooling**: Added `bun run add-series-redirects` with `--dry-run` and `--auto-paths` support to backfill `redirectFrom` entries before route migrations.
+- **Collections**: Added curated cross-series collections with dedicated data-layer support, listing surfaces, and integration test coverage.
+- **Static Page Comments**: Added per-category comment controls plus optional comments on book chapters, notes, and flows.
+- **Obsidian Importer**: Added `bun run import-obsidian` for recursive vault import with wikilink rewriting and relative-path handling.
+- **Mobile Coverage**: Added Playwright-based mobile compatibility testing and homepage/navigation assertions across real-device profiles.
+
+### Changed
+- **Wikilink Readability**: Wikilinks now prefer rendered note titles over raw slugs where metadata is available.
+- **Homepage Behavior**: Clicking the logo on the homepage now scrolls back to the top, and section spacing stays consistent when optional homepage blocks are disabled.
+- **Documentation**: Refreshed repository guidance, architecture notes, and release-facing docs to match current commands, routing rules, and import workflows.
+
+### Fixed
+- **Redirect Safety**: Prevented `redirectFrom` aliases from hijacking reserved routes or existing pages, including conflicting and single-segment alias cases.
+- **Custom Route Redirects**: Fixed renamed-slug redirects for `series.customPaths` and `[slug]/[postSlug]` routes.
+- **Collection Integrity**: Fixed duplicate collection entries, draft leakage in production, and prev/next navigation inconsistencies.
+- **Tag URL Consistency**: Normalized mixed-case tag URLs without losing display casing and removed duplicate counting from same-document tag variants.
+- **Unicode Note Routing**: Fixed dev-mode handling for percent-encoded Unicode note slugs.
+- **Mobile UX**: Improved narrow-viewport layout stability, tap-target sizing, and flaky mobile test behavior.
+
 ## [1.11.0] - 2026-03-07
 
 ### Changed

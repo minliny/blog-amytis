@@ -19,7 +19,7 @@ export default siteConfig;
 const SAMPLE_PKG = JSON.stringify(
   {
     name: "@hutusi/amytis",
-    version: "1.11.0",
+    version: "1.12.0",
     private: false,
     repository: { type: "git", url: "git+https://github.com/hutusi/amytis.git" },
     bugs: { url: "https://github.com/hutusi/amytis/issues" },
@@ -166,7 +166,7 @@ describe("patchPackageJson", () => {
     const dir = setup();
     patchPackageJson(dir, "my-garden");
     const pkg = readPkg(dir);
-    expect(pkg.version).toBe("1.11.0");
+    expect(pkg.version).toBe("1.12.0");
     expect(pkg.dependencies).toEqual({ next: "16.1.6" });
   });
 
