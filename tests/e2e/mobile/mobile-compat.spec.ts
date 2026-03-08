@@ -428,5 +428,26 @@ test.describe('Mobile Compatibility', () => {
       await page.waitForLoadState('domcontentloaded');
       expect(page.url()).toContain(href);
     });
+
+    test('cover image in series catalog is wrapped in a link', async ({ page }) => {
+      await page.goto('/series/nextjs-deep-dive');
+      await page.waitForLoadState('load');
+
+      const imageLink = page.locator('article a:has(img)').first();
+      await expect(imageLink).toHaveAttribute('href', /.+/);
+    });
+
+    test('clicking series catalog cover image navigates to post page', async ({ page }) => {
+      await page.goto('/series/nextjs-deep-dive');
+      await page.waitForLoadState('load');
+
+      const imageLink = page.locator('article a:has(img)').first();
+      const href = await imageLink.getAttribute('href');
+      if (!href) { test.skip(); return; }
+
+      await imageLink.click();
+      await page.waitForLoadState('domcontentloaded');
+      expect(page.url()).toContain(href);
+    });
   });
 });
