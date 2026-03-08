@@ -36,12 +36,22 @@ export async function generateStaticParams() {
     params.push({ slug: customPath });
   }
 
-  // Add single-segment redirectFrom paths (e.g. /old-slug)
+  // Add single-segment redirectFrom paths (e.g. /old-slug), skipping any alias
+  // that collides with a reserved top-level slug (static pages, configured prefixes,
+  // or hardcoded Next.js routes) to avoid conflicts with dynamicParams = false.
+  const reservedSlugs = new Set([
+    ...pages.map(p => p.slug),
+    basePath,
+    ...Object.values(getSeriesCustomPaths()),
+    // Hardcoded top-level routes that have their own app/ directories
+    'posts', 'series', 'tags', 'authors', 'archive', 'books', 'flows', 'notes', 'search', 'page',
+  ]);
   for (const post of getAllPosts()) {
     for (const from of post.redirectFrom ?? []) {
       const segments = from.split('/').filter(Boolean);
       if (segments.length !== 1) continue;
       if (from === getPostUrl(post)) continue;
+      if (reservedSlugs.has(segments[0])) continue;
       params.push({ slug: segments[0] });
     }
   }
