@@ -212,8 +212,7 @@ test.describe('Mobile Compatibility', () => {
     test('post sidebar is hidden on mobile and tablet viewports', async ({ page }) => {
       if (!isMobileViewport(page)) test.skip();
 
-      await page.goto(`/${getPostsBasePath()}/kitchen-sink`);
-      await page.waitForLoadState('networkidle');
+      await page.goto(`/${getPostsBasePath()}/kitchen-sink`, { waitUntil: 'domcontentloaded' });
 
       // PostSidebar is `hidden lg:block` – invisible below 1024px
       const sidebar = page.locator('[data-testid="post-sidebar"]');
@@ -223,8 +222,7 @@ test.describe('Mobile Compatibility', () => {
     test('SeriesList (mobile series nav) is visible on post pages on mobile', async ({ page }) => {
       if (!isMobileViewport(page)) test.skip();
 
-      await page.goto(`/${getPostsBasePath()}/kitchen-sink`);
-      await page.waitForLoadState('networkidle');
+      await page.goto(`/${getPostsBasePath()}/kitchen-sink`, { waitUntil: 'domcontentloaded' });
       // Wait for article to render before querying series navigation
       await page.locator('article').first().waitFor({ state: 'visible' });
 
@@ -244,7 +242,7 @@ test.describe('Mobile Compatibility', () => {
       if (!isPhone(page)) test.skip();
 
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('load');
 
       // Arrows have class `hidden md:flex` — they must not be visible on phones
       const arrows = page.getByRole('button', { name: /scroll left|scroll right/i });
@@ -273,7 +271,7 @@ test.describe('Mobile Compatibility', () => {
   test.describe('Images', () => {
     test('images do not overflow their containers on homepage', async ({ page }) => {
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('load');
 
       const overflows = await page.evaluate(() => {
         const imgs = Array.from(document.querySelectorAll('img'));
@@ -289,8 +287,7 @@ test.describe('Mobile Compatibility', () => {
     });
 
     test('images do not overflow their containers on a post page', async ({ page }) => {
-      await page.goto(`/${getPostsBasePath()}/kitchen-sink`);
-      await page.waitForLoadState('networkidle');
+      await page.goto(`/${getPostsBasePath()}/kitchen-sink`, { waitUntil: 'domcontentloaded' });
       // Wait for the article body to be present, then for all images to finish loading.
       // The kitchen-sink post has async content (Mermaid, KaTeX, syntax highlighting)
       // that can delay image layout settlement beyond networkidle.
@@ -320,7 +317,7 @@ test.describe('Mobile Compatibility', () => {
       if (!isPhone(page)) test.skip();
 
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('load');
 
       // Each section we care about: check the heading and the sibling link are
       // both visible (i.e. the header row did not collapse one of them off-screen)
@@ -349,7 +346,7 @@ test.describe('Mobile Compatibility', () => {
       if (!isPhone(page)) test.skip();
 
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('load');
 
       // The hero stats container should not exceed the viewport width
       expect(await hasNoHorizontalOverflow(page)).toBe(true);
@@ -394,7 +391,7 @@ test.describe('Mobile Compatibility', () => {
   test.describe('Tags page', () => {
     test('tag cloud is scrollable without page overflow', async ({ page }) => {
       await page.goto('/tags');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('load');
       expect(await hasNoHorizontalOverflow(page)).toBe(true);
     });
   });
@@ -403,7 +400,7 @@ test.describe('Mobile Compatibility', () => {
   test.describe('Archive page', () => {
     test('archive timeline renders without overflow', async ({ page }) => {
       await page.goto('/archive');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('load');
       expect(await hasNoHorizontalOverflow(page)).toBe(true);
     });
   });
