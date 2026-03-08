@@ -55,14 +55,14 @@ test.describe('Mobile Compatibility', () => {
     for (const route of routes) {
       test(`${route} has no horizontal overflow`, async ({ page }) => {
         await page.goto(route);
-        await page.waitForLoadState('networkidle');
+        await page.waitForLoadState('load');
         expect(await hasNoHorizontalOverflow(page)).toBe(true);
       });
     }
 
     test('post page has no horizontal overflow', async ({ page }) => {
       await page.goto(`/${getPostsBasePath()}/kitchen-sink`);
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('load');
       expect(await hasNoHorizontalOverflow(page)).toBe(true);
     });
   });
