@@ -348,6 +348,21 @@ describe('generateStaticParams — placeholder when content is empty', () => {
       const params = await generateStaticParams();
       expect(params).not.toContainEqual({ slug: 'old-slug' });
     });
+
+    test('[slug]/page throws when redirectFrom alias conflicts with a reserved route', async () => {
+      mockedPosts = [{ slug: 'my-post', redirectFrom: ['/tags'] }];
+      const { generateStaticParams } = await import('../../src/app/[slug]/page');
+      expect(() => generateStaticParams()).toThrow('[amytis] redirectFrom "/tags"');
+    });
+
+    test('[slug]/page throws when two posts claim the same single-segment alias', async () => {
+      mockedPosts = [
+        { slug: 'post-a', redirectFrom: ['/old-slug'] },
+        { slug: 'post-b', redirectFrom: ['/old-slug'] },
+      ];
+      const { generateStaticParams } = await import('../../src/app/[slug]/page');
+      expect(() => generateStaticParams()).toThrow('[amytis] redirectFrom "/old-slug"');
+    });
   });
 
   describe('custom path routes', () => {

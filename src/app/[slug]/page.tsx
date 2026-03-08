@@ -36,9 +36,9 @@ export async function generateStaticParams() {
     params.push({ slug: customPath });
   }
 
-  // Add single-segment redirectFrom paths (e.g. /old-slug), skipping any alias
-  // that collides with a reserved top-level slug (static pages, configured prefixes,
-  // or hardcoded Next.js routes) to avoid conflicts with dynamicParams = false.
+  // Add single-segment redirectFrom paths (e.g. /old-slug).
+  // Throws on any alias that collides with a reserved top-level slug or a
+  // duplicate alias across posts — strict build catches misconfiguration early.
   const reservedSlugs = new Set([
     ...pages.map(p => p.slug),
     basePath,
@@ -51,8 +51,14 @@ export async function generateStaticParams() {
       const segments = from.split('/').filter(Boolean);
       if (segments.length !== 1) continue;
       if (from === getPostUrl(post)) continue;
-      if (reservedSlugs.has(segments[0])) continue;
-      params.push({ slug: segments[0] });
+      const alias = segments[0];
+      if (reservedSlugs.has(alias)) {
+        throw new Error(
+          `[amytis] redirectFrom "${from}" in post "${post.slug}" conflicts with an existing top-level route or redirect alias.`
+        );
+      }
+      reservedSlugs.add(alias);
+      params.push({ slug: alias });
     }
   }
 
