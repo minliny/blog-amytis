@@ -43,6 +43,10 @@ bun run sync-book                     # Sync chapters list for all books from di
 bun run sync-book <slug>              # Sync chapters list for one book
 ```
 
+## Design Principles
+
+- **Strict build over silent runtime failure.** This is a statically exported site — all misconfiguration must be caught at build time. Prefer `throw` in `generateStaticParams` and similar build-time functions over silent skips or `console.warn`. Examples: `validateSeriesAutoPaths` throws on slug collisions; `redirectFrom` alias conflicts should throw rather than silently producing broken redirects.
+
 ## Architecture
 
 ### Data Flow
