@@ -296,22 +296,25 @@ describe('generateStaticParams — placeholder when content is empty', () => {
   });
 
   describe('autoPaths series routing', () => {
-    test('[slug]/[postSlug] includes series posts as auto-path params', async () => {
-      mockedSeries = { 'my-series': [{ slug: 'my-post' }] };
-      const { generateStaticParams } = await import('../../src/app/[slug]/[postSlug]/page');
-      const params = await generateStaticParams();
-      expect(params).toContainEqual({ slug: 'my-series', postSlug: 'my-post' });
-    });
+    // autoPaths defaults to false — series posts are served at /posts/[slug] unless explicitly enabled
 
-    test('posts/[slug] excludes series posts (served at /[series]/[slug] instead)', async () => {
+    test('posts/[slug] includes series posts when autoPaths is disabled (default)', async () => {
       mockedPosts = [{ slug: 'series-post', series: 'my-series' }];
       const { generateStaticParams } = await import('../../src/app/posts/[slug]/page');
       const params = await generateStaticParams();
-      expect(params).not.toContainEqual({ slug: 'series-post' });
+      expect(params).toContainEqual({ slug: 'series-post' });
     });
 
-    test('posts/[slug] includes series post when redirectFrom lists /posts/[slug]', async () => {
-      mockedPosts = [{ slug: 'my-post', series: 'my-series', redirectFrom: ['/posts/my-post'] }];
+    test('[slug]/[postSlug] does not include series auto-path params when autoPaths is disabled', async () => {
+      mockedSeries = { 'my-series': [{ slug: 'my-post' }] };
+      const { generateStaticParams } = await import('../../src/app/[slug]/[postSlug]/page');
+      const params = await generateStaticParams();
+      expect(params).not.toContainEqual({ slug: 'my-series', postSlug: 'my-post' });
+    });
+
+    test('posts/[slug] includes series post when canonical matches /posts/[slug]', async () => {
+      // With autoPaths: false, getPostUrl returns /posts/[slug] for series posts
+      mockedPosts = [{ slug: 'my-post', series: 'my-series' }];
       const { generateStaticParams } = await import('../../src/app/posts/[slug]/page');
       const params = await generateStaticParams();
       expect(params).toContainEqual({ slug: 'my-post' });

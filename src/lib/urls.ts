@@ -22,18 +22,23 @@ export function getSeriesCustomPaths(): Record<string, string> {
 }
 
 export function getSeriesAutoPaths(): boolean {
-  return siteConfig.series?.autoPaths ?? true;
+  return siteConfig.series?.autoPaths ?? false;
 }
 
 /**
  * Validates that no series slug (without a customPaths override) conflicts with a reserved
- * top-level route. Throws a build-time error on collision so misconfiguration is caught early.
+ * top-level route or a static page slug. Throws a build-time error on collision so
+ * misconfiguration is caught early.
+ *
+ * `extraReserved` accepts additional slugs to check (e.g. static page slugs from
+ * getAllPages()) — passed by the caller to avoid a circular dependency between
+ * urls.ts and markdown.ts.
  */
-export function validateSeriesAutoPaths(seriesSlugs: string[]): void {
+export function validateSeriesAutoPaths(seriesSlugs: string[], extraReserved: string[] = []): void {
   if (!getSeriesAutoPaths()) return;
   const customPaths = getSeriesCustomPaths();
   const basePath = getPostsBasePath();
-  const reserved = new Set([...RESERVED_ROUTE_SEGMENTS, basePath]);
+  const reserved = new Set([...RESERVED_ROUTE_SEGMENTS, basePath, ...extraReserved]);
 
   for (const slug of seriesSlugs) {
     if (slug in customPaths) continue; // Has an explicit override — skip

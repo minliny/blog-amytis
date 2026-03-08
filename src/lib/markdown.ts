@@ -306,6 +306,7 @@ function parseMarkdownFile(fullPath: string, slug: string, dateFromFileName?: st
     type: data.type,
     items: data.items as CollectionItem[] | undefined,
     externalLinks: data.externalLinks,
+    redirectFrom: data.redirectFrom,
     readingTime,
     content: contentWithoutH1,
     headings,

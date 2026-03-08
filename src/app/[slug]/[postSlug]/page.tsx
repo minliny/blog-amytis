@@ -1,4 +1,4 @@
-import { getPostBySlug, getAllPosts, getAllSeries, getRelatedPosts, getSeriesPosts, getSeriesData, getAdjacentPosts, buildSlugRegistry, getBacklinks, getCollectionsForPost, PostData } from '@/lib/markdown';
+import { getPostBySlug, getAllPosts, getAllSeries, getAllPages, getRelatedPosts, getSeriesPosts, getSeriesData, getAdjacentPosts, buildSlugRegistry, getBacklinks, getCollectionsForPost, PostData } from '@/lib/markdown';
 import { notFound } from 'next/navigation';
 import PostLayout from '@/layouts/PostLayout';
 import SimpleLayout from '@/layouts/SimpleLayout';
@@ -46,7 +46,8 @@ export async function generateStaticParams() {
   if (getSeriesAutoPaths()) {
     const allSeriesMap = getAllSeries();
     const allSeriesSlugs = Object.keys(allSeriesMap);
-    validateSeriesAutoPaths(allSeriesSlugs); // Throws if any slug collides with a reserved route
+    const pageSlugSet = getAllPages().map(p => p.slug);
+    validateSeriesAutoPaths(allSeriesSlugs, pageSlugSet); // Throws if any slug collides with a reserved route or static page
     for (const seriesSlug of allSeriesSlugs) {
       if (seriesSlug in customPaths) continue; // Already handled by customPaths above
       allSeriesMap[seriesSlug].forEach(post => { params.push({ slug: seriesSlug, postSlug: post.slug }); });
