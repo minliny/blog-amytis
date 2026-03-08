@@ -119,6 +119,7 @@ The scaffold command downloads the latest tagged Amytis release, installs depend
 ## Core
 bun dev
 bun run lint
+bun run build:graph
 bun run validate
 
 ## Build & Deploy
@@ -132,6 +133,7 @@ bun test
 bun run test:unit
 bun run test:int
 bun run test:e2e
+bun run test:mobile
 
 ## Create Content
 bun run new "Post Title"
@@ -144,9 +146,11 @@ bun run new-flow
 bun run new-from-pdf ./doc.pdf
 bun run new-from-images ./photos
 bun run new-flow-from-chat
+bun run import-obsidian
 bun run import-book
 bun run sync-book
 bun run series-draft "series-slug"
+bun run add-series-redirects --dry-run
 ```
 
 ### Importing Chat Logs to Flows
@@ -162,7 +166,7 @@ Import history is stored in `imports/chats/.imported`.
 
 ## Configuration
 
-All site settings are managed in `site.config.ts`:
+Primary site settings live in `site.config.ts`. `site.config.example.ts` is the reference template used by the scaffold and is useful when reviewing new options:
 
 ```typescript
 export const siteConfig = {
@@ -182,27 +186,66 @@ export const siteConfig = {
 };
 ```
 
+High-impact areas to customize first:
+
+- Site identity: `title`, `description`, `baseUrl`, `ogImage`, `logo`
+- Navigation and footer: `nav`, `footer`, `subscribe`, `social`
+- Content behavior: `posts.basePath`, `posts.includeDateInUrl`, `series.autoPaths`, `series.customPaths`
+- Homepage composition: `hero`, `homepage.sections`
+- Integrations: `analytics`, `comments`, `feed`, `i18n`
+
+For static hosting behind nginx, start from `nginx.conf.example`.
+
+## Static Export Routing Rules
+
+Amytis is built around Next.js static export with `output: "export"` and `trailingSlash: true`.
+
+- In `generateStaticParams()`, return raw segment values. Do not pre-encode with `encodeURIComponent`.
+- Link to concrete URLs such as `/posts/中文测试文章`, not route placeholders like `/posts/[slug]`.
+- Posts default to `/<posts.basePath>/<slug>` and `posts.basePath` defaults to `/posts`.
+- If `series.autoPaths` is enabled, series posts move to `/<series-slug>/<post-slug>`.
+- If `series.customPaths` is configured, those custom prefixes override `autoPaths`.
+- Before moving series posts off the default posts path, run `bun run add-series-redirects --dry-run` and then `bun run add-series-redirects` so legacy URLs still resolve.
+
 ## Writing Content
 
 ### Posts
 
 Create `.md` or `.mdx` files in `content/posts/`.
 
+- Flat file: `content/posts/my-post.mdx`
+- Date-prefixed file: `content/posts/2026-01-01-my-post.mdx`
+- Folder post with co-located media: `content/posts/my-post/index.mdx` plus `content/posts/my-post/images/*`
+- CLI: `bun run new "Post Title"` or `bun run new "Post Title" --folder`
+
 ### Flows
 
-Create daily notes in `content/flows/YYYY/MM/DD.mdx` or `content/flows/YYYY/MM/DD/index.mdx`.
+Create daily notes in `content/flows/YYYY/MM/DD.md` or `.mdx`.
+
+- CLI: `bun run new-flow` creates today’s entry
+- Chat import: put exports in `imports/chats/` and run `bun run new-flow-from-chat`
 
 ### Series
 
-Create a directory in `content/series/` with an `index.mdx`.
+Create a directory in `content/series/<slug>/` with an `index.mdx`, then add posts as sibling files or folders.
+
+- CLI: `bun run new-series "Series Name"`
+- You can also create a post directly inside an existing series with `bun run new "Post Title" --series <series-slug>`
 
 ### Books
 
-Books are for long-form, structured content. Create a directory in `content/books/`.
+Books are long-form structured content under `content/books/<slug>/`.
+
+- Keep book metadata in `index.mdx`
+- Add chapter files beside it, for example `introduction.mdx` or `setup.mdx`
+- Use `bun run import-book` and `bun run sync-book` for book-oriented workflows
 
 ### Notes
 
-Create evergreen notes in `content/notes/` (e.g., `concept.mdx`). Use `[[wiki-links]]` to connect them.
+Create evergreen notes in `content/notes/` (for example `concept.mdx`). Use `[[wiki-links]]` to connect them.
+
+- CLI: `bun run new-note "Concept"`
+- Unicode slugs are supported intentionally for notes and posts where needed
 
 ## Project Structure
 
@@ -215,7 +258,10 @@ amytis/
     notes/              # Digital garden notes
     flows/              # Daily notes (YYYY/MM/DD)
     about.mdx           # Static pages
+  docs/                 # Architecture, deployment, troubleshooting
+  imports/              # Local-only input files for import scripts
   public/               # Static assets
+  scripts/              # Bun authoring/build/import tooling
   src/
     app/                # Next.js App Router pages
       books/            # Book routes
@@ -225,6 +271,7 @@ amytis/
     components/         # React components
     lib/
       markdown.ts       # Data access layer
+  tests/                # Unit, integration, e2e, tooling tests
   packages/
     create-amytis/      # `bun create amytis` scaffold CLI
   site.config.ts        # Site configuration

@@ -70,8 +70,11 @@ src/app/
 - `next.config.ts` sets `output: "export"` and `trailingSlash: true`.
 - Post URLs use `getPostUrl()` in `src/lib/urls.ts`:
   - Default: `/<posts.basePath>/<post.slug>` (basePath defaults to `posts`)
+  - Series auto path: `/<series.slug>/<post.slug>` when `series.autoPaths` is enabled
   - Series override: `/<series.customPaths[seriesSlug]>/<post.slug>`
 - Dynamic route params should return raw segment values from `generateStaticParams()` (do not pre-encode values).
+- Links should always target concrete paths, not route placeholders such as `/posts/[slug]`.
+- When moving series posts off the default posts path, `scripts/add-series-redirects.ts` updates frontmatter `redirectFrom` entries so static redirect pages can be generated.
 
 ## Key Components
 

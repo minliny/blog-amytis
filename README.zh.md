@@ -110,6 +110,7 @@ bun dev
 ## Core
 bun dev
 bun run lint
+bun run build:graph
 bun run validate
 
 ## Build & Deploy
@@ -123,6 +124,7 @@ bun test
 bun run test:unit
 bun run test:int
 bun run test:e2e
+bun run test:mobile
 
 ## Create Content
 bun run new "Post Title"
@@ -135,9 +137,11 @@ bun run new-flow
 bun run new-from-pdf ./doc.pdf
 bun run new-from-images ./photos
 bun run new-flow-from-chat
+bun run import-obsidian
 bun run import-book
 bun run sync-book
 bun run series-draft "series-slug"
+bun run add-series-redirects --dry-run
 ```
 
 ### 导入聊天记录到 Flows
@@ -153,15 +157,37 @@ bun run new-flow-from-chat
 
 ## 配置
 
-所有站点配置集中在 `site.config.ts`。
+主要站点配置集中在 `site.config.ts`，`site.config.example.ts` 则是更完整的参考模板，适合查看可选项和默认写法。
+
+优先关注这些配置区块：
+
+- 站点信息：`title`、`description`、`baseUrl`、`ogImage`、`logo`
+- 导航与页脚：`nav`、`footer`、`subscribe`、`social`
+- 内容路由：`posts.basePath`、`posts.includeDateInUrl`、`series.autoPaths`、`series.customPaths`
+- 首页结构：`hero`、`homepage.sections`
+- 集成能力：`analytics`、`comments`、`feed`、`i18n`
+
+如果你部署到 nginx，可直接从 `nginx.conf.example` 开始调整。
+
+## 静态导出路由规则
+
+Amytis 基于 Next.js 静态导出，核心约束是 `output: "export"` 和 `trailingSlash: true`。
+
+- 在 `generateStaticParams()` 中返回原始路径片段，不要手动用 `encodeURIComponent`
+- 链接必须指向真实路径，例如 `/posts/中文测试文章`，不要写 `/posts/[slug]`
+- 文章默认路径是 `/<posts.basePath>/<slug>`，其中 `posts.basePath` 默认值为 `/posts`
+- 启用 `series.autoPaths` 后，系列文章会切换到 `/<series-slug>/<post-slug>`
+- 配置了 `series.customPaths` 时，会优先使用自定义前缀覆盖 `autoPaths`
+- 如果准备把系列文章从默认 `/posts/...` 路径迁走，先执行 `bun run add-series-redirects --dry-run`，确认后再执行 `bun run add-series-redirects`
 
 ## 内容写作
 
-- **Posts**：创建到 `content/posts/`
-- **Flows**：创建到 `content/flows/YYYY/MM/DD.mdx`（或文件夹模式）
-- **Series**：创建 `content/series/<slug>/index.mdx`
-- **Books**：创建到 `content/books/<slug>/`
-- **Notes**：创建到 `content/notes/`，支持 `[[wiki-links]]`
+- **Posts**：写入 `content/posts/`，支持单文件、日期前缀和文件夹模式。文件夹模式可将图片放在同目录的 `images/` 中。CLI：`bun run new "Post Title"` 或 `bun run new "Post Title" --folder`
+- **Flows**：写入 `content/flows/YYYY/MM/DD.md` 或 `.mdx`。CLI：`bun run new-flow`
+- **Series**：创建 `content/series/<slug>/index.mdx`，系列内文章可作为同级文件或子目录。CLI：`bun run new-series "Series Name"`
+- **Books**：写入 `content/books/<slug>/`，通常用 `index.mdx` 存元数据，其余章节文件与其并列
+- **Notes**：写入 `content/notes/`，支持 `[[wiki-links]]`。CLI：`bun run new-note "Concept"`
+- **Unicode slug**：文章和笔记支持有意使用 Unicode slug，修改动态路由时要一起验证 ASCII 和 Unicode 路径
 
 ## 项目结构
 
@@ -173,11 +199,15 @@ amytis/
     books/
     notes/
     flows/
+  docs/
+  imports/
   public/
+  scripts/
   src/
     app/
     components/
     lib/
+  tests/
   packages/
     create-amytis/
   site.config.ts

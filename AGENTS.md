@@ -6,8 +6,10 @@
 - `src/lib/`: Content parsing and shared logic (`markdown.ts`, feed helpers, URL helpers, rehype/remark utilities).
 - `content/`: Markdown/MDX source content for posts, series, books, notes, flows, and static pages. Use folder posts (`index.mdx` + `images/` or `assets/`) when media is co-located.
 - `tests/`: Integration/e2e/tooling suites; keep focused utility tests near source (example: `src/lib/markdown.test.ts`).
-- `scripts/`: Bun-based authoring/import tooling.
+- `scripts/`: Bun-based authoring/import/build tooling.
+- `imports/`: Local-only staging area for chat logs, PDFs, and image folders consumed by import scripts; see `imports/README.md`.
 - `packages/create-amytis/`: The `bun create amytis` scaffold CLI; keep its tests aligned with repo scaffolding behavior.
+- `site.config.ts` is the live site configuration; `site.config.example.ts` is the fuller reference template.
 
 ## Build, Test, and Development Commands
 - `bun install`: Install dependencies.
@@ -18,8 +20,8 @@
 - `bun run validate`: Run the recommended pre-PR validation sequence (`lint`, `test`, `build:dev`).
 - `bun run clean`: Remove generated outputs (`.next`, `out`, `public/posts`, `public/books`, `public/flows`).
 - `bun run lint`: Run ESLint.
-- `bun test` / `bun run test:unit` / `bun run test:int` / `bun run test:e2e`: Run all or scoped tests.
-- Content tooling: `bun run new`, `bun run new-weekly`, `bun run new-series`, `bun run new-note`, `bun run new-flow`, `bun run new-flow-from-chat`, `bun run new-from-pdf`, `bun run new-from-images`, `bun run import-book`, `bun run sync-book`, `bun run series-draft`.
+- `bun test` / `bun run test:unit` / `bun run test:int` / `bun run test:e2e` / `bun run test:mobile`: Run all or scoped tests.
+- Content tooling: `bun run new`, `bun run new-weekly`, `bun run new-series`, `bun run new-note`, `bun run new-flow`, `bun run new-flow-from-chat`, `bun run new-from-pdf`, `bun run new-from-images`, `bun run import-obsidian`, `bun run import-book`, `bun run sync-book`, `bun run series-draft`, `bun run add-series-redirects`.
 
 ## Coding Style & Naming Conventions
 - Use TypeScript for app and utility code; MDX/Markdown for content.
@@ -31,7 +33,8 @@
 - Project uses `output: "export"` and `trailingSlash: true` in `next.config.ts`.
 - In `generateStaticParams()`, return raw segment values; do not pre-encode with `encodeURIComponent`.
 - Never link to route placeholders like `/posts/[slug]`; always link to concrete slugs (for example, `/posts/中文测试文章`).
-- Posts may also resolve through custom top-level paths via `series.customPaths` and `[slug]/[postSlug]`; preserve those URL helpers instead of hardcoding paths.
+- Posts default to `/<posts.basePath>/<slug>`, but may also resolve through `series.autoPaths`, `series.customPaths`, and `[slug]/[postSlug]`; preserve URL helpers instead of hardcoding paths.
+- Before moving series posts away from the default posts path, run `bun run add-series-redirects --dry-run` and then `bun run add-series-redirects` so legacy URLs keep resolving.
 - When touching dynamic routes, verify both ASCII and Unicode paths.
 
 ## Testing Guidelines
