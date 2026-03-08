@@ -63,6 +63,7 @@ const PostSchema = z.object({
   toc: z.boolean().optional().default(true),
   commentable: z.boolean().optional(),
   externalLinks: z.array(ExternalLinkSchema).optional().default([]),
+  redirectFrom: z.array(z.string()).optional().default([]),
 }).superRefine((data, ctx) => {
   if (data.type === 'collection' && (!data.items || data.items.length === 0)) {
     ctx.addIssue({
@@ -115,6 +116,7 @@ export interface PostData {
   toc?: boolean;
   commentable?: boolean;
   externalLinks?: ExternalLink[];
+  redirectFrom?: string[];
   readingTime: string;
   content: string;
   headings: Heading[];

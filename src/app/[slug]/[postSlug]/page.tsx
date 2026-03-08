@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 import { siteConfig } from '../../../../site.config';
 import { resolveLocale } from '@/lib/i18n';
 import { getPostsBasePath, getSeriesCustomPaths, getSeriesAutoPaths, validateSeriesAutoPaths, getPostUrl } from '@/lib/urls';
+import RedirectPage from '@/components/RedirectPage';
 import { buildPostJsonLd, serializeJsonLd } from '@/lib/json-ld';
 
 function safeDecodeParam(param: string): string {
@@ -52,6 +53,18 @@ export async function generateStaticParams() {
     }
   }
 
+  // redirectFrom entries — generate redirect pages for 2-segment old paths
+  for (const post of getAllPosts()) {
+    for (const from of post.redirectFrom ?? []) {
+      const segments = from.split('/').filter(Boolean);
+      if (segments.length !== 2) continue;
+      const [fromPrefix, fromPostSlug] = segments;
+      if (fromPostSlug !== post.slug) continue; // only prefix changes supported
+      if (from === getPostUrl(post)) continue;   // skip if this is already the canonical path
+      params.push({ slug: fromPrefix, postSlug: fromPostSlug });
+    }
+  }
+
   // Placeholder keeps Next.js happy with output: export when no custom paths configured.
   // dynamicParams = false ensures any unrecognised slug/postSlug combo returns 404.
   return params.length > 0 ? params : [{ slug: '_', postSlug: '_' }];
@@ -64,11 +77,23 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string; postSlug: string }>;
 }): Promise<Metadata> {
-  const { postSlug: rawPostSlug } = await params;
+  const { slug: prefix, postSlug: rawPostSlug } = await params;
   const post = resolvePostFromParam(rawPostSlug);
 
   if (!post) {
     return { title: 'Post Not Found' };
+  }
+
+  const siteUrl = siteConfig.baseUrl.replace(/\/+$/, '');
+  const canonicalUrl = getPostUrl(post);
+  const currentPath = `/${prefix}/${safeDecodeParam(rawPostSlug)}`;
+
+  // For redirect pages, return minimal metadata pointing to the canonical URL
+  if (canonicalUrl !== currentPath) {
+    return {
+      title: post.title,
+      alternates: { canonical: `${siteUrl}${canonicalUrl}` },
+    };
   }
 
   const ogImage =
@@ -125,6 +150,13 @@ export default async function PrefixPostPage({
   const post = resolvePostFromParam(rawPostSlug);
   if (!post) {
     notFound();
+  }
+
+  // If the canonical URL differs from the current path, render a redirect page.
+  const canonicalUrl = getPostUrl(post);
+  const currentPath = `/${prefix}/${safeDecodeParam(rawPostSlug)}`;
+  if (canonicalUrl !== currentPath) {
+    return <RedirectPage to={canonicalUrl} />;
   }
 
   const layout = post.layout || 'post';

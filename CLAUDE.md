@@ -158,6 +158,9 @@ externalLinks:             # Links to external discussions
     url: "https://news.ycombinator.com/item?id=12345"
   - name: "V2EX"
     url: "https://v2ex.com/t/123456"
+redirectFrom:              # Old URLs that should redirect to this post (prefix changes only)
+  - /posts/my-old-slug
+  - /old-series/my-old-slug
 ---
 ```
 

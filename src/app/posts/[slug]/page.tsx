@@ -5,8 +5,9 @@ import SimpleLayout from '@/layouts/SimpleLayout';
 import { Metadata } from 'next';
 import { siteConfig } from '../../../../site.config';
 import { resolveLocale } from '@/lib/i18n';
-import { getPostsBasePath, getPostUrl, getSeriesCustomPaths, getSeriesAutoPaths } from '@/lib/urls';
+import { getPostsBasePath, getPostUrl } from '@/lib/urls';
 import { buildPostJsonLd, serializeJsonLd, resolveImageUrl } from '@/lib/json-ld';
+import RedirectPage from '@/components/RedirectPage';
 
 function safeDecodeParam(param: string): string {
   try {
@@ -34,13 +35,15 @@ export async function generateStaticParams() {
   if (getPostsBasePath() !== 'posts') return [{ slug: '_' }]; // Route disabled; custom path handles this
   const posts = getAllPosts();
 
-  // When autoPaths is enabled, series posts are served at /[series-slug]/[post-slug].
-  // Exclude them here so they don't get a duplicate page at /posts/[slug].
-  const autoPaths = getSeriesAutoPaths();
-  const customPaths = getSeriesCustomPaths();
-  const filtered = autoPaths
-    ? posts.filter(p => !p.series || p.series in customPaths)
-    : posts;
+  // Include a post if its canonical URL is /posts/[slug] (normal render),
+  // or if /posts/[slug] appears in its redirectFrom list (redirect page).
+  const basePath = getPostsBasePath();
+  const filtered = posts.filter(p => {
+    const canonical = getPostUrl(p);
+    if (canonical === `/${basePath}/${p.slug}`) return true;
+    // autoPaths or customPaths moved this post — include only if it opts into a redirect here
+    return (p.redirectFrom ?? []).includes(`/${basePath}/${p.slug}`);
+  });
 
   if (filtered.length === 0) return [{ slug: '_' }];
   // Work around Next dev static-param checks for percent-encoded Unicode paths
@@ -69,6 +72,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   const siteUrl = siteConfig.baseUrl.replace(/\/+$/, '');
+  const canonicalUrl = getPostUrl(post);
+  const currentPath = `/${getPostsBasePath()}/${safeDecodeParam(rawSlug)}`;
+
+  // For redirect pages, return minimal metadata pointing to the canonical URL
+  if (canonicalUrl !== currentPath) {
+    return {
+      title: post.title,
+      alternates: { canonical: `${siteUrl}${canonicalUrl}` },
+    };
+  }
+
   const ogImage = resolveImageUrl(post.coverImage, siteConfig.ogImage, siteUrl);
 
   return {
@@ -110,6 +124,14 @@ export default async function PostPage({
 
   if (!post) {
     notFound();
+  }
+
+  // If the canonical URL differs from the current path, render a redirect page.
+  // This handles posts moved by autoPaths or customPaths that opted in via redirectFrom.
+  const canonicalUrl = getPostUrl(post);
+  const currentPath = `/${getPostsBasePath()}/${slug}`;
+  if (canonicalUrl !== currentPath) {
+    return <RedirectPage to={canonicalUrl} />;
   }
 
   // Determine layout based on frontmatter
