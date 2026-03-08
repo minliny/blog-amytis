@@ -35,6 +35,9 @@ bun run new-series "Series Name"      # Create new series
 bun run new-from-pdf doc.pdf          # Create post from PDF
 bun run new-from-images ./photos      # Create post from image folder
 bun run new-flow                      # Create today's flow note
+bun run add-series-redirects                    # Add redirectFrom to all series posts (for autoPaths migration)
+bun run add-series-redirects <series-slug>      # Add redirectFrom to one series only
+bun run add-series-redirects --dry-run          # Preview without writing
 bun run new-flow-from-chat            # Import all new files from imports/chats/
 bun run sync-book                     # Sync chapters list for all books from disk
 bun run sync-book <slug>              # Sync chapters list for one book
