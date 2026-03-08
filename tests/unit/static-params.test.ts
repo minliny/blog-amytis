@@ -88,7 +88,7 @@ beforeAll(() => {
   mock.module('@/lib/markdown', () => ({
     getAllFlows: () => [],
     getAllNotes: () => mockedNotes,
-    getAllPosts: () => mockedPosts,
+    getAllPosts: () => mockedPosts.filter(p => !(process.env.NODE_ENV === 'production' && p.draft)),
     getAllBooks: () => [],
     getAllSeries: () => mockedSeries,
     getAllTags: () => ({}),
@@ -325,6 +325,43 @@ describe('generateStaticParams — placeholder when content is empty', () => {
       const { generateStaticParams } = await import('../../src/app/[slug]/[postSlug]/page');
       const params = await generateStaticParams();
       expect(params).toContainEqual({ slug: 'old-prefix', postSlug: 'my-post' });
+    });
+
+    test('[slug]/page includes single-segment redirectFrom paths as additional params', async () => {
+      mockedPosts = [{ slug: 'my-post', redirectFrom: ['/old-slug'] }];
+      const { generateStaticParams } = await import('../../src/app/[slug]/page');
+      const params = await generateStaticParams();
+      expect(params).toContainEqual({ slug: 'old-slug' });
+    });
+
+    test('[slug]/page does not include multi-segment redirectFrom paths', async () => {
+      mockedPosts = [{ slug: 'my-post', redirectFrom: ['/old-prefix/my-post'] }];
+      const { generateStaticParams } = await import('../../src/app/[slug]/page');
+      const params = await generateStaticParams();
+      expect(params).not.toContainEqual({ slug: 'old-prefix' });
+    });
+
+    test('[slug]/page does not include single-segment redirectFrom for draft posts in production', async () => {
+      mockedPosts = [{ slug: 'my-post', draft: true, redirectFrom: ['/old-slug'] }];
+      process.env.NODE_ENV = 'production';
+      const { generateStaticParams } = await import('../../src/app/[slug]/page');
+      const params = await generateStaticParams();
+      expect(params).not.toContainEqual({ slug: 'old-slug' });
+    });
+
+    test('[slug]/page throws when redirectFrom alias conflicts with a reserved route', async () => {
+      mockedPosts = [{ slug: 'my-post', redirectFrom: ['/tags'] }];
+      const { generateStaticParams } = await import('../../src/app/[slug]/page');
+      expect(() => generateStaticParams()).toThrow('[amytis] redirectFrom "/tags"');
+    });
+
+    test('[slug]/page throws when two posts claim the same single-segment alias', async () => {
+      mockedPosts = [
+        { slug: 'post-a', redirectFrom: ['/old-slug'] },
+        { slug: 'post-b', redirectFrom: ['/old-slug'] },
+      ];
+      const { generateStaticParams } = await import('../../src/app/[slug]/page');
+      expect(() => generateStaticParams()).toThrow('[amytis] redirectFrom "/old-slug"');
     });
   });
 
