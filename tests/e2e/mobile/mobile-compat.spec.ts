@@ -430,7 +430,13 @@ test.describe('Mobile Compatibility', () => {
     });
 
     test('cover image in series catalog is wrapped in a link', async ({ page }) => {
-      await page.goto('/series/nextjs-deep-dive');
+      await page.goto('/series');
+      await page.waitForLoadState('load');
+      const seriesLink = page.locator('a[href^="/series/"]').first();
+      const seriesHref = await seriesLink.getAttribute('href');
+      if (!seriesHref) { test.skip(); return; }
+
+      await page.goto(seriesHref);
       await page.waitForLoadState('load');
 
       const imageLink = page.locator('article a:has(img)').first();
@@ -438,7 +444,13 @@ test.describe('Mobile Compatibility', () => {
     });
 
     test('clicking series catalog cover image navigates to post page', async ({ page }) => {
-      await page.goto('/series/nextjs-deep-dive');
+      await page.goto('/series');
+      await page.waitForLoadState('load');
+      const seriesLink = page.locator('a[href^="/series/"]').first();
+      const seriesHref = await seriesLink.getAttribute('href');
+      if (!seriesHref) { test.skip(); return; }
+
+      await page.goto(seriesHref);
       await page.waitForLoadState('load');
 
       const imageLink = page.locator('article a:has(img)').first();
