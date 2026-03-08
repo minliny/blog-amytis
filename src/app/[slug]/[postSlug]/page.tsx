@@ -47,7 +47,7 @@ export async function generateStaticParams() {
     const allSeriesMap = getAllSeries();
     const allSeriesSlugs = Object.keys(allSeriesMap);
     const pageSlugSet = getAllPages().map(p => p.slug);
-    validateSeriesAutoPaths(allSeriesSlugs, pageSlugSet); // Throws if any slug collides with a reserved route or static page
+    validateSeriesAutoPaths(allSeriesSlugs, [...pageSlugSet, ...Object.values(customPaths)]); // Throws if any slug collides with a reserved route, static page, or customPaths prefix
     for (const seriesSlug of allSeriesSlugs) {
       if (seriesSlug in customPaths) continue; // Already handled by customPaths above
       allSeriesMap[seriesSlug].forEach(post => { params.push({ slug: seriesSlug, postSlug: post.slug }); });

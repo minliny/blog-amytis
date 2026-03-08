@@ -120,7 +120,11 @@ function processPost({ filePath, slug, seriesSlug }: PostFile): boolean {
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data, content: body } = matter(fileContents);
 
-  const redirectFrom: string[] = Array.isArray(data.redirectFrom) ? data.redirectFrom : [];
+  const redirectFrom: string[] = Array.isArray(data.redirectFrom)
+    ? [...data.redirectFrom]
+    : typeof data.redirectFrom === 'string'
+      ? [data.redirectFrom]
+      : [];
   if (redirectFrom.includes(oldPath)) {
     console.log(`  [skip] ${slug} — redirectFrom already contains ${oldPath}`);
     return false;
