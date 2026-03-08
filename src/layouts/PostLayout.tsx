@@ -167,7 +167,9 @@ export default function PostLayout({ post, relatedPosts, seriesPosts, seriesTitl
             <ExternalLinks links={post.externalLinks} />
           )}
 
-          <PostNavigation prev={prevPost ?? null} next={nextPost ?? null} />
+          <Suspense fallback={null}>
+            <PostNavigation prev={prevPost ?? null} next={nextPost ?? null} currentSlug={post.slug} collectionContexts={collectionContexts} />
+          </Suspense>
 
           <RelatedPosts posts={relatedPosts || []} />
         </article>

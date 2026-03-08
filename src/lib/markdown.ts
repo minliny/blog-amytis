@@ -802,7 +802,9 @@ export function getAllSeries(): Record<string, PostData[]> {
     if (process.env.NODE_ENV === 'production' && seriesData?.draft) {
       return; // Skip draft series in production
     }
-    series[slug] = getSeriesPosts(slug);
+    series[slug] = seriesData?.type === 'collection'
+      ? getCollectionPosts(slug)
+      : getSeriesPosts(slug);
   });
 
   return series;
