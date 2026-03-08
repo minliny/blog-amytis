@@ -41,15 +41,17 @@ export default function PostList({
             <div className="flex flex-col sm:flex-row">
               {/* Thumbnail */}
               <div className="relative w-full sm:w-48 h-40 sm:h-auto flex-shrink-0 overflow-hidden bg-muted/10">
-                <CoverImage
-                  src={post.coverImage}
-                  title={post.title}
-                  slug={post.slug}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                <Link href={getPostUrl(post)} className="relative z-10 block h-full w-full" tabIndex={-1} aria-hidden>
+                  <CoverImage
+                    src={post.coverImage}
+                    title={post.title}
+                    slug={post.slug}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </Link>
                 {/* Draft badge on mobile */}
                 {post.draft && (
-                  <div className="absolute top-3 left-3 text-[10px] font-bold text-red-500 bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded tracking-wider">
+                  <div className="absolute top-3 left-3 z-10 text-[10px] font-bold text-red-500 bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded tracking-wider">
                     DRAFT
                   </div>
                 )}
