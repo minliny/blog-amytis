@@ -5,7 +5,7 @@ import SimpleLayout from '@/layouts/SimpleLayout';
 import { Metadata } from 'next';
 import { siteConfig } from '../../../../site.config';
 import { resolveLocale } from '@/lib/i18n';
-import { getPostsBasePath, getPostUrl } from '@/lib/urls';
+import { getPostsBasePath, getPostUrl, getSeriesCustomPaths, getSeriesAutoPaths } from '@/lib/urls';
 import { buildPostJsonLd, serializeJsonLd, resolveImageUrl } from '@/lib/json-ld';
 
 function safeDecodeParam(param: string): string {
@@ -33,12 +33,21 @@ function resolvePostFromParam(rawSlug: string) {
 export async function generateStaticParams() {
   if (getPostsBasePath() !== 'posts') return [{ slug: '_' }]; // Route disabled; custom path handles this
   const posts = getAllPosts();
-  if (posts.length === 0) return [{ slug: '_' }];
+
+  // When autoPaths is enabled, series posts are served at /[series-slug]/[post-slug].
+  // Exclude them here so they don't get a duplicate page at /posts/[slug].
+  const autoPaths = getSeriesAutoPaths();
+  const customPaths = getSeriesCustomPaths();
+  const filtered = autoPaths
+    ? posts.filter(p => !p.series || p.series in customPaths)
+    : posts;
+
+  if (filtered.length === 0) return [{ slug: '_' }];
   // Work around Next dev static-param checks for percent-encoded Unicode paths
   // under `output: "export"` by including encoded variants only in development.
   // Production export keeps raw segment values.
   const slugs = new Set<string>();
-  for (const post of posts) {
+  for (const post of filtered) {
     slugs.add(post.slug);
     if (process.env.NODE_ENV !== 'production') {
       slugs.add(encodeURIComponent(post.slug));

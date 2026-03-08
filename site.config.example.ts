@@ -176,7 +176,12 @@ export const siteConfig = {
     },
   },
   series: {
-    // Per-series custom URL prefix for posts within that series
+    // When true (default), posts in a series are served at /[series-slug]/[post-slug]
+    // instead of the default posts basePath. Set to false to disable this behaviour.
+    // customPaths entries always take precedence over autoPaths.
+    autoPaths: true,
+    // Per-series custom URL prefix for posts within that series.
+    // Overrides autoPaths for the specified series.
     // e.g., { 'weeklies': 'weeklies' } → posts served at /weeklies/[slug]
     customPaths: {} as Record<string, string>,
   },

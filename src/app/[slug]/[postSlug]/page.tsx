@@ -1,11 +1,11 @@
-import { getPostBySlug, getAllPosts, getRelatedPosts, getSeriesPosts, getSeriesData, getAdjacentPosts, buildSlugRegistry, getBacklinks, getCollectionsForPost, PostData } from '@/lib/markdown';
+import { getPostBySlug, getAllPosts, getAllSeries, getRelatedPosts, getSeriesPosts, getSeriesData, getAdjacentPosts, buildSlugRegistry, getBacklinks, getCollectionsForPost, PostData } from '@/lib/markdown';
 import { notFound } from 'next/navigation';
 import PostLayout from '@/layouts/PostLayout';
 import SimpleLayout from '@/layouts/SimpleLayout';
 import { Metadata } from 'next';
 import { siteConfig } from '../../../../site.config';
 import { resolveLocale } from '@/lib/i18n';
-import { getPostsBasePath, getSeriesCustomPaths, getPostUrl } from '@/lib/urls';
+import { getPostsBasePath, getSeriesCustomPaths, getSeriesAutoPaths, validateSeriesAutoPaths, getPostUrl } from '@/lib/urls';
 import { buildPostJsonLd, serializeJsonLd } from '@/lib/json-ld';
 
 function safeDecodeParam(param: string): string {
@@ -36,8 +36,20 @@ export async function generateStaticParams() {
   }
 
   // Series custom paths — only posts belonging to that series
-  for (const [seriesSlug, customPath] of Object.entries(getSeriesCustomPaths())) {
+  const customPaths = getSeriesCustomPaths();
+  for (const [seriesSlug, customPath] of Object.entries(customPaths)) {
     getSeriesPosts(seriesSlug).forEach(post => { params.push({ slug: customPath, postSlug: post.slug }); });
+  }
+
+  // Series auto-paths — use series slug as URL prefix for posts in that series
+  if (getSeriesAutoPaths()) {
+    const allSeriesMap = getAllSeries();
+    const allSeriesSlugs = Object.keys(allSeriesMap);
+    validateSeriesAutoPaths(allSeriesSlugs); // Throws if any slug collides with a reserved route
+    for (const seriesSlug of allSeriesSlugs) {
+      if (seriesSlug in customPaths) continue; // Already handled by customPaths above
+      allSeriesMap[seriesSlug].forEach(post => { params.push({ slug: seriesSlug, postSlug: post.slug }); });
+    }
   }
 
   // Placeholder keeps Next.js happy with output: export when no custom paths configured.
@@ -99,13 +111,14 @@ export default async function PrefixPostPage({
 }) {
   const { slug: prefix, postSlug: rawPostSlug } = await params;
 
-  // Validate the prefix is a known custom path
+  // Validate the prefix is a known path: custom basePath, series customPath, or auto-path series slug
   const basePath = getPostsBasePath();
   const customPaths = getSeriesCustomPaths();
   const isValidBasePath = prefix === basePath && basePath !== 'posts';
   const matchedSeriesSlug = Object.entries(customPaths).find(([, path]) => path === prefix)?.[0];
+  const isAutoSeriesPath = getSeriesAutoPaths() && !(prefix in customPaths) && getSeriesData(prefix) !== null;
 
-  if (!isValidBasePath && !matchedSeriesSlug) {
+  if (!isValidBasePath && !matchedSeriesSlug && !isAutoSeriesPath) {
     notFound();
   }
 
