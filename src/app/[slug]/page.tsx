@@ -11,7 +11,7 @@ import { Metadata } from 'next';
 import { siteConfig } from '../../../site.config';
 import { resolveLocale, t } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
-import { getPostsBasePath, getSeriesCustomPaths, getSeriesAutoPaths, getPostUrl } from '@/lib/urls';
+import { getPostsBasePath, getSeriesCustomPaths, getSeriesAutoPaths, getPostUrl, RESERVED_ROUTE_SEGMENTS } from '@/lib/urls';
 import RedirectPage from '@/components/RedirectPage';
 
 const POST_PAGE_SIZE = siteConfig.pagination.posts;
@@ -55,8 +55,7 @@ export async function generateStaticParams() {
     basePath,
     ...Object.values(customPaths),
     ...autoPathSlugs,
-    // Hardcoded top-level routes that have their own app/ directories
-    'posts', 'series', 'tags', 'authors', 'archive', 'books', 'flows', 'notes', 'search', 'page',
+    ...RESERVED_ROUTE_SEGMENTS,
   ]);
   for (const post of getAllPosts()) {
     for (const from of post.redirectFrom ?? []) {

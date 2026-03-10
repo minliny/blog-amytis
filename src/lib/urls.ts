@@ -6,8 +6,8 @@ function normalizeSegment(segment: string): string {
 }
 
 // Top-level route segments reserved by the app — series slugs must not collide with these.
-const RESERVED_ROUTE_SEGMENTS = new Set([
-  'series', 'books', 'flows', 'tags', 'authors', 'archive', 'notes', 'graph', 'page', 'api',
+export const RESERVED_ROUTE_SEGMENTS = new Set([
+  'posts', 'series', 'books', 'flows', 'tags', 'authors', 'archive', 'notes', 'graph', 'search', 'page', 'api',
 ]);
 
 export function getPostsBasePath(): string {
