@@ -45,10 +45,12 @@ export async function generateStaticParams() {
   }
 
   // Add series auto-path listings (e.g. /my-series) when autoPaths is enabled
+  const customPathValues = new Set(Object.values(customPaths));
   const autoPathSlugs: string[] = [];
   if (getSeriesAutoPaths()) {
     for (const seriesSlug of Object.keys(getAllSeries())) {
-      if (Object.hasOwn(customPaths, seriesSlug)) continue; // has a customPaths override — skip
+      if (Object.hasOwn(customPaths, seriesSlug)) continue; // series has its own customPaths key override — skip
+      if (customPathValues.has(seriesSlug)) continue; // slug collides with another series' custom path value — skip
       autoPathSlugs.push(seriesSlug);
       params.push({ slug: seriesSlug });
     }

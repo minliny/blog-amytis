@@ -45,9 +45,11 @@ export async function generateStaticParams() {
   }
 
   // Series auto-paths — paginated series listing (page 2+)
+  const customPathValues = new Set(Object.values(customPaths));
   if (getSeriesAutoPaths()) {
     for (const [seriesSlug, posts] of Object.entries(getAllSeries())) {
-      if (Object.hasOwn(customPaths, seriesSlug)) continue; // has a customPaths override — skip
+      if (Object.hasOwn(customPaths, seriesSlug)) continue; // series has its own customPaths key override — skip
+      if (customPathValues.has(seriesSlug)) continue; // slug collides with another series' custom path value — skip
       const totalPages = Math.ceil(posts.length / SERIES_PAGE_SIZE);
       for (let i = 2; i <= totalPages; i++) {
         params.push({ slug: seriesSlug, page: i.toString() });
