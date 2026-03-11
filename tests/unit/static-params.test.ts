@@ -337,6 +337,21 @@ describe('generateStaticParams — placeholder when content is empty', () => {
       expect(params).toContainEqual({ slug: 'old-prefix', postSlug: 'my-post' });
     });
 
+    test('[slug]/[postSlug] does not include /posts/* redirectFrom when basePath is "posts"', async () => {
+      mockedPosts = [{ slug: 'new-name', redirectFrom: ['/posts/old-name'] }];
+      const { generateStaticParams } = await import('../../src/app/[slug]/[postSlug]/page');
+      const params = await generateStaticParams();
+      expect(params).not.toContainEqual({ slug: 'posts', postSlug: 'old-name' });
+    });
+
+    test('posts/[slug] includes redirectFrom slug when post is renamed within /posts/', async () => {
+      mockedPosts = [{ slug: 'new-name', redirectFrom: ['/posts/old-name'] }];
+      const { generateStaticParams } = await import('../../src/app/posts/[slug]/page');
+      const params = await generateStaticParams();
+      expect(params).toContainEqual({ slug: 'new-name' });
+      expect(params).toContainEqual({ slug: 'old-name' });
+    });
+
     test('[slug]/page includes single-segment redirectFrom paths as additional params', async () => {
       mockedPosts = [{ slug: 'my-post', redirectFrom: ['/old-slug'] }];
       const { generateStaticParams } = await import('../../src/app/[slug]/page');
