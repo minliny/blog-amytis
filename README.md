@@ -2,22 +2,37 @@
 
 [English](README.md) | [简体中文](README.zh.md)
 
-**Amytis** is an elegant, open-source framework for building a personal digital garden: a living knowledge space where ideas grow from raw notes to refined writing. It is built with Next.js 16, React 19, and Tailwind CSS v4, with a strong focus on readability, structure, and long-term content ownership.
+**Amytis** is a powerful, elegant, and user-friendly open-source digital garden framework for building knowledge spaces, blogs, showcase sites, or internal knowledge bases. It is built with Next.js 16, Tailwind CSS v4, and Bun, emphasizing a Markdown-first, plain-text-first workflow that preserves long-term content ownership while pursuing simplicity, elegance, and performance.
 
 [**Live Demo**](https://amytis.vercel.app/)
 
 ![Amytis Screenshot](public/images/amytis-screenshot.jpg)
 
-## The Knowledge Ladder
+## Why Amytis?
 
-Amytis is built around a simple path from rough to refined:
+I have been [blogging for twenty years](https://hutusi.com/archive), starting from early blogging platforms such as MSN Space (MS Live Space) and Sina Blog, then moving to self-hosted WordPress and Drupal, and later fully adopting static blogging frameworks after GitHub Pages became available. I tried Jekyll, Hugo, and several of their themes, but none of them truly satisfied me. The feature-rich ones were often not simple or elegant enough, while the elegant ones usually lacked flexibility and customization. I kept wondering whether a blogging or knowledge platform framework could balance functionality, performance, aesthetics, and UX. That idea stayed with me for years. When I finally decided to build one myself, I found it much harder than I had expected.
 
-- **Flow**: Capture raw daily thoughts and fragments.
-- **Articles**: Refine one idea into a clear essay.
-- **Series**: Connect related articles into a curated narrative.
-- **Books**: Distill mature knowledge into structured chapters and parts.
+Fortunately, AI coding changed that equation. With the help of Claude Code, Gemini CLI, and Codex, it became much easier than before to turn the idea into reality. After more than 700 commits of iteration, Amytis finally took shape as the idealized knowledge platform framework I had been aiming for. It was first used in the geek community platform I built at work, and I also replaced the framework behind my Hutusi blog with it. Amytis is now open source. Independent bloggers and knowledge managers are welcome to use it, and contributions, bug reports, and pull requests are all appreciated. If you are using Amytis, feel free to leave a note in [this issue](https://github.com/hutusi/amytis/issues/49).
 
-Each stage builds on the previous one, so your garden can evolve naturally.
+### The Knowledge Ladder
+
+Amytis is built around a path from fragmented thoughts to refined knowledge, helping individuals or teams build a complete digital garden system:
+
+- **Flow**: Capture daily thoughts and brainstorming fragments.
+- **Articles**: Refine a single idea into a clear article.
+- **Series**: Connect related articles into a thematic narrative.
+- **Books**: Distill mature knowledge into structured, chapter-based books.
+
+Each stage builds on the one before it, so the garden can grow naturally.
+
+### Design Philosophy
+
+- **Elegance by default**: Typography, spacing, and color should feel polished out of the box and remain visually consistent.
+- **Content and plain text first**: Writing and publishing should happen through file-based workflows rather than a heavyweight CMS. Content lives in Markdown/MDX, can be versioned with Git, and remains portable over time.
+- **Markdown-first, not markdown-limited**: Markdown and common extensions are supported by default, while math, diagrams, code, and bidirectional links remain first-class.
+- **Ship what you need**: `site.config.ts` provides modular switches so you only enable the capabilities you actually need.
+
+Further reading: [How to Get AI to Write Better Code](https://hutusi.com/weeklies/25) (Chinese)
 
 ## Features
 
@@ -64,14 +79,6 @@ Each stage builds on the previous one, so your garden can evolve naturally.
   - Internationalization: multi-language support (en, zh) with localized `site.config.ts`.
 - **Content CLI Tools:** Create posts, series, and import from PDFs or image folders.
 - **Modern Stack:** Next.js 16, React 19, Tailwind CSS v4, TypeScript 5, Bun.
-
-## Design Philosophy
-
-- **Elegance by default**: Typography, spacing, and color should feel intentional out of the box.
-- **Content over configuration**: Writing and publishing should be simple file-based workflows, not CMS-heavy setup.
-- **Markdown-first, not markdown-limited**: Keep authoring portable while supporting rich output (math, diagrams, code, wikilinks).
-- **Ship what you need**: Features are modular through `site.config.ts`; disable sections you do not use.
-- **Plain text, long-term ownership**: Content stays in Markdown/MDX so it remains versionable and portable.
 
 ## Quick Start
 
