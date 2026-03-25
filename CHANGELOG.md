@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0] - 2026-03-25
+
+### Added
+- **Slug Rename Redirects**: Added `redirectFrom` support for post slug renames within the same URL prefix so renamed content can keep resolving from legacy paths.
+- **Series Slug Migration**: Added `redirectFrom` support for series slug renames, preserving access to older series URLs after route changes.
+
+### Changed
+- **Series Routing Defaults**: `series.autoPaths` now defaults to `true`, making `/<series-slug>/<post-slug>` the standard route shape for series posts.
+- **README Positioning**: Updated the English README to match the latest Chinese version, including the project backstory and refreshed documentation structure.
+
+### Fixed
+- **Route Conflict Handling**: Prevented auto-path series slugs from colliding with configured `series.customPaths` values during route generation.
+
 ## [1.12.0] - 2026-03-08
 
 ### Added
