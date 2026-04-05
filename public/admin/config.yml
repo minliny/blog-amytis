@@ -1,0 +1,82 @@
+backend:
+  name: github
+  repo: minliny/blog-amytis
+  branch: main
+  base_url: https://auth.blog.minliny.com
+  auth_endpoint: auth
+
+publish_mode: simple
+
+media_folder: public/uploads
+public_folder: /uploads
+
+site_url: https://blog.minliny.com
+display_url: https://blog.minliny.com
+logo_url: /favicon.ico
+
+collections:
+  - name: posts
+    label: Posts
+    label_singular: Post
+    folder: content/posts
+    create: true
+    delete: true
+    extension: mdx
+    format: frontmatter
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    preview_path: "posts/{{slug}}"
+    editor:
+      preview: false
+    fields:
+      - label: Title
+        name: title
+        widget: string
+
+      - label: Date
+        name: date
+        widget: datetime
+        format: "YYYY-MM-DD"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        picker_utc: false
+
+      - label: Excerpt
+        name: excerpt
+        widget: text
+        required: false
+
+      - label: Category
+        name: category
+        widget: string
+        required: false
+
+      - label: Tags
+        name: tags
+        widget: list
+        required: false
+        field:
+          label: Tag
+          name: tag
+          widget: string
+
+      - label: Authors
+        name: authors
+        widget: list
+        required: false
+        field:
+          label: Author
+          name: author
+          widget: string
+
+      - label: Redirect From
+        name: redirectFrom
+        widget: list
+        required: false
+        field:
+          label: Old Path
+          name: old_path
+          widget: string
+
+      - label: Body
+        name: body
+        widget: markdown

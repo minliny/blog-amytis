@@ -1,0 +1,30 @@
+name: deploy-blog-runtime
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "content/**"
+      - "public/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger remote deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          echo "${{ secrets.GATEWAY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+          ssh-keyscan -H ${{ secrets.GATEWAY_HOST }} >> ~/.ssh/known_hosts
+
+          ssh -i ~/.ssh/id_ed25519 minliny@${{ secrets.GATEWAY_HOST }} \
+            "/opt/scripts/deploy-blog.sh"
