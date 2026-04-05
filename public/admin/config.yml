@@ -2,7 +2,7 @@ backend:
   name: github
   repo: minliny/blog-amytis
   branch: main
-  base_url: https://auth.blog.minliny.com
+  base_url: https://auth.minliny.com
   auth_endpoint: auth
 
 publish_mode: simple
