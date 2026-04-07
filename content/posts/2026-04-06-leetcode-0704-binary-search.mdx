@@ -1,0 +1,94 @@
+---
+title: "Binary Search"
+slug: "leetcode-0704-binary-search"
+date: "2026-04-06"
+excerpt: "维护左右边界并在有序数组中二分定位目标值。"
+seoTitle: "LeetCode 704 Binary Search 题解"
+seoDescription: "维护左右边界并在有序数组中二分定位目标值。"
+canonicalUrl: "/posts/leetcode-0704-binary-search"
+category: "力扣刷题"
+tags:
+  - "leetcode"
+  - "二分查找"
+  - "数组"
+keywords:
+  - "leetcode"
+  - "二分查找"
+  - "数组"
+  - "leetcode-704"
+  - "Easy"
+  - "TypeScript"
+leetcodeId: 704
+difficulty: "Easy"
+language: "TypeScript"
+source: "leetcode-cn"
+submissionTime: "2026-04-06T18:00:00+08:00"
+solutionSummary: "维护左右边界并在有序数组中二分定位目标值。"
+complexity:
+  time: "O(log n)"
+  space: "O(1)"
+display:
+  difficulty: "Easy"
+  language: "TypeScript"
+  source: "leetcode-cn"
+studySuggestions:
+  - "复习闭区间与开区间模板。"
+  - "练习 lower_bound 与 upper_bound 变体。"
+---
+
+# Binary Search
+
+> 维护左右边界并在有序数组中二分定位目标值。
+
+## 题目信息
+
+- 题号：704
+- 难度：Easy
+- 语言：TypeScript
+- 来源：leetcode-cn
+- 提交时间：2026-04-06T18:00:00+08:00
+
+## 标签展示
+
+- leetcode / 二分查找 / 数组
+
+## 题目链接
+
+- https://leetcode.cn/problems/binary-search/
+
+## 代码区
+
+```ts
+function search(nums: number[], target: number): number {
+  let left = 0;
+  let right = nums.length - 1;
+
+  while (left <= right) {
+    const mid = left + Math.floor((right - left) / 2);
+    if (nums[mid] === target) return mid;
+    if (nums[mid] < target) left = mid + 1;
+    else right = mid - 1;
+  }
+
+  return -1;
+}
+```
+
+## 解题思路
+
+维护左右边界并在有序数组中二分定位目标值。
+
+## 复杂度分析
+
+- 时间复杂度：O(log n)
+- 空间复杂度：O(1)
+
+## 优化点
+
+- 统一边界收缩规则，避免死循环。
+- 用测试覆盖目标不存在与单元素场景。
+
+## 学习建议
+
+- 复习闭区间与开区间模板。
+- 练习 lower_bound 与 upper_bound 变体。

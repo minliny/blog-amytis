@@ -1,0 +1,99 @@
+---
+title: "Add Two Numbers"
+slug: "leetcode-0002-add-two-numbers"
+date: "2026-04-06"
+excerpt: "逐位相加并维护进位，直到两个链表都遍历完成。"
+seoTitle: "LeetCode 2 Add Two Numbers 题解"
+seoDescription: "逐位相加并维护进位，直到两个链表都遍历完成。"
+canonicalUrl: "/posts/leetcode-0002-add-two-numbers"
+category: "力扣刷题"
+tags:
+  - "leetcode"
+  - "链表"
+  - "模拟"
+keywords:
+  - "leetcode"
+  - "链表"
+  - "模拟"
+  - "leetcode-2"
+  - "Medium"
+  - "TypeScript"
+leetcodeId: 2
+difficulty: "Medium"
+language: "TypeScript"
+source: "leetcode-cn"
+submissionTime: "2026-04-06T14:00:00+08:00"
+solutionSummary: "逐位相加并维护进位，直到两个链表都遍历完成。"
+complexity:
+  time: "O(max(m,n))"
+  space: "O(max(m,n))"
+display:
+  difficulty: "Medium"
+  language: "TypeScript"
+  source: "leetcode-cn"
+studySuggestions:
+  - "复习链表构造与遍历技巧。"
+  - "练习带进位的数值模拟题。"
+---
+
+# Add Two Numbers
+
+> 逐位相加并维护进位，直到两个链表都遍历完成。
+
+## 题目信息
+
+- 题号：2
+- 难度：Medium
+- 语言：TypeScript
+- 来源：leetcode-cn
+- 提交时间：2026-04-06T14:00:00+08:00
+
+## 标签展示
+
+- leetcode / 链表 / 模拟
+
+## 题目链接
+
+- https://leetcode.cn/problems/add-two-numbers/
+
+## 代码区
+
+```ts
+function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+  const dummy = new ListNode(0);
+  let current = dummy;
+  let carry = 0;
+
+  while (l1 || l2 || carry) {
+    const v1 = l1 ? l1.val : 0;
+    const v2 = l2 ? l2.val : 0;
+    const sum = v1 + v2 + carry;
+    carry = Math.floor(sum / 10);
+    current.next = new ListNode(sum % 10);
+    current = current.next;
+    l1 = l1 ? l1.next : null;
+    l2 = l2 ? l2.next : null;
+  }
+
+  return dummy.next;
+}
+```
+
+## 解题思路
+
+逐位相加并维护进位，直到两个链表都遍历完成。
+
+## 复杂度分析
+
+- 时间复杂度：O(max(m,n))
+- 空间复杂度：O(max(m,n))
+
+## 优化点
+
+- 通过哑节点减少头节点分支处理。
+- 注意尾部进位补位。
+
+## 学习建议
+
+- 复习链表构造与遍历技巧。
+- 练习带进位的数值模拟题。

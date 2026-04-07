@@ -3,7 +3,7 @@ backend:
   repo: minliny/blog-amytis
   branch: main
   base_url: https://auth.minliny.com
-  auth_endpoint: auth
+  auth_endpoint: /auth
 
 publish_mode: simple
 
@@ -57,6 +57,74 @@ collections:
         field:
           label: Tag
           name: tag
+          widget: string
+
+      - label: Slug
+        name: slug
+        widget: string
+        required: false
+
+      - label: LeetCode ID
+        name: leetcodeId
+        widget: number
+        value_type: int
+        required: false
+
+      - label: Difficulty
+        name: difficulty
+        widget: select
+        required: false
+        options:
+          - Easy
+          - Medium
+          - Hard
+
+      - label: Language
+        name: language
+        widget: string
+        required: false
+
+      - label: Source
+        name: source
+        widget: string
+        required: false
+
+      - label: Submission Time
+        name: submissionTime
+        widget: datetime
+        required: false
+
+      - label: LeetCode Problem URL
+        name: problemUrl
+        widget: string
+        required: false
+
+      - label: Solution Summary
+        name: solutionSummary
+        widget: text
+        required: false
+
+      - label: Complexity
+        name: complexity
+        widget: object
+        required: false
+        fields:
+          - label: Time
+            name: time
+            widget: string
+            required: false
+          - label: Space
+            name: space
+            widget: string
+            required: false
+
+      - label: Study Suggestions
+        name: studySuggestions
+        widget: list
+        required: false
+        field:
+          label: Suggestion
+          name: suggestion
           widget: string
 
       - label: Authors

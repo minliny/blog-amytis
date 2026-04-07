@@ -1,0 +1,59 @@
+---
+title: "Two Sum"
+slug: "leetcode-0001-two-sum"
+date: "2026-04-06"
+category: "力扣刷题"
+tags:
+  - "leetcode"
+  - "数组"
+  - "哈希表"
+leetcodeId: 1
+difficulty: "Easy"
+language: "TypeScript"
+source: "leetcode-cn"
+submissionTime: "2026-04-06T12:00:00+08:00"
+solutionSummary: "使用哈希表记录已遍历元素，单次扫描即可找到目标差值。"
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+studySuggestions:
+  - "复习哈希表键冲突与装载因子。"
+  - "练习 Two Sum 变体（排序数组、三数之和）。"
+---
+
+# Two Sum
+
+## 题目链接
+- https://leetcode.cn/problems/two-sum/
+
+## 代码区
+```ts
+function twoSum(nums: number[], target: number): number[] {
+  const map = new Map<number, number>();
+
+  for (let i = 0; i < nums.length; i++) {
+    const need = target - nums[i];
+    if (map.has(need)) {
+      return [map.get(need) as number, i];
+    }
+    map.set(nums[i], i);
+  }
+
+  return [];
+}
+```
+
+## 解题思路
+使用哈希表记录已遍历元素，单次扫描即可找到目标差值。
+
+## 复杂度分析
+- 时间复杂度：O(n)
+- 空间复杂度：O(n)
+
+## 优化点
+- 若输入接近有序，可对比双指针与哈希表实现差异。
+- 结合数据规模评估空间换时间的收益。
+
+## 学习建议
+- 复习哈希表键冲突与装载因子。
+- 练习 Two Sum 变体（排序数组、三数之和）。

@@ -1,0 +1,95 @@
+---
+title: "Best Time to Buy and Sell Stock"
+slug: "leetcode-0121-best-time-to-buy-and-sell-stock"
+date: "2026-04-06"
+excerpt: "维护历史最低价格，并在遍历时更新最大利润。"
+seoTitle: "LeetCode 121 Best Time to Buy and Sell Stock 题解"
+seoDescription: "维护历史最低价格，并在遍历时更新最大利润。"
+canonicalUrl: "/posts/leetcode-0121-best-time-to-buy-and-sell-stock"
+category: "力扣刷题"
+tags:
+  - "leetcode"
+  - "数组"
+  - "动态规划"
+keywords:
+  - "leetcode"
+  - "数组"
+  - "动态规划"
+  - "leetcode-121"
+  - "Easy"
+  - "TypeScript"
+leetcodeId: 121
+difficulty: "Easy"
+language: "TypeScript"
+source: "leetcode-cn"
+submissionTime: "2026-04-06T16:00:00+08:00"
+solutionSummary: "维护历史最低价格，并在遍历时更新最大利润。"
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+display:
+  difficulty: "Easy"
+  language: "TypeScript"
+  source: "leetcode-cn"
+studySuggestions:
+  - "理解一次遍历中的状态含义。"
+  - "练习股票系列题的状态转移写法。"
+---
+
+# Best Time to Buy and Sell Stock
+
+> 维护历史最低价格，并在遍历时更新最大利润。
+
+## 题目信息
+
+- 题号：121
+- 难度：Easy
+- 语言：TypeScript
+- 来源：leetcode-cn
+- 提交时间：2026-04-06T16:00:00+08:00
+
+## 标签展示
+
+- leetcode / 数组 / 动态规划
+
+## 题目链接
+
+- https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/
+
+## 代码区
+
+```ts
+function maxProfit(prices: number[]): number {
+  let minPrice = Infinity;
+  let maxProfit = 0;
+
+  for (const price of prices) {
+    if (price < minPrice) {
+      minPrice = price;
+    } else {
+      maxProfit = Math.max(maxProfit, price - minPrice);
+    }
+  }
+
+  return maxProfit;
+}
+```
+
+## 解题思路
+
+维护历史最低价格，并在遍历时更新最大利润。
+
+## 复杂度分析
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(1)
+
+## 优化点
+
+- 将状态压缩为两个变量。
+- 结合边界样例验证最小值更新时机。
+
+## 学习建议
+
+- 理解一次遍历中的状态含义。
+- 练习股票系列题的状态转移写法。
