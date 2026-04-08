@@ -28,3 +28,32 @@ jobs:
 
           ssh -i ~/.ssh/id_ed25519 minliny@${{ secrets.GATEWAY_HOST }} \
             "/opt/scripts/deploy-blog.sh"
+
+      - name: Send repository_dispatch to infra-gateway
+        shell: bash
+        env:
+          DISPATCH_TOKEN: ${{ secrets.INFRA_GATEWAY_DISPATCH_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${DISPATCH_TOKEN}" ]; then
+            echo "missing secret: INFRA_GATEWAY_DISPATCH_TOKEN" >&2
+            exit 1
+          fi
+
+          curl -sS -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${DISPATCH_TOKEN}" \
+            https://api.github.com/repos/minliny/infra-gateway/dispatches \
+            -d @- <<'JSON'
+          {
+            "event_type": "blog-amytis-deploy",
+            "client_payload": {
+              "repository": "minliny/blog-amytis",
+              "sha": "${{ github.sha }}",
+              "ref": "${{ github.ref }}",
+              "actor": "${{ github.actor }}",
+              "source_workflow": "deploy.yml"
+            }
+          }
+          JSON
