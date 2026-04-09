@@ -1,0 +1,99 @@
+---
+title: "Longest Substring Without Repeating Characters"
+slug: "leetcode-0003-longest-substring-without-repeating-characters-batch"
+date: "2026-04-09"
+draft: false
+review: false
+excerpt: "先遍历字符串并维护滑动窗口，再用 Map 记录每个字符最近出现的位置；如果当前字符仍在窗口内，就更新左边界收缩窗口，否则继续扩展右边界并更新最长长度。"
+seoTitle: "LeetCode 3 Longest Substring Without Repeating Characters 题解"
+seoDescription: "先遍历字符串并维护滑动窗口，再用 Map 记录每个字符最近出现的位置；如果当前字符仍在窗口内，就更新左边界收缩窗口，否则继续扩展右边界并更新最长长度。"
+canonicalUrl: "/posts/leetcode-0003-longest-substring-without-repeating-characters-batch"
+category: "力扣刷题"
+tags:
+  - "leetcode"
+  - "字符串"
+  - "滑动窗口"
+keywords:
+  - "leetcode"
+  - "字符串"
+  - "滑动窗口"
+  - "leetcode-3"
+  - "Medium"
+  - "TypeScript"
+leetcodeId: 3
+difficulty: "Medium"
+language: "TypeScript"
+source: "leetcode-cn"
+submissionTime: "2026-04-09T15:10:00+08:00"
+solutionSummary: "先遍历字符串并维护滑动窗口，再用 Map 记录每个字符最近出现的位置；如果当前字符仍在窗口内，就更新左边界收缩窗口，否则继续扩展右边界并更新最长长度。"
+complexity:
+  time: "O(n)"
+  space: "O(k)"
+display:
+  difficulty: "Medium"
+  language: "TypeScript"
+  source: "leetcode-cn"
+studySuggestions:
+  - "复习滑动窗口如何维护无重复区间"
+  - "对比 Set 写法和最近位置表写法的差异"
+---
+
+# Longest Substring Without Repeating Characters
+
+> 先遍历字符串并维护滑动窗口，再用 Map 记录每个字符最近出现的位置；如果当前字符仍在窗口内，就更新左边界收缩窗口，否则继续扩展右边界并更新最长长度。
+
+## 题目信息
+
+- 题号：3
+- 难度：Medium
+- 语言：TypeScript
+- 来源：leetcode-cn
+- 提交时间：2026-04-09T15:10:00+08:00
+
+## 标签展示
+
+- leetcode / 字符串 / 滑动窗口
+
+## 题目链接
+
+- https://leetcode.cn/problems/longest-substring-without-repeating-characters/
+
+## 代码区
+
+```ts
+function lengthOfLongestSubstring(s: string): number {
+  const last = new Map<string, number>();
+  let left = 0;
+  let best = 0;
+  for (let right = 0; right < s.length; right++) {
+    if (last.has(s[right])) left = Math.max(left, (last.get(s[right]) as number) + 1);
+    last.set(s[right], right);
+    best = Math.max(best, right - left + 1);
+  }
+  return best;
+}
+```
+
+## 解题思路
+
+先遍历字符串并维护滑动窗口，再用 Map 记录每个字符最近出现的位置；如果当前字符仍在窗口内，就更新左边界收缩窗口，否则继续扩展右边界并更新最长长度。
+
+## 复杂度分析
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(k)
+
+## 易错点
+
+- 重复字符出现在窗口外时，左边界不能回退
+- 更新最长长度前要先完成窗口边界调整
+
+## 优化点
+
+- 窗口右移时同步更新字符最近位置，避免左边界回退
+- 发现重复字符后用 max(left, lastIndex + 1) 收缩窗口，避免重复计数
+
+## 学习建议
+
+- 复习滑动窗口如何维护无重复区间
+- 对比 Set 写法和最近位置表写法的差异

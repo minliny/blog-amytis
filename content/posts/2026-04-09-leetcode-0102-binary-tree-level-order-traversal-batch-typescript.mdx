@@ -1,0 +1,106 @@
+---
+title: "Binary Tree Level Order Traversal"
+slug: "leetcode-0102-binary-tree-level-order-traversal-batch"
+date: "2026-04-09"
+draft: true
+review: true
+excerpt: "先把根节点加入队列并按层遍历二叉树，再在每一层循环中依次取出节点并收集值；如果左子树或右子树存在，就把对应子节点继续入队，否则结束当前层。"
+seoTitle: "LeetCode 102 Binary Tree Level Order Traversal 题解"
+seoDescription: "先把根节点加入队列并按层遍历二叉树，再在每一层循环中依次取出节点并收集值；如果左子树或右子树存在，就把对应子节点继续入队，否则结束当前层。"
+canonicalUrl: "/posts/leetcode-0102-binary-tree-level-order-traversal-batch"
+category: "力扣刷题"
+tags:
+  - "leetcode"
+  - "二叉树"
+  - "广度优先搜索"
+  - "层序遍历"
+keywords:
+  - "leetcode"
+  - "二叉树"
+  - "广度优先搜索"
+  - "层序遍历"
+  - "leetcode-102"
+  - "Medium"
+  - "TypeScript"
+leetcodeId: 102
+difficulty: "Medium"
+language: "TypeScript"
+source: "leetcode-cn"
+submissionTime: "2026-04-09T15:20:00+08:00"
+solutionSummary: "先把根节点加入队列并按层遍历二叉树，再在每一层循环中依次取出节点并收集值；如果左子树或右子树存在，就把对应子节点继续入队，否则结束当前层。"
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+display:
+  difficulty: "Medium"
+  language: "TypeScript"
+  source: "leetcode-cn"
+studySuggestions:
+  - "复习队列在层序遍历中的使用方式"
+  - "对比 BFS 层序遍历和 DFS 前中后序的场景差异"
+---
+
+# Binary Tree Level Order Traversal
+
+> 先把根节点加入队列并按层遍历二叉树，再在每一层循环中依次取出节点并收集值；如果左子树或右子树存在，就把对应子节点继续入队，否则结束当前层。
+
+## 题目信息
+
+- 题号：102
+- 难度：Medium
+- 语言：TypeScript
+- 来源：leetcode-cn
+- 提交时间：2026-04-09T15:20:00+08:00
+
+## 标签展示
+
+- leetcode / 二叉树 / 广度优先搜索 / 层序遍历
+
+## 题目链接
+
+- https://leetcode.cn/problems/binary-tree-level-order-traversal/
+
+## 代码区
+
+```ts
+function levelOrder(root: TreeNode | null): number[][] {
+  if (!root) return [];
+  const result: number[][] = [];
+  const queue: TreeNode[] = [root];
+  while (queue.length) {
+    const size = queue.length;
+    const level: number[] = [];
+    for (let i = 0; i < size; i++) {
+      const node = queue.shift() as TreeNode;
+      level.push(node.val);
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+    result.push(level);
+  }
+  return result;
+}
+```
+
+## 解题思路
+
+先把根节点加入队列并按层遍历二叉树，再在每一层循环中依次取出节点并收集值；如果左子树或右子树存在，就把对应子节点继续入队，否则结束当前层。
+
+## 复杂度分析
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(n)
+
+## 易错点
+
+- 空树输入应直接返回空数组
+- 按层遍历时不能在循环中动态读取 queue.length 作为当前层大小
+
+## 优化点
+
+- 节点出队后再判断左右孩子是否存在，避免空节点进入队列
+
+## 学习建议
+
+- 复习队列在层序遍历中的使用方式
+- 对比 BFS 层序遍历和 DFS 前中后序的场景差异
