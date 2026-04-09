@@ -1,0 +1,100 @@
+---
+title: "Coin Change"
+slug: "leetcode-0322-coin-change-batch"
+date: "2026-04-09"
+draft: false
+review: false
+excerpt: "先定义 dp 数组表示每个状态的最优解，再按金额顺序遍历状态并枚举每个硬币做转移；如果当前硬币可以参与转移，就用上一状态更新最小值，否则保持原状态，最后判断结果是否仍为初始值。"
+seoTitle: "LeetCode 322 Coin Change 题解"
+seoDescription: "先定义 dp 数组表示每个状态的最优解，再按金额顺序遍历状态并枚举每个硬币做转移；如果当前硬币可以参与转移，就用上一状态更新最小值，否则保持原状态，最后判断结果是否仍为初始值。"
+canonicalUrl: "/posts/leetcode-0322-coin-change-batch"
+category: "力扣刷题"
+tags:
+  - "leetcode"
+  - "动态规划"
+  - "数组"
+  - "状态转移"
+keywords:
+  - "leetcode"
+  - "动态规划"
+  - "数组"
+  - "状态转移"
+  - "leetcode-322"
+  - "Medium"
+  - "TypeScript"
+leetcodeId: 322
+difficulty: "Medium"
+language: "TypeScript"
+source: "leetcode-cn"
+submissionTime: "2026-04-09T15:30:00+08:00"
+solutionSummary: "先定义 dp 数组表示每个状态的最优解，再按金额顺序遍历状态并枚举每个硬币做转移；如果当前硬币可以参与转移，就用上一状态更新最小值，否则保持原状态，最后判断结果是否仍为初始值。"
+complexity:
+  time: "O(amount*n)"
+  space: "O(amount)"
+display:
+  difficulty: "Medium"
+  language: "TypeScript"
+  source: "leetcode-cn"
+studySuggestions:
+  - "复习状态定义、初始化和状态转移三步写法"
+  - "对比完全背包与 0/1 背包的遍历顺序差异"
+---
+
+# Coin Change
+
+> 先定义 dp 数组表示每个状态的最优解，再按金额顺序遍历状态并枚举每个硬币做转移；如果当前硬币可以参与转移，就用上一状态更新最小值，否则保持原状态，最后判断结果是否仍为初始值。
+
+## 题目信息
+
+- 题号：322
+- 难度：Medium
+- 语言：TypeScript
+- 来源：leetcode-cn
+- 提交时间：2026-04-09T15:30:00+08:00
+
+## 标签展示
+
+- leetcode / 动态规划 / 数组 / 状态转移
+
+## 题目链接
+
+- https://leetcode.cn/problems/coin-change/
+
+## 代码区
+
+```ts
+function coinChange(coins: number[], amount: number): number {
+  const dp = new Array(amount + 1).fill(amount + 1);
+  dp[0] = 0;
+  for (let i = 1; i <= amount; i++) {
+    for (const coin of coins) {
+      if (coin <= i) dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+    }
+  }
+  return dp[amount] > amount ? -1 : dp[amount];
+}
+```
+
+## 解题思路
+
+先定义 dp 数组表示每个状态的最优解，再按金额顺序遍历状态并枚举每个硬币做转移；如果当前硬币可以参与转移，就用上一状态更新最小值，否则保持原状态，最后判断结果是否仍为初始值。
+
+## 复杂度分析
+
+- 时间复杂度：O(amount*n)
+- 空间复杂度：O(amount)
+
+## 易错点
+
+- 初始不可达状态不能直接参与转移，否则会把无效值写成最优解
+- 最终结果若仍是初始哨兵值，应返回 -1 而不是原数值
+
+## 优化点
+
+- 状态转移前先完成初始值填充，避免未定义状态参与比较
+- 遍历金额时只在 coin <= amount 时更新 dp，保证转移来源合法
+
+## 学习建议
+
+- 复习状态定义、初始化和状态转移三步写法
+- 对比完全背包与 0/1 背包的遍历顺序差异

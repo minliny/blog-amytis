@@ -1,0 +1,111 @@
+---
+title: "Word Ladder"
+slug: "leetcode-0127-word-ladder-batch"
+date: "2026-04-09"
+draft: true
+review: true
+excerpt: "先把起点放入队列并用集合维护未访问单词，再逐位替换字符扩展相邻状态；如果生成的新单词仍在字典中就入队并立即删除，否则跳过，直到找到终点或队列为空。"
+seoTitle: "LeetCode 127 Word Ladder 题解"
+seoDescription: "先把起点放入队列并用集合维护未访问单词，再逐位替换字符扩展相邻状态；如果生成的新单词仍在字典中就入队并立即删除，否则跳过，直到找到终点或队列为空。"
+canonicalUrl: "/posts/leetcode-0127-word-ladder-batch"
+category: "力扣刷题"
+tags:
+  - "leetcode"
+  - "图"
+  - "广度优先搜索"
+  - "字符串"
+  - "BFS"
+  - "最短路径"
+keywords:
+  - "leetcode"
+  - "图"
+  - "广度优先搜索"
+  - "字符串"
+  - "BFS"
+  - "最短路径"
+  - "leetcode-127"
+  - "Hard"
+  - "TypeScript"
+leetcodeId: 127
+difficulty: "Hard"
+language: "TypeScript"
+source: "leetcode-cn"
+submissionTime: "2026-04-09T15:40:00+08:00"
+solutionSummary: "先把起点放入队列并用集合维护未访问单词，再逐位替换字符扩展相邻状态；如果生成的新单词仍在字典中就入队并立即删除，否则跳过，直到找到终点或队列为空。"
+complexity:
+  time: "O(N*L*26)"
+  space: "O(N)"
+display:
+  difficulty: "Hard"
+  language: "TypeScript"
+  source: "leetcode-cn"
+studySuggestions:
+  - "复习 BFS 为什么适合求最短转换次数"
+  - "练习通过 visited 集合控制重复访问的图题"
+---
+
+# Word Ladder
+
+> 先把起点放入队列并用集合维护未访问单词，再逐位替换字符扩展相邻状态；如果生成的新单词仍在字典中就入队并立即删除，否则跳过，直到找到终点或队列为空。
+
+## 题目信息
+
+- 题号：127
+- 难度：Hard
+- 语言：TypeScript
+- 来源：leetcode-cn
+- 提交时间：2026-04-09T15:40:00+08:00
+
+## 标签展示
+
+- leetcode / 图 / 广度优先搜索 / 字符串 / BFS / 最短路径
+
+## 题目链接
+
+- https://leetcode.cn/problems/word-ladder/
+
+## 代码区
+
+```ts
+function ladderLength(beginWord: string, endWord: string, wordList: string[]): number {
+  const dict = new Set(wordList);
+  if (!dict.has(endWord)) return 0;
+  const queue: Array<[string, number]> = [[beginWord, 1]];
+  while (queue.length) {
+    const [word, steps] = queue.shift() as [string, number];
+    if (word === endWord) return steps;
+    for (let i = 0; i < word.length; i++) {
+      for (let c = 97; c <= 122; c++) {
+        const next = word.slice(0, i) + String.fromCharCode(c) + word.slice(i + 1);
+        if (!dict.has(next)) continue;
+        dict.delete(next);
+        queue.push([next, steps + 1]);
+      }
+    }
+  }
+  return 0;
+}
+```
+
+## 解题思路
+
+先把起点放入队列并用集合维护未访问单词，再逐位替换字符扩展相邻状态；如果生成的新单词仍在字典中就入队并立即删除，否则跳过，直到找到终点或队列为空。
+
+## 复杂度分析
+
+- 时间复杂度：O(N*L*26)
+- 空间复杂度：O(N)
+
+## 易错点
+
+- 新状态一旦入队就要标记已访问，否则 BFS 层数会被重复放大
+- 终点不在字典中时应直接返回 0，避免无意义搜索
+
+## 优化点
+
+- 使用队列逐层扩展最短路径，并在入队时删除已访问单词，避免重复访问
+
+## 学习建议
+
+- 复习 BFS 为什么适合求最短转换次数
+- 练习通过 visited 集合控制重复访问的图题
