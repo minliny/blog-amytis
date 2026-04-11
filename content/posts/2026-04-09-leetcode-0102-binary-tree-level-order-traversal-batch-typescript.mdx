@@ -2,8 +2,8 @@
 title: "Binary Tree Level Order Traversal"
 slug: "leetcode-0102-binary-tree-level-order-traversal-batch"
 date: "2026-04-09"
-draft: true
-review: true
+draft: false
+review: false
 excerpt: "先把根节点加入队列并按层遍历二叉树，再在每一层循环中依次取出节点并收集值；如果左子树或右子树存在，就把对应子节点继续入队，否则结束当前层。"
 seoTitle: "LeetCode 102 Binary Tree Level Order Traversal 题解"
 seoDescription: "先把根节点加入队列并按层遍历二叉树，再在每一层循环中依次取出节点并收集值；如果左子树或右子树存在，就把对应子节点继续入队，否则结束当前层。"
@@ -98,6 +98,7 @@ function levelOrder(root: TreeNode | null): number[][] {
 
 ## 优化点
 
+- 层序遍历时先固定当前层节点数量，再维护队列顺序，避免下一层节点混入本层结果
 - 节点出队后再判断左右孩子是否存在，避免空节点进入队列
 
 ## 学习建议

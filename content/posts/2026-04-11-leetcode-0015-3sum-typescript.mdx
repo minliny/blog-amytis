@@ -1,0 +1,117 @@
+---
+title: "3Sum"
+slug: "leetcode-0015-3sum"
+date: "2026-04-11"
+draft: false
+review: false
+excerpt: "先排序数组并枚举第一个数字，再维护 left/right 双指针向中间收缩；如果三数之和为 0 就记录答案并跳过重复值，否则根据和的大小移动对应指针。"
+seoTitle: "LeetCode 15 3Sum 题解"
+seoDescription: "先排序数组并枚举第一个数字，再维护 left/right 双指针向中间收缩；如果三数之和为 0 就记录答案并跳过重复值，否则根据和的大小移动对应指针。"
+canonicalUrl: "/posts/leetcode-0015-3sum"
+category: "力扣刷题"
+tags:
+  - "leetcode"
+  - "数组"
+  - "双指针"
+  - "排序"
+keywords:
+  - "leetcode"
+  - "数组"
+  - "双指针"
+  - "排序"
+  - "leetcode-15"
+  - "Medium"
+  - "TypeScript"
+leetcodeId: 15
+difficulty: "Medium"
+language: "TypeScript"
+source: "leetcode-cn"
+submissionTime: "2026-04-11T09:15:00+08:00"
+solutionSummary: "先排序数组并枚举第一个数字，再维护 left/right 双指针向中间收缩；如果三数之和为 0 就记录答案并跳过重复值，否则根据和的大小移动对应指针。"
+complexity:
+  time: "O(n^2)"
+  space: "O(1)"
+display:
+  difficulty: "Medium"
+  language: "TypeScript"
+  source: "leetcode-cn"
+studySuggestions:
+  - "复习排序后双指针如何根据总和移动边界"
+  - "练习去重条件在枚举层和指针层的不同写法"
+---
+
+# 3Sum
+
+> 先排序数组并枚举第一个数字，再维护 left/right 双指针向中间收缩；如果三数之和为 0 就记录答案并跳过重复值，否则根据和的大小移动对应指针。
+
+## 题目信息
+
+- 题号：15
+- 难度：Medium
+- 语言：TypeScript
+- 来源：leetcode-cn
+- 提交时间：2026-04-11T09:15:00+08:00
+
+## 标签展示
+
+- leetcode / 数组 / 双指针 / 排序
+
+## 题目链接
+
+- https://leetcode.cn/problems/3sum/
+
+## 代码区
+
+```ts
+function threeSum(nums: number[]): number[][] {
+  nums.sort((a, b) => a - b);
+  const result: number[][] = [];
+
+  for (let i = 0; i < nums.length - 2; i++) {
+    if (i > 0 && nums[i] === nums[i - 1]) continue;
+
+    let left = i + 1;
+    let right = nums.length - 1;
+    while (left < right) {
+      const sum = nums[i] + nums[left] + nums[right];
+      if (sum === 0) {
+        result.push([nums[i], nums[left], nums[right]]);
+        while (left < right && nums[left] === nums[left + 1]) left++;
+        while (left < right && nums[right] === nums[right - 1]) right--;
+        left++;
+        right--;
+      } else if (sum < 0) {
+        left++;
+      } else {
+        right--;
+      }
+    }
+  }
+
+  return result;
+}
+```
+
+## 解题思路
+
+先排序数组并枚举第一个数字，再维护 left/right 双指针向中间收缩；如果三数之和为 0 就记录答案并跳过重复值，否则根据和的大小移动对应指针。
+
+## 复杂度分析
+
+- 时间复杂度：O(n^2)
+- 空间复杂度：O(1)
+
+## 易错点
+
+- 枚举第一个数字时要跳过重复值，否则会产生重复三元组
+- 找到一组答案后左右指针都要继续越过重复值，再向内收缩
+
+## 优化点
+
+- 排序后使用 left/right 双指针收缩搜索区间，避免三重循环枚举
+- 记录答案后同步跳过左右两侧重复值，并继续维护双指针收缩，避免生成重复三元组
+
+## 学习建议
+
+- 复习排序后双指针如何根据总和移动边界
+- 练习去重条件在枚举层和指针层的不同写法

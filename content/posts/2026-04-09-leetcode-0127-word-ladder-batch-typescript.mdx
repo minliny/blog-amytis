@@ -2,8 +2,8 @@
 title: "Word Ladder"
 slug: "leetcode-0127-word-ladder-batch"
 date: "2026-04-09"
-draft: true
-review: true
+draft: false
+review: false
 excerpt: "先把起点放入队列并用集合维护未访问单词，再逐位替换字符扩展相邻状态；如果生成的新单词仍在字典中就入队并立即删除，否则跳过，直到找到终点或队列为空。"
 seoTitle: "LeetCode 127 Word Ladder 题解"
 seoDescription: "先把起点放入队列并用集合维护未访问单词，再逐位替换字符扩展相邻状态；如果生成的新单词仍在字典中就入队并立即删除，否则跳过，直到找到终点或队列为空。"
@@ -104,6 +104,7 @@ function ladderLength(beginWord: string, endWord: string, wordList: string[]): n
 ## 优化点
 
 - 使用队列逐层扩展最短路径，并在入队时删除已访问单词，避免重复访问
+- BFS 逐位替换字符生成邻接点时，只保留仍在字典中的候选状态并更新 visited，减少无效扩展
 
 ## 学习建议
 

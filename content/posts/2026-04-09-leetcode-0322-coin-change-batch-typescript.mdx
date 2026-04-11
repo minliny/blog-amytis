@@ -91,7 +91,7 @@ function coinChange(coins: number[], amount: number): number {
 
 ## 优化点
 
-- 状态转移前先完成初始值填充，避免未定义状态参与比较
+- 状态转移前先初始化 dp 数组的初始值，避免未定义状态参与比较
 - 遍历金额时只在 coin <= amount 时更新 dp，保证转移来源合法
 
 ## 学习建议
