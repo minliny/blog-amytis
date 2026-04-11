@@ -1,0 +1,104 @@
+---
+title: "Next Greater Element I"
+slug: "leetcode-0496-next-greater-element-i"
+date: "2026-04-11"
+draft: false
+review: false
+excerpt: "先遍历数组并用哈希表记录已访问元素的位置，再判断目标差值是否已经出现；如果 Map 中存在匹配值就直接返回索引，否则插入当前数字和下标继续遍历，整体查找保持 O(n)。"
+seoTitle: "LeetCode 496 Next Greater Element I 题解"
+seoDescription: "先遍历数组并用哈希表记录已访问元素的位置，再判断目标差值是否已经出现；如果 Map 中存在匹配值就直接返回索引，否则插入当前数字和下标继续遍历，整体查找保持 O(n)。"
+canonicalUrl: "/posts/leetcode-0496-next-greater-element-i"
+category: "力扣刷题"
+tags:
+  - "leetcode"
+  - "栈"
+  - "单调栈"
+  - "数组"
+  - "哈希表"
+keywords:
+  - "leetcode"
+  - "栈"
+  - "单调栈"
+  - "数组"
+  - "哈希表"
+  - "leetcode-496"
+  - "Easy"
+  - "TypeScript"
+leetcodeId: 496
+difficulty: "Easy"
+language: "TypeScript"
+source: "leetcode-cn"
+submissionTime: "2026-04-11T10:30:00+08:00"
+solutionSummary: "先遍历数组并用哈希表记录已访问元素的位置，再判断目标差值是否已经出现；如果 Map 中存在匹配值就直接返回索引，否则插入当前数字和下标继续遍历，整体查找保持 O(n)。"
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+display:
+  difficulty: "Easy"
+  language: "TypeScript"
+  source: "leetcode-cn"
+studySuggestions:
+  - "复习哈希表查找与插入的时间复杂度"
+  - "对比哈希表做法和排序双指针做法的取舍"
+---
+
+# Next Greater Element I
+
+> 先遍历数组并用哈希表记录已访问元素的位置，再判断目标差值是否已经出现；如果 Map 中存在匹配值就直接返回索引，否则插入当前数字和下标继续遍历，整体查找保持 O(n)。
+
+## 题目信息
+
+- 题号：496
+- 难度：Easy
+- 语言：TypeScript
+- 来源：leetcode-cn
+- 提交时间：2026-04-11T10:30:00+08:00
+
+## 标签展示
+
+- leetcode / 栈 / 单调栈 / 数组 / 哈希表
+
+## 题目链接
+
+- https://leetcode.cn/problems/next-greater-element-i/
+
+## 代码区
+
+```ts
+function nextGreaterElement(nums1: number[], nums2: number[]): number[] {
+  const stack: number[] = [];
+  const nextMap = new Map<number, number>();
+
+  for (const num of nums2) {
+    while (stack.length > 0 && num > stack[stack.length - 1]) {
+      nextMap.set(stack.pop() as number, num);
+    }
+    stack.push(num);
+  }
+
+  return nums1.map((num) => nextMap.get(num) ?? -1);
+}
+```
+
+## 解题思路
+
+先遍历数组并用哈希表记录已访问元素的位置，再判断目标差值是否已经出现；如果 Map 中存在匹配值就直接返回索引，否则插入当前数字和下标继续遍历，整体查找保持 O(n)。
+
+## 复杂度分析
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(n)
+
+## 易错点
+
+- 命中补数后应立即返回，避免后续插入覆盖正确索引
+- 存在重复值时要保证返回的是之前保存的下标和当前下标
+
+## 优化点
+
+- 使用 Map 存储数值到索引的映射，避免每次重复查找
+
+## 学习建议
+
+- 复习哈希表查找与插入的时间复杂度
+- 对比哈希表做法和排序双指针做法的取舍
