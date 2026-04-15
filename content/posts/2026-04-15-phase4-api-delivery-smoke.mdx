@@ -1,0 +1,51 @@
+---
+title: "Phase 4 API Delivery Smoke"
+slug: "phase4-api-delivery-smoke"
+date: "2026-04-15"
+draft: false
+review: false
+excerpt: "Smoke contract for validating GitHub API delivery without local git push."
+seoTitle: "Phase 4 API Delivery Smoke"
+seoDescription: "Smoke contract for validating GitHub API delivery without local git push."
+canonicalUrl: "/posts/phase4-api-delivery-smoke"
+category: "工程验证"
+tags:
+  - "leetcode"
+  - "delivery"
+  - "github-api"
+keywords:
+  - "leetcode"
+  - "delivery"
+  - "github-api"
+leetcodeId: 9999
+difficulty: "Easy"
+language: "TypeScript"
+source: "leetcode-content-automation"
+submissionTime: "2026-04-15T20:00:00+08:00"
+solutionSummary: "This smoke article validates that content delivery can create or reuse a branch and Pull Request through the GitHub API route."
+complexity:
+  time: "O(1)"
+  space: "O(1)"
+display:
+  difficulty: "Easy"
+  language: "TypeScript"
+  source: "leetcode-content-automation"
+studySuggestions:
+  - "Verify that the same slug always maps to the same delivery branch."
+  - "Confirm that repeated delivery reuses the same Pull Request instead of creating duplicates."
+---
+
+# Phase 4 API Delivery Smoke
+
+> This smoke article validates the GitHub API delivery route without relying on local git clone, commit, or push.
+
+## Verification Scope
+
+- Delivery branch is prepared from `main`
+- Target content file is written under `content/posts`
+- Pull Request is created or reused against `main`
+- `main` remains untouched throughout the verification
+
+## Notes
+
+This file exists only to prove the Phase 4 delivery path.
